@@ -15,6 +15,9 @@ import requests
 from bs4 import BeautifulSoup
 from openai import OpenAI
 
+from jiclaw_scraper import scrape_site
+from scraper_config import SCRAPER_CONFIG
+
 
 def get_latest_item(feed_url: str):
     """从 RSS 源中获取最新一篇文章的标题、链接和摘要。"""
@@ -414,13 +417,46 @@ def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> 
         print("该 RSS 源没有可处理的条目。")
         return
 
-    notion_api_key = os.environ.get("NOTION_API_KEY")
-    notion_db_id = os.environ.get("NOTION_DATABASE_ID")
+    _process_items(items, feed_url, model)
+
+
+def process_scraper(site_name: str, model: str = "glm-4-flash", limit: int = 10) -> None:
+    """爬取无 RSS 源网站的多篇文章并写入 Notion（如已配置）。"""
+    from scraper_config import SCRAPER_CONFIG
+
+    config = SCRAPER_CONFIG.get(site_name)
+    if not config:
+        print(f"未找到网站配置：{site_name}")
+        return
+
+    print(f"\n====== 开始爬取网站：{config['name']} ======")
+
+    items = scrape_site(site_name, limit=limit)
+    if not items:
+        print("该网站没有可处理的条目。")
+        return
+
+    _process_items(items, site_name, model)
+
+
+def _process_items(
+    items: list[dict],
+    source: str,
+    model: str,
+    notion_api_key: str = None,
+    notion_db_id: str = None,
+) -> None:
+    """处理文章列表的公共逻辑（RSS 和爬虫共用）。"""
+
+    if notion_api_key is None:
+        notion_api_key = os.environ.get("NOTION_API_KEY")
+    if notion_db_id is None:
+        notion_db_id = os.environ.get("NOTION_DATABASE_ID")
 
     for item in items:
         title = item["title"]
         link = item["link"]
-        summary = item["summary"]
+        summary = item.get("summary", "")
 
         print("\n------------------------------")
         print("处理文章：", title)
@@ -460,5 +496,5 @@ def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> 
                 data,
                 post_id,
                 model,
-                feed_url,
+                source if source.startswith("http") else SCRAPER_CONFIG[source]["url"],
             )
