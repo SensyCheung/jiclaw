@@ -224,6 +224,27 @@ Proper Noun Translation:
     return data
 
 
+def get_website_name(feed_url: str) -> str:
+    """根据 RSS URL 提取网站名称。"""
+    from urllib.parse import urlparse
+
+    parsed = urlparse(feed_url)
+    domain = parsed.netloc.lower()
+
+    # 移除 www. 前缀
+    if domain.startswith("www."):
+        domain = domain[4:]
+
+    # 常见域名映射
+    domain_map = {
+        "trendfore.com": "trendfore",
+        "thelec.net": "thelec",
+        "tomshardware.com": "tomshardware",
+    }
+
+    return domain_map.get(domain, domain.split(".")[0])
+
+
 def create_notion_page(
     notion_api_key: str,
     database_id: str,
@@ -231,6 +252,7 @@ def create_notion_page(
     ai_data: dict,
     post_id: str,
     llm_model: str,
+    feed_url: str,
 ) -> None:
     """将 AI 处理后的结果写入 Notion 数据库。"""
     headers = {
@@ -247,7 +269,7 @@ def create_notion_page(
     summary_en = ai_data.get("summary_en", "")
     summary_cn = ai_data.get("summary_cn", "")
     tags = ai_data.get("tags") or []
-    website_name = "trendfore"
+    website_name = get_website_name(feed_url)
 
     # Notion 对单个 rich_text 对象的 content 有长度限制，做个简单截断
     def truncate(text: str, max_len: int = 1800) -> str:
@@ -458,6 +480,7 @@ def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> 
                 data,
                 post_id,
                 model,
+                feed_url,
             )
 
 

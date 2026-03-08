@@ -247,7 +247,7 @@ def create_notion_page(
     summary_en = ai_data.get("summary_en", "")
     summary_cn = ai_data.get("summary_cn", "")
     tags = ai_data.get("tags") or []
-    website_name = "trendfore"
+    website_name = "XXX"
 
     # Notion 对单个 rich_text 对象的 content 有长度限制，做个简单截断
     def truncate(text: str, max_len: int = 1800) -> str:
