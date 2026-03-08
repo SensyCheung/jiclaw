@@ -63,14 +63,9 @@ def fetch_twitter_tweets(username: str, limit: int = 5) -> list[dict]:
     if results:
         return results
 
-    # 失败时返回占位结果
-    return [{
-        "title": f"@{username} 的 Twitter 动态",
-        "link": f"https://twitter.com/{username}",
-        "summary": f"查看 @{username} 的最新推文",
-        "published": "recent",
-        "published_date": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.000Z"),
-    }]
+    # 失败时返回空列表，不生成占位结果
+    print("  未获取到推文，跳过")
+    return []
 
 
 def fetch_from_webpage_playwright(username: str, limit: int = 5) -> list[dict]:
@@ -126,29 +121,61 @@ def fetch_from_webpage_playwright(username: str, limit: int = 5) -> list[dict]:
                 
                 # 等待 Cloudflare 验证通过
                 print("  等待 Cloudflare 验证...")
-                max_wait = 30
+                max_wait = 60
+                passed = False
                 for i in range(max_wait):
                     time.sleep(2)
                     try:
                         title = page.title()
-                        if title and "Just a moment" not in title and "Checking" not in title:
+                        if title and "Just a moment" not in title and "Checking" not in title and "Attention Required" not in title:
                             print(f"  Cloudflare 验证通过")
+                            passed = True
                             break
-                        if i % 5 == 0:
-                            print(f"  等待中... ({i*2}s)")
+                        if i % 10 == 0:
+                            print(f"  等待中... ({i*2}s) - 标题：{title[:30] if title else 'N/A'}...")
                         # 模拟人类行为：轻微滚动
-                        if i % 3 == 0:
+                        if i % 5 == 0:
                             page.evaluate("window.scrollBy(0, 100)")
                     except Exception as e:
-                        if i % 5 == 0:
+                        if i % 10 == 0:
                             print(f"  等待中... ({i*2}s)")
+                
+                if not passed:
+                    print(f"  Cloudflare 验证超时，跳过")
+                    return results
                 
                 # 等待页面加载
                 print("  等待页面加载...")
-                time.sleep(5)
+                time.sleep(10)
+                
+                # 滚动页面触发内容加载
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                time.sleep(3)
+                page.evaluate("window.scrollTo(0, 0)")
+                time.sleep(3)
                 
                 # 获取页面 HTML 内容
                 html_content = page.content()
+                
+                # 调试：检查页面标题和内容
+                debug_soup = BeautifulSoup(html_content, 'html.parser')
+                debug_title = debug_soup.find('title')
+                if debug_title:
+                    print(f"  页面标题：{debug_title.get_text()[:60]}...")
+                
+                # 检查 nav-tabContent
+                nav_tab = debug_soup.find('div', id='nav-tabContent')
+                if nav_tab:
+                    print(f"  找到 nav-tabContent")
+                    activity_posts = nav_tab.select('div.activity-posts')
+                    print(f"  activity-posts 数量：{len(activity_posts)}")
+                else:
+                    print(f"  未找到 nav-tabContent")
+                    # 查找所有 div id
+                    div_ids = set()
+                    for div in debug_soup.find_all('div', id=True):
+                        div_ids.add(div['id'])
+                    print(f"  找到的 div id: {list(div_ids)[:20]}")
                 
                 # 解析推文
                 tweets = parse_twstalker_tweets(html_content, username, limit)
@@ -156,6 +183,8 @@ def fetch_from_webpage_playwright(username: str, limit: int = 5) -> list[dict]:
                 if tweets:
                     print(f"  成功获取 {len(tweets)} 条推文 (Playwright)")
                     results = tweets
+                else:
+                    print("  未找到推文内容，跳过")
                 
                 browser.close()
                 
@@ -188,7 +217,7 @@ def parse_twstalker_tweets(html_content: str, username: str, limit: int = 5) -> 
     nav_tab_content = soup.find('div', id='nav-tabContent')
     
     if not nav_tab_content:
-        print("  nav-tabContent 未找到")
+        print("  nav-tabContent 未找到，跳过")
         return []
     
     # 查找 activity-posts 容器
