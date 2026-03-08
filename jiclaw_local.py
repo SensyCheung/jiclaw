@@ -5,7 +5,8 @@ jiclaw_local.py - 本地循环运行版本
 用法:
     python jiclaw_local.py <RSS_URL1> [RSS_URL2 ...]
     python jiclaw_local.py scraper:semi-insights
-    python jiclaw_local.py https://feed.com/rss.xml scraper:semi-insights
+    python jiclaw_local.py twitter:elonmusk
+    python jiclaw_local.py https://feed.com/rss.xml scraper:semi-insights twitter:elonmusk
 """
 
 import sys
@@ -13,8 +14,9 @@ import os
 import time
 from datetime import datetime
 
-from jiclaw_core import process_feed, process_scraper
+from jiclaw_core import process_feed, process_scraper, process_twitter
 from jiclaw_scraper import get_available_sites
+from jiclaw_twitter import get_available_accounts
 
 
 def main():
@@ -22,18 +24,24 @@ def main():
         print("用法：python jiclaw_local.py <RSS_URL1> [RSS_URL2 ...]")
         print("     或：python jiclaw_local.py scraper:<site_name>")
         print(f"     可用的爬虫站点：{', '.join(get_available_sites())}")
+        print("     或：python jiclaw_local.py twitter:<username>")
+        print(f"     可用的 Twitter 账号：{', '.join(get_available_accounts())}")
         sys.exit(1)
 
     args = sys.argv[1:]
 
-    # 解析参数，分离 RSS URL 和爬虫站点
+    # 解析参数，分离 RSS URL、爬虫站点和 Twitter 账号
     feed_urls = []
     scraper_sites = []
+    twitter_accounts = []
 
     for arg in args:
         if arg.startswith("scraper:"):
             site_name = arg.replace("scraper:", "")
             scraper_sites.append(site_name)
+        elif arg.startswith("twitter:"):
+            username = arg.replace("twitter:", "")
+            twitter_accounts.append(username)
         else:
             feed_urls.append(arg)
 
@@ -57,14 +65,21 @@ def main():
             try:
                 process_feed(feed_url, model=model, limit=10)
             except Exception as e:
-                print(f"处理 RSS 源时出错：{feed_url} - {e}")
+                print(f"处理 RSS 源时出错 - {str(e).encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')[:100]}")
 
         # 处理爬虫站点
         for site_name in scraper_sites:
             try:
                 process_scraper(site_name, model=model, limit=10)
             except Exception as e:
-                print(f"处理爬虫站点时出错：{site_name} - {e}")
+                print(f"处理爬虫站点时出错 - {str(e).encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')[:100]}")
+
+        # 处理 Twitter 账号
+        for username in twitter_accounts:
+            try:
+                process_twitter(username, model=model, limit=5)
+            except Exception as e:
+                print(f"处理 Twitter 账号时出错 - {str(e).encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')[:100]}")
 
         print(f"\n本轮抓取完成，将休眠 {interval} 秒...\n")
         try:

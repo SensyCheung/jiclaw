@@ -17,6 +17,7 @@ from openai import OpenAI
 
 from jiclaw_scraper import scrape_site
 from scraper_config import SCRAPER_CONFIG
+from jiclaw_twitter import fetch_twitter_tweets
 
 
 def get_latest_item(feed_url: str):
@@ -410,7 +411,8 @@ def notion_page_exists(
 
 def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> None:
     """抓取单个 RSS 源的多篇文章并写入 Notion（如已配置）。"""
-    print(f"\n====== 开始处理 RSS 源：{feed_url} ======")
+    # 编码安全输出
+    print(f"\n====== 开始处理 RSS 源 ======")
 
     items = get_feed_items(feed_url, limit=limit)
     if not items:
@@ -429,7 +431,8 @@ def process_scraper(site_name: str, model: str = "glm-4-flash", limit: int = 10)
         print(f"未找到网站配置：{site_name}")
         return
 
-    print(f"\n====== 开始爬取网站：{config['name']} ======")
+    # 编码安全输出
+    print(f"\n====== 开始爬取网站 ======")
 
     items = scrape_site(site_name, limit=limit)
     if not items:
@@ -437,6 +440,25 @@ def process_scraper(site_name: str, model: str = "glm-4-flash", limit: int = 10)
         return
 
     _process_items(items, site_name, model)
+
+
+def process_twitter(username: str, model: str = "glm-4-flash", limit: int = 5) -> None:
+    """抓取 Twitter 账号的推文并写入 Notion（如已配置）。"""
+    from twitter_config import TWITTER_ACCOUNTS
+
+    if username not in TWITTER_ACCOUNTS:
+        print("未找到 Twitter 账号配置")
+        return
+
+    # 编码安全输出
+    print(f"\n====== 开始抓取 Twitter: @{username} ======")
+
+    items = fetch_twitter_tweets(username, limit=limit)
+    if not items:
+        print("该 Twitter 账号没有可处理的推文。")
+        return
+
+    _process_items(items, f"twitter:{username}", model)
 
 
 def _process_items(
@@ -459,8 +481,10 @@ def _process_items(
         summary = item.get("summary", "")
 
         print("\n------------------------------")
-        print("处理文章：", title)
-        print("链接：", link)
+        # 编码安全输出：截断并转义标题中的特殊字符
+        title_safe = title.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')[:50]
+        print(f"处理文章：{title_safe}...")
+        print(f"链接：{link}")
 
         post_id = hashlib.sha1(link.encode("utf-8")).hexdigest()[:10]
 
@@ -485,10 +509,22 @@ def _process_items(
         data = summarize_with_ai(title, summary, content, model=model)
 
         print("AI 结果 JSON：")
-        print(json.dumps(data, ensure_ascii=False, indent=2))
+        # 使用 ensure_ascii=True 避免编码问题
+        print(json.dumps(data, ensure_ascii=True, indent=2))
 
         if notion_api_key and notion_db_id:
             print("正在写入 Notion 数据库...")
+            # 获取 source URL
+            if source.startswith("http"):
+                source_url = source
+            elif source in SCRAPER_CONFIG:
+                source_url = SCRAPER_CONFIG[source]["url"]
+            elif source.startswith("twitter:"):
+                username = source.replace("twitter:", "")
+                source_url = f"https://twitter.com/{username}"
+            else:
+                source_url = ""
+                
             create_notion_page(
                 notion_api_key,
                 notion_db_id,
@@ -496,5 +532,5 @@ def _process_items(
                 data,
                 post_id,
                 model,
-                source if source.startswith("http") else SCRAPER_CONFIG[source]["url"],
+                source_url,
             )
