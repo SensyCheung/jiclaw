@@ -13,4 +13,13 @@ SCRAPER_CONFIG = {
         "date_selector": "span.date",
         "date_format": "%Y.%m.%d",  # 日期格式：2026.03.06
     },
+    "icsmart": {
+        "name": "半导体行业观察",
+        "url": "https://www.icsmart.cn/",
+        "list_selector": "div.entries article",
+        "title_selector": "h2.entry-title a",
+        "url_base": "https://www.icsmart.cn",
+        "date_selector": "time.ct-meta-element-date",
+        "date_format": "%Y年%m月%d日",
+    },
 }

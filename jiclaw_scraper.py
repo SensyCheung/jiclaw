@@ -34,21 +34,60 @@ def get_proxies() -> dict:
 def normalize_date(date_str: str, date_format: str = None) -> str:
     """
     将各种日期格式转换为 ISO 8601 格式 (YYYY-MM-DDTHH:MM:SS.000Z)
+    会自动处理时区转换
     """
     if not date_str:
         return None
 
     date_str = date_str.strip()
 
-    # 尝试配置的格式
+    # 如果是 ISO 8601 格式（如 2026-03-08T16:00:43+08:00），转换为 UTC
+    if "T" in date_str:
+        try:
+            # 处理时区
+            if "+" in date_str:
+                # 分离日期时间和时区
+                dt_part, tz_part = date_str.split("+")
+                dt = datetime.fromisoformat(dt_part)
+                # 解析时区偏移
+                if ":" in tz_part:
+                    tz_hours, tz_mins = map(int, tz_part.split(":"))
+                else:
+                    tz_hours = int(tz_part[:2])
+                    tz_mins = int(tz_part[2:]) if len(tz_part) > 2 else 0
+                # 转换为 UTC（减去时区偏移）
+                from datetime import timedelta
+                utc_dt = dt - timedelta(hours=tz_hours, minutes=tz_mins)
+                return utc_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            elif date_str.endswith("Z"):
+                # 已经是 UTC
+                dt = datetime.fromisoformat(date_str.replace("Z", ""))
+                return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            else:
+                # 没有时区信息，假设为 UTC
+                dt = datetime.fromisoformat(date_str)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        except Exception as e:
+            print(f"日期解析失败：{date_str}, 错误：{e}")
+            pass
+
+    # 处理相对时间（如 "2h", "1m", "3d"）
+    if date_str.endswith('h') or date_str.endswith('m') or date_str.endswith('d'):
+        now = datetime.now()
+        return now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+    # 尝试配置的格式（假设为北京时间）
     if date_format:
         try:
             dt = datetime.strptime(date_str, date_format)
-            return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            # 转换为 UTC（减去 8 小时）
+            from datetime import timedelta
+            utc_dt = dt - timedelta(hours=8)
+            return utc_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         except ValueError:
             pass
 
-    # 尝试常见格式
+    # 尝试常见格式（假设为北京时间）
     formats = [
         "%Y-%m-%d",
         "%Y/%m/%d",
@@ -58,12 +97,16 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
         "%Y/%m/%d %H:%M:%S",
         "%m/%d/%Y",
         "%d/%m/%Y",
+        "%Y年%m月%d日",
     ]
 
     for fmt in formats:
         try:
             dt = datetime.strptime(date_str, fmt)
-            return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            # 转换为 UTC（减去 8 小时）
+            from datetime import timedelta
+            utc_dt = dt - timedelta(hours=8)
+            return utc_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         except ValueError:
             continue
 
@@ -149,9 +192,83 @@ def scrape_semi_insights(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_icsmart(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取半导体行业观察 (icsmart.cn) 的文章列表
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=10,
+            proxies={"http": None, "https": None}
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找文章列表：div.entries -> article
+        articles = soup.select("div.entries article")
+
+        for article in articles[:limit]:
+            # 提取标题和链接：h2.entry-title -> a
+            title_tag = article.select_one("h2.entry-title a")
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                link = title_tag.get("href")
+
+                # 处理相对链接
+                if link:
+                    link = urljoin(url, link)
+
+                # 提取日期：time.ct-meta-element-date datetime 属性
+                date_tag = article.select_one("time.ct-meta-element-date")
+                date_str = ""
+                if date_tag:
+                    # 优先使用 datetime 属性
+                    date_str = date_tag.get("datetime", "")
+                    if not date_str:
+                        # 使用文本内容
+                        date_str = date_tag.get_text(strip=True)
+
+                # 标准化日期
+                published_date = normalize_date(date_str, "%Y年%m月%d日")
+
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        return results
+
+    except Exception as e:
+        print(f"爬取 icsmart 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
+    "icsmart": scrape_icsmart,
 }
 
 
