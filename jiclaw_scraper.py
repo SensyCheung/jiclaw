@@ -71,9 +71,40 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
             print(f"日期解析失败：{date_str}, 错误：{e}")
             pass
 
-    # 处理相对时间（如 "2h", "1m", "3d"）
-    if date_str.endswith('h') or date_str.endswith('m') or date_str.endswith('d'):
+    # 处理相对时间（如 "3 分钟前", "2 小时前", "1 天前"）
+    if "分钟前" in date_str or "小时前" in date_str or "天前" in date_str or "秒前" in date_str:
         now = datetime.now()
+        from datetime import timedelta
+        
+        if "分钟前" in date_str:
+            try:
+                minutes = int(date_str.replace("分钟前", "").strip())
+                dt = now - timedelta(minutes=minutes)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            except:
+                pass
+        elif "小时前" in date_str:
+            try:
+                hours = int(date_str.replace("小时前", "").strip())
+                dt = now - timedelta(hours=hours)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            except:
+                pass
+        elif "天前" in date_str:
+            try:
+                days = int(date_str.replace("天前", "").strip())
+                dt = now - timedelta(days=days)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            except:
+                pass
+        elif "秒前" in date_str:
+            try:
+                seconds = int(date_str.replace("秒前", "").strip())
+                dt = now - timedelta(seconds=seconds)
+                return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            except:
+                pass
+        
         return now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
     # 尝试配置的格式（假设为北京时间）
@@ -192,6 +223,82 @@ def scrape_semi_insights(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_aijiwei(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取爱集微 (laoyaoba.com/jwnews) 的文章列表
+    内容在 div id=news-list 中的 li.card 元素
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=10,
+            proxies={"http": None, "https": None}
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找新闻列表：div#news-list
+        news_list = soup.find("div", id="news-list")
+        if not news_list:
+            print("未找到 news-list 容器")
+            return []
+
+        # 查找新闻项：li.card
+        news_items = news_list.select("li.card")
+
+        for item in news_items[:limit]:
+            # 提取链接：data-href 属性
+            link = item.get("data-href", "")
+            if link:
+                link = urljoin(url, link)
+            
+            # 提取标题：p.title
+            title_tag = item.select_one("p.title")
+            title = title_tag.get_text(strip=True) if title_tag else ""
+            
+            # 提取时间：div.time
+            time_tag = item.select_one("div.time")
+            date_str = ""
+            if time_tag:
+                date_str = time_tag.get_text(strip=True)
+            
+            # 标准化日期（处理相对时间）
+            published_date = normalize_date(date_str)
+
+            if title and link:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        return results
+
+    except Exception as e:
+        print(f"爬取爱集微失败：{e}")
+        return []
+
+
 def scrape_icsmart(url: str, limit: int = 10) -> list[dict]:
     """
     爬取半导体行业观察 (icsmart.cn) 的文章列表
@@ -269,6 +376,7 @@ def scrape_icsmart(url: str, limit: int = 10) -> list[dict]:
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
     "icsmart": scrape_icsmart,
+    "aijiwei": scrape_aijiwei,
 }
 
 

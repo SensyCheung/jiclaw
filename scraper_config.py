@@ -22,4 +22,13 @@ SCRAPER_CONFIG = {
         "date_selector": "time.ct-meta-element-date",
         "date_format": "%Y年%m月%d日",
     },
+    "aijiwei": {
+        "name": "爱集微",
+        "url": "https://laoyaoba.com/jwnews",
+        "list_selector": "div#news-list li.card",
+        "title_selector": "p.title",
+        "url_base": "https://laoyaoba.com",
+        "date_selector": "div.time",
+        "date_format": "relative",  # 相对时间如 "3 分钟前"
+    },
 }
