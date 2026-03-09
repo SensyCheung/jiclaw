@@ -35,11 +35,21 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
     """
     将各种日期格式转换为 ISO 8601 格式 (YYYY-MM-DDTHH:MM:SS.000Z)
     会自动处理时区转换
+    
+    注意：
+    - 在本地运行时（北京时间），需要减去 8 小时转换为 UTC
+    - 在 GitHub Action 中运行时（已是 UTC），不需要转换
+    - 通过 TIMEZONE_OFFSET 环境变量控制（小时数），默认为 0（UTC）
+    - 本地运行时设置 TIMEZONE_OFFSET=8
     """
     if not date_str:
         return None
 
     date_str = date_str.strip()
+    
+    # 获取时区偏移（小时数），默认为 0（UTC）
+    # 本地运行时设置 TIMEZONE_OFFSET=8（北京时间）
+    timezone_offset = int(os.environ.get("TIMEZONE_OFFSET", "0"))
 
     # 如果是 ISO 8601 格式（如 2026-03-08T16:00:43+08:00），转换为 UTC
     if "T" in date_str:
@@ -73,13 +83,16 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
 
     # 处理相对时间（如 "3 分钟前", "2 小时前", "1 天前"）
     if "分钟前" in date_str or "小时前" in date_str or "天前" in date_str or "秒前" in date_str:
-        now = datetime.now()
+        now = datetime.now()  # 当前本地时间
         from datetime import timedelta
         
         if "分钟前" in date_str:
             try:
                 minutes = int(date_str.replace("分钟前", "").strip())
                 dt = now - timedelta(minutes=minutes)
+                # 如果设置了时区偏移，转换为 UTC
+                if timezone_offset > 0:
+                    dt = dt - timedelta(hours=timezone_offset)
                 return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except:
                 pass
@@ -87,6 +100,9 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
             try:
                 hours = int(date_str.replace("小时前", "").strip())
                 dt = now - timedelta(hours=hours)
+                # 如果设置了时区偏移，转换为 UTC
+                if timezone_offset > 0:
+                    dt = dt - timedelta(hours=timezone_offset)
                 return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except:
                 pass
@@ -94,6 +110,9 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
             try:
                 days = int(date_str.replace("天前", "").strip())
                 dt = now - timedelta(days=days)
+                # 如果设置了时区偏移，转换为 UTC
+                if timezone_offset > 0:
+                    dt = dt - timedelta(hours=timezone_offset)
                 return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except:
                 pass
@@ -101,24 +120,31 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
             try:
                 seconds = int(date_str.replace("秒前", "").strip())
                 dt = now - timedelta(seconds=seconds)
+                # 如果设置了时区偏移，转换为 UTC
+                if timezone_offset > 0:
+                    dt = dt - timedelta(hours=timezone_offset)
                 return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except:
                 pass
         
+        # 默认返回当前时间（根据时区偏移调整）
+        if timezone_offset > 0:
+            return (now - timedelta(hours=timezone_offset)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
         return now.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
-    # 尝试配置的格式（假设为北京时间）
+    # 尝试配置的格式
     if date_format:
         try:
             dt = datetime.strptime(date_str, date_format)
-            # 转换为 UTC（减去 8 小时）
-            from datetime import timedelta
-            utc_dt = dt - timedelta(hours=8)
-            return utc_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            # 如果设置了时区偏移，转换为 UTC
+            if timezone_offset > 0:
+                from datetime import timedelta
+                dt = dt - timedelta(hours=timezone_offset)
+            return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         except ValueError:
             pass
 
-    # 尝试常见格式（假设为北京时间）
+    # 尝试常见格式
     formats = [
         "%Y-%m-%d",
         "%Y/%m/%d",
@@ -134,10 +160,11 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
     for fmt in formats:
         try:
             dt = datetime.strptime(date_str, fmt)
-            # 转换为 UTC（减去 8 小时）
-            from datetime import timedelta
-            utc_dt = dt - timedelta(hours=8)
-            return utc_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            # 如果设置了时区偏移，转换为 UTC
+            if timezone_offset > 0:
+                from datetime import timedelta
+                dt = dt - timedelta(hours=timezone_offset)
+            return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         except ValueError:
             continue
 

@@ -30,5 +30,6 @@ jobs:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           RSS_INTERVAL_SECONDS: ${{ vars.RSS_INTERVAL_SECONDS || 3600 }}
+          TIMEZONE_OFFSET: 0  # GitHub Action 使用 UTC 时间，不需要转换
         run: |
-          python jiclaw.py "https://thelec.net/rss/S1N3.xml" "https://www.trendforce.com/feed/Semiconductors.html" "https://www.trendforce.com/feed/LED.html" scraper:semi-insights scraper:icsmart scraper:aijiwei twitter:paurooteri
+          python jiclaw.py "https://www.tomshardware.com/feeds.xml" "https://thelec.net/rss/S1N3.xml" "https://www.trendforce.com/feed/Semiconductors.html" "https://www.trendforce.com/feed/LED.html" scraper:semi-insights scraper:icsmart scraper:aijiwei

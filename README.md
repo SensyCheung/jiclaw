@@ -95,12 +95,27 @@ TWITTER_ACCOUNTS = {
 
 ### 3. 环境变量
 
-| 变量名 | 说明 | 必需 |
-|--------|------|------|
-| `ZHIPU_API_KEY` | 智谱 AI API 密钥 | 是 |
-| `NOTION_API_KEY` | Notion API 密钥 | 是 |
-| `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 |
-| `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否，默认 900 |
+| 变量名 | 说明 | 必需 | 默认值 |
+|--------|------|------|--------|
+| `ZHIPU_API_KEY` | 智谱 AI API 密钥 | 是 | - |
+| `NOTION_API_KEY` | Notion API 密钥 | 是 | - |
+| `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 | - |
+| `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
+| `TIMEZONE_OFFSET` | 时区偏移（小时数） | 否 | 0 |
+
+**时区配置说明：**
+
+- **GitHub Action**：设置为 `0`（服务器使用 UTC 时间）
+- **本地运行（北京时间）**：设置为 `8`
+
+```bash
+# GitHub Action（UTC 时间）
+TIMEZONE_OFFSET=0
+
+# 本地运行（北京时间转 UTC）
+export TIMEZONE_OFFSET=8
+python jiclaw.py scraper:aijiwei
+```
 
 ## 功能特点
 
