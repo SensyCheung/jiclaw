@@ -31,4 +31,4 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           RSS_INTERVAL_SECONDS: ${{ vars.RSS_INTERVAL_SECONDS || 3600 }}
         run: |
-          python jiclaw.py "https://www.trendforce.com/feed/Semiconductors.html" "https://www.trendforce.com/feed/LED.html" scraper:semi-insights scraper:icsmart twitter:paurooteri
+          python jiclaw.py "https://thelec.net/rss/S1N3.xml" "https://www.trendforce.com/feed/Semiconductors.html" "https://www.trendforce.com/feed/LED.html" scraper:semi-insights scraper:icsmart twitter:paurooteri
