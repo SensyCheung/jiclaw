@@ -70,7 +70,7 @@ def main():
         # 处理爬虫站点
         for site_name in scraper_sites:
             try:
-                process_scraper(site_name, model=model, limit=10)
+                process_scraper(site_name, model=model, limit=10, use_proxy=True)
             except Exception as e:
                 print(f"处理爬虫站点时出错 - {str(e).encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')[:100]}")
 

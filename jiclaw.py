@@ -30,10 +30,10 @@ def main():
 
     for arg in args:
         if arg.startswith("scraper:"):
-            # 爬虫站点
+            # 爬虫站点（不使用代理）
             site_name = arg.replace("scraper:", "")
             try:
-                process_scraper(site_name, model=model, limit=10)
+                process_scraper(site_name, model=model, limit=10, use_proxy=False)
             except Exception as e:
                 # 编码安全输出
                 print(f"处理爬虫站点时出错：{site_name} - {str(e).encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')}")

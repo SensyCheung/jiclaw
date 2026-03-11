@@ -31,4 +31,13 @@ SCRAPER_CONFIG = {
         "date_selector": "div.time",
         "date_format": "relative",  # 相对时间如 "3 分钟前"
     },
+    "lam-research": {
+        "name": "Lam Research",
+        "url": "https://newsroom.lamresearch.com/blog",
+        "list_selector": "ul.wd_list li.wd_item",
+        "title_selector": "div.wd_title a",
+        "url_base": "https://newsroom.lamresearch.com",
+        "date_selector": "div.wd_date",
+        "date_format": "%B %d, %Y",  # 日期格式：March 09, 2026
+    },
 }

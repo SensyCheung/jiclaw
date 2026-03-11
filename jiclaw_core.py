@@ -247,6 +247,7 @@ def get_website_name(feed_url: str) -> str:
         "trendfore.com": "trendfore",
         "thelec.net": "thelec",
         "tomshardware.com": "tomshardware",
+        "newsroom.lamresearch.com": "Lam Research",
     }
 
     return domain_map.get(domain, domain.split(".")[0])
@@ -429,7 +430,7 @@ def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> 
     _process_items(items, feed_url, model)
 
 
-def process_scraper(site_name: str, model: str = "glm-4-flash", limit: int = 10) -> None:
+def process_scraper(site_name: str, model: str = "glm-4-flash", limit: int = 10, use_proxy: bool = False) -> None:
     """爬取无 RSS 源网站的多篇文章并写入 Notion（如已配置）。"""
     from scraper_config import SCRAPER_CONFIG
 
@@ -441,7 +442,7 @@ def process_scraper(site_name: str, model: str = "glm-4-flash", limit: int = 10)
     # 编码安全输出
     print(f"\n====== 开始爬取网站 ======")
 
-    items = scrape_site(site_name, limit=limit)
+    items = scrape_site(site_name, limit=limit, use_proxy=use_proxy)
     if not items:
         print("该网站没有可处理的条目。")
         return
