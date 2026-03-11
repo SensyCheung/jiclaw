@@ -79,6 +79,13 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
         if published_parsed:
             try:
                 dt = datetime(*published_parsed[:6])
+                # feedparser 解析的时间已经是本地时间，需要根据时区转换为 UTC
+                # 检查是否有时间偏移信息
+                if hasattr(entry, 'published_parsed') and len(entry.published_parsed) > 6:
+                    # 有时区偏移（如 +0900 表示韩国时间）
+                    tz_offset = entry.published_parsed[6]  # 单位为秒
+                    from datetime import timedelta
+                    dt = dt - timedelta(seconds=tz_offset)
                 published_date = dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except Exception:
                 published_date = None
