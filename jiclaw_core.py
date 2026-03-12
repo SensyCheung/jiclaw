@@ -182,8 +182,8 @@ def summarize_with_ai(
             {
                 "role": "system",
                 "content": '''
-Proper Noun Translation:
-"Silicon Motion" : "慧荣科技" //注意：不要什么都翻译成这个，不知道怎么翻译的就保留原始英文名不翻译。
+Proper Nouns Translation:
+'Agile Analog' : 'Agile Analog'(不翻译)
 "Silicon Catalyst" : "Silicon Catalyst"(不翻译)
 "DeepCool" : "九州风神 DeepCool"
 "Noctua" : "奥地利猫头鹰 Noctua"
@@ -191,7 +191,7 @@ Proper Noun Translation:
 "X-Epic" : "芯华章"
 'Made by Google' : 'Made by Google'(不翻译)
 'Lam Research' : '泛林集团'
-'Agile Analog' : 'Agile Analog'(不翻译)
+"Silicon Motion" : "慧荣科技SMI" 
 ---
 你将看到一篇科技/半导体/硬件等方向的文章信息（标题 + RSS 摘要 + 抓取到的正文）。
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
@@ -214,6 +214,7 @@ Proper Noun Translation:
   "summary_en": "<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>",
   "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>"
 }
+请最后检查输出是否符合要求，不要出现任何错误。
                 ''',
             },
             {
