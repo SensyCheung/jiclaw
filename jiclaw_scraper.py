@@ -763,6 +763,82 @@ def scrape_icsmart(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_nvidia(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Nvidia News (nvidianews.nvidia.com) 的文章列表
+    结构：div.tiles -> article.tiles-item
+    - 标题和链接：h3.tiles-item-text-title -> a
+    - 发布时间：div.tiles-item-text-date
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=10,
+            proxies={"http": None, "https": None}
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找文章列表：div.tiles -> article.tiles-item
+        articles = soup.select("div.tiles article.tiles-item")
+
+        for article in articles[:limit]:
+            # 提取标题和链接：h3.tiles-item-text-title -> a
+            title_tag = article.select_one("h3.tiles-item-text-title a")
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                link = title_tag.get("href")
+
+                # 处理相对链接
+                if link:
+                    link = urljoin(url, link)
+
+                # 提取日期：div.tiles-item-text-date
+                date_tag = article.select_one("div.tiles-item-text-date")
+                date_str = ""
+                if date_tag:
+                    date_str = date_tag.get_text(strip=True)
+
+                # 标准化日期（英文月份格式：March 12, 2026）
+                published_date = normalize_date(date_str, "%B %d, %Y")
+
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        return results
+
+    except Exception as e:
+        print(f"爬取 Nvidia 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -770,6 +846,7 @@ SCRAPER_FUNCTIONS = {
     "aijiwei": scrape_aijiwei,
     "lam-research": scrape_lam_research,
     "lumentum": scrape_lumentum,
+    "nvidia": scrape_nvidia,
 }
 
 

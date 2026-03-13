@@ -49,4 +49,13 @@ SCRAPER_CONFIG = {
         "date_selector": "time, .date, .publish-date, span.date",
         "date_format": "%B %d, %Y",
     },
+    "nvidia": {
+        "name": "Nvidia News",
+        "url": "https://nvidianews.nvidia.com/",
+        "list_selector": "div.tiles article.tiles-item",
+        "title_selector": "h3.tiles-item-text-title a",
+        "url_base": "https://nvidianews.nvidia.com",
+        "date_selector": "div.tiles-item-text-date",
+        "date_format": "%B %d, %Y",  # 日期格式：March 12, 2026
+    },
 }
