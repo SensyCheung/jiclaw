@@ -58,4 +58,13 @@ SCRAPER_CONFIG = {
         "date_selector": "div.tiles-item-text-date",
         "date_format": "%B %d, %Y",  # 日期格式：March 12, 2026
     },
+    "nvidia-dev": {
+        "name": "Nvidia Developer Blog",
+        "url": "https://developer.nvidia.com/blog/recent-posts/",
+        "list_selector": "div.carousel-row__slide.js-post-card",
+        "title_selector": "h3.carousel-row-slide__heading a, div.carousel-row-slide__title a, h3.carousel-row-slide__heading",
+        "url_base": "https://developer.nvidia.com",
+        "date_selector": "span.post-published-date",
+        "date_format": "%b %d, %Y",  # 日期格式：Mar 12, 2026
+    },
 }

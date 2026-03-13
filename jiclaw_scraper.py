@@ -839,6 +839,85 @@ def scrape_nvidia(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_nvidia_dev(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Nvidia Developer Blog (developer.nvidia.com/blog) 的文章列表
+    结构：div.carousel-row__slide.js-post-card
+    - 标题和链接：h3.carousel-row-slide__heading -> a 或父元素中的链接
+    - 发布时间：span.post-published-date
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=10,
+            proxies={"http": None, "https": None}
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找文章列表：div.carousel-row__slide.js-post-card
+        articles = soup.select("div.carousel-row__slide.js-post-card")
+
+        for article in articles[:limit]:
+            # 提取标题和链接
+            # 链接在 a.carousel-row-slide__link 中，标题在 h3.carousel-row-slide__heading 中
+            link_tag = article.select_one("a.carousel-row-slide__link")
+            title_tag = article.select_one("h3.carousel-row-slide__heading")
+
+            if link_tag and title_tag:
+                link = link_tag.get("href")
+                title = title_tag.get_text(strip=True)
+
+                # 处理相对链接
+                if link:
+                    link = urljoin(url, link)
+
+                # 提取日期：span.post-published-date
+                date_tag = article.select_one("span.post-published-date")
+                date_str = ""
+                if date_tag:
+                    date_str = date_tag.get_text(strip=True)
+
+                # 标准化日期（英文月份缩写格式：Mar 12, 2026）
+                published_date = normalize_date(date_str, "%b %d, %Y")
+
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        return results
+
+    except Exception as e:
+        print(f"爬取 Nvidia Dev 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -847,6 +926,7 @@ SCRAPER_FUNCTIONS = {
     "lam-research": scrape_lam_research,
     "lumentum": scrape_lumentum,
     "nvidia": scrape_nvidia,
+    "nvidia-dev": scrape_nvidia_dev,
 }
 
 
