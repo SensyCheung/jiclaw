@@ -918,6 +918,86 @@ def scrape_nvidia_dev(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_intel(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Intel Newsroom (newsroom.intel.com) 的文章列表
+    结构：div.post-result-item-container
+    - 标题：h2
+    - 链接：a.post-result-item
+    - 发布时间：p.item-post-date
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=10,
+            proxies={"http": None, "https": None}
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找文章列表：div.post-result-item-container
+        articles = soup.select("div.post-result-item-container")
+
+        for article in articles[:limit]:
+            # 提取标题：h2
+            title_tag = article.select_one("h2")
+            title = title_tag.get_text(strip=True) if title_tag else ""
+
+            # 提取链接：a.post-result-item
+            link_tag = article.select_one("a.post-result-item")
+            link = link_tag.get("href") if link_tag else ""
+
+            # 处理相对链接
+            if link:
+                link = urljoin(url, link)
+
+            # 提取日期：p.item-post-date
+            date_tag = article.select_one("p.item-post-date")
+            date_str = ""
+            if date_tag:
+                date_str = date_tag.get_text(strip=True)
+
+            # 标准化日期（英文月份格式：March 12, 2026）
+            published_date = normalize_date(date_str, "%B %d, %Y")
+
+            if title and link:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        return results
+
+    except Exception as e:
+        print(f"爬取 Intel 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -927,6 +1007,7 @@ SCRAPER_FUNCTIONS = {
     "lumentum": scrape_lumentum,
     "nvidia": scrape_nvidia,
     "nvidia-dev": scrape_nvidia_dev,
+    "intel": scrape_intel,
 }
 
 

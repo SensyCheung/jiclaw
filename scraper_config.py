@@ -67,4 +67,13 @@ SCRAPER_CONFIG = {
         "date_selector": "span.post-published-date",
         "date_format": "%b %d, %Y",  # 日期格式：Mar 12, 2026
     },
+    "intel": {
+        "name": "Intel Newsroom",
+        "url": "https://newsroom.intel.com/all-news",
+        "list_selector": "div.post-result-item-container",
+        "title_selector": "h2",
+        "url_base": "https://newsroom.intel.com",
+        "date_selector": "p.item-post-date",
+        "date_format": "%B %d, %Y",  # 日期格式：March 12, 2026
+    },
 }
