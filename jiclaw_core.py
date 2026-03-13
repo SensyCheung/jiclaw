@@ -86,12 +86,6 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
                     tz_offset = entry.published_parsed[6]  # 单位为秒
                     from datetime import timedelta
                     dt = dt - timedelta(seconds=tz_offset)
-                else:
-                    # 没有时区信息，根据 RSS 源判断时区
-                    # thelec.net 是韩国网站，假设时间为韩国时间 (UTC+9)
-                    if "thelec.net" in feed_url:
-                        from datetime import timedelta
-                        dt = dt - timedelta(hours=9)  # 韩国时间转 UTC
                 
                 published_date = dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except Exception:
