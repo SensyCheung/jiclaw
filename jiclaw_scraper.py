@@ -267,6 +267,251 @@ def scrape_semi_insights(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_lumentum(url: str, limit: int = 10, use_proxy: bool = False) -> list[dict]:
+    """
+    爬取 Lumentum (lumentum.com/en/newsroom/news-releases) 的文章列表
+    使用 Playwright 处理 JavaScript 动态加载内容
+    
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+        use_proxy: 是否使用代理（默认 False，Lumentum 不需要代理）
+    """
+    from playwright.sync_api import sync_playwright
+    
+    results = []
+
+    try:
+        with sync_playwright() as p:
+            # 启动浏览器
+            browser = p.chromium.launch(
+                headless=True,
+                args=['--disable-blink-features=AutomationControlled', '--no-sandbox']
+            )
+            
+            # Lumentum 不需要代理，明确禁用
+            page = browser.new_page()
+            page.set_viewport_size({"width": 1920, "height": 1080})
+            
+            # 隐藏 WebDriver 特征
+            page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+            """)
+            
+            print(f"  正在访问 {url}...")
+            # 使用较宽松的加载策略
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            
+            # 等待动态内容加载
+            print("  等待动态内容加载...")
+            page.wait_for_timeout(8000)
+            
+            # 尝试滚动页面触发更多内容加载
+            try:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(3000)
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(2000)
+            except:
+                pass
+            
+            # 获取页面 HTML
+            html_content = page.content()
+            browser.close()
+        
+        print(f"  页面大小：{len(html_content)} 字节")
+        
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # 调试：查找所有 class
+        all_classes = set()
+        for elem in soup.find_all(class_=True):
+            for cls in elem['class']:
+                all_classes.add(cls)
+        
+        # 查找可能包含新闻的 class
+        news_classes = [c for c in all_classes if any(k in c.lower() for k in ['news', 'press', 'release', 'article', 'item', 'card'])]
+        print(f"  找到的新闻相关 class: {news_classes[:20]}")
+        
+        # 查找文章列表 - 尝试多种选择器
+        articles = []
+        selectors = [
+            "div.news-item",
+            "article.news",
+            "div.press-release",
+            "li.news-item",
+            "div.listing-item",
+            "div.item",
+            "div.card",
+            "a[href*='/news/']",
+        ]
+        
+        for selector in selectors:
+            articles = soup.select(selector)
+            if articles:
+                print(f"  使用选择器 {selector} 找到 {len(articles)} 篇文章")
+                break
+        
+        if not articles:
+            print("  articles 为空，使用备用方案...")
+            # 尝试查找所有包含新闻链接的元素
+            news_links = soup.select("a[href*='/news/'], a[href*='/press/']")
+            if news_links:
+                print(f"  找到 {len(news_links)} 个新闻链接")
+                for link in news_links[:limit]:
+                    title = link.get_text(strip=True)
+                    href = link.get("href", "")
+                    if href:
+                        href = urljoin(url, href)
+                    
+                    # 查找日期（向上查找父元素或兄弟元素）
+                    date_str = ""
+                    published_date = None
+                    parent = link.find_parent()
+                    
+                    # 尝试在父元素、祖父元素中查找
+                    for ancestor in [parent, parent.find_parent() if parent else None]:
+                        if ancestor:
+                            for selector in ["span.eyebrow", ".eyebrow", "time", ".date", "span.text-black"]:
+                                date_tag = ancestor.select_one(selector)
+                                if date_tag:
+                                    date_str = date_tag.get_text(strip=True)
+                                    # 检查是否是日期格式（包含月份名称）
+                                    import re
+                                    if re.search(r'(January|February|March|April|May|June|July|August|September|October|November|December)', date_str, re.IGNORECASE):
+                                        print(f"    链接：{title[:30]}... | 日期：{date_str}")
+                                        published_date = normalize_date(date_str, "%B %d, %Y")
+                                        break
+                            if date_str:
+                                break
+                    
+                    if not date_str:
+                        # 尝试从标题中提取日期
+                        import re
+                        date_match = re.search(r'(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}', title, re.IGNORECASE)
+                        if date_match:
+                            date_str = date_match.group()
+                            print(f"    从标题提取日期：{date_str}")
+                            published_date = normalize_date(date_str, "%B %d, %Y")
+                            print(f"    转换后：{published_date}")
+                            # 从标题中移除日期部分
+                            title = re.sub(date_match.group(), '', title).strip()
+                        else:
+                            print(f"    链接：{title[:50]}... | 日期：未找到 (标题中未匹配到日期)")
+                    else:
+                        print(f"    链接：{title[:50]}... | 日期：{date_str} -> {published_date}")
+                    
+                    if title and len(title) > 5:
+                        results.append({
+                            "title": title[:100],
+                            "link": href,
+                            "summary": "",
+                            "published": date_str,
+                            "published_date": published_date,
+                        })
+                if results:
+                    print(f"  成功获取 {len(results)} 篇文章")
+                    return results
+            
+            # 备用方案：查找所有链接，过滤出新闻
+            print("  尝试查找所有链接...")
+            all_links = soup.select("a[href]")
+            for link in all_links:
+                href = link.get("href", "")
+                title = link.get_text(strip=True)
+
+                # 过滤新闻链接
+                if '/news/' in href or '/press/' in href or 'news' in title.lower() or 'press' in title.lower():
+                    if href:
+                        href = urljoin(url, href)
+                    
+                    # 查找日期
+                    date_str = ""
+                    published_date = None
+                    
+                    # 尝试从标题中提取日期
+                    import re
+                    date_match = re.search(r'(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4}', title, re.IGNORECASE)
+                    if date_match:
+                        date_str = date_match.group()
+                        print(f"    从标题提取日期：{date_str}")
+                        published_date = normalize_date(date_str, "%B %d, %Y")
+                        print(f"    转换后：{published_date}")
+                        # 从标题中移除日期部分
+                        title = re.sub(date_match.group(), '', title).strip()
+                    
+                    if title and len(title) > 5:
+                        results.append({
+                            "title": title[:100],
+                            "link": href,
+                            "summary": "",
+                            "published": date_str,
+                            "published_date": published_date,
+                        })
+            
+            if results:
+                print(f"  成功获取 {len(results)} 篇文章")
+                return results
+            
+            print("  未找到文章")
+            return []
+
+        for article in articles[:limit]:
+            print(f"  处理文章容器...")
+            # 提取标题和链接
+            title_tag = article.select_one("a")
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                link = title_tag.get("href")
+
+                # 处理相对链接
+                if link:
+                    link = urljoin(url, link)
+
+                # 提取日期
+                date_tag = article.select_one("time")
+                if not date_tag:
+                    date_tag = article.select_one(".date, .publish-date, span.date")
+                if not date_tag:
+                    # Lumentum 的日期格式：<span class="text-black block mb-6 mt-4 eyebrow">March 10, 2026</span>
+                    date_tag = article.select_one("span.eyebrow")
+                if not date_tag:
+                    # 尝试在父元素或子元素中查找
+                    date_tag = article.select_one(".eyebrow")
+                if not date_tag:
+                    # 尝试在整个 article 中查找
+                    date_tag = article.select_one("span.text-black")
+
+                date_str = ""
+                if date_tag:
+                    date_str = date_tag.get_text(strip=True)
+                    print(f"    找到日期：{date_str}")
+                    
+                    # 尝试多种格式解析
+                    published_date = normalize_date(date_str, "%B %d, %Y")
+                    print(f"    转换后：{published_date}")
+                else:
+                    print(f"    未找到日期")
+
+                if title and len(title) > 5:
+                    results.append(
+                        {
+                            "title": title[:100],
+                            "link": link,
+                            "summary": "",
+                            "published": date_str,
+                            "published_date": published_date,
+                        }
+                    )
+
+        print(f"  成功获取 {len(results)} 篇文章")
+        return results
+
+    except Exception as e:
+        print(f"爬取 Lumentum 失败：{e}")
+        return []
+
+
 def scrape_lam_research(url: str, limit: int = 10, use_proxy: bool = False) -> list[dict]:
     """
     爬取 Lam Research (newsroom.lamresearch.com/blog) 的文章列表
@@ -524,6 +769,7 @@ SCRAPER_FUNCTIONS = {
     "icsmart": scrape_icsmart,
     "aijiwei": scrape_aijiwei,
     "lam-research": scrape_lam_research,
+    "lumentum": scrape_lumentum,
 }
 
 
@@ -551,9 +797,11 @@ def scrape_site(site_name: str, limit: int = 10, use_proxy: bool = False) -> lis
     # 调用对应的爬虫函数
     scraper_func = SCRAPER_FUNCTIONS.get(site_name)
     if scraper_func:
-        # lam-research 需要代理，其他网站不需要
+        # 只有 lam-research 需要代理，lumentum 不需要
         if site_name == "lam-research":
             return scraper_func(url, limit, use_proxy=use_proxy)
+        elif site_name == "lumentum":
+            return scraper_func(url, limit, use_proxy=False)  # Lumentum 不使用代理
         else:
             return scraper_func(url, limit)
 

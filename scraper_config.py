@@ -34,10 +34,19 @@ SCRAPER_CONFIG = {
     "lam-research": {
         "name": "Lam Research",
         "url": "https://newsroom.lamresearch.com/blog",
-        "list_selector": "ul.wd_list li.wd_item",
+        "list_selector": "ul.wd_item_list li.wd_item",
         "title_selector": "div.wd_title a",
         "url_base": "https://newsroom.lamresearch.com",
         "date_selector": "div.wd_date",
         "date_format": "%B %d, %Y",  # 日期格式：March 09, 2026
+    },
+    "lumentum": {
+        "name": "Lumentum",
+        "url": "https://www.lumentum.com/en/newsroom/news-releases",
+        "list_selector": "div.news-item, article.news, div.press-release, li.news-item",
+        "title_selector": "a",
+        "url_base": "https://www.lumentum.com",
+        "date_selector": "time, .date, .publish-date, span.date",
+        "date_format": "%B %d, %Y",
     },
 }
