@@ -85,4 +85,13 @@ SCRAPER_CONFIG = {
         "date_selector": "p",
         "date_format": "%m/%d/%Y",  # 日期格式：03/12/2026
     },
+    "iccsz": {
+        "name": "讯石光通讯",
+        "url": "http://www.iccsz.com/site/cn/ArticleList.aspx?column_id=8f73a5b031da4abf8e806d4c69e89238",
+        "list_selector": "ul.main_list li",
+        "title_selector": "a",
+        "url_base": "http://www.iccsz.com",
+        "date_selector": "span.news_date",
+        "date_format": "%Y-%m-%d",  # 日期格式：(2026-03-13)
+    },
 }

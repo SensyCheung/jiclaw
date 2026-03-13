@@ -35,21 +35,25 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
     """
     将各种日期格式转换为 ISO 8601 格式 (YYYY-MM-DDTHH:MM:SS.000Z)
     会自动处理时区转换
-    
+
     注意：
     - 在本地运行时（北京时间），需要减去 8 小时转换为 UTC
     - 在 GitHub Action 中运行时（已是 UTC），不需要转换
     - 通过 TIMEZONE_OFFSET 环境变量控制（小时数），默认为 0（UTC）
     - 本地运行时设置 TIMEZONE_OFFSET=8
+    - 如果日期只有日期部分（没有时分秒），则使用当前抓取时间的时分秒
     """
     if not date_str:
         return None
 
     date_str = date_str.strip()
-    
+
     # 获取时区偏移（小时数），默认为 0（UTC）
     # 本地运行时设置 TIMEZONE_OFFSET=8（北京时间）
     timezone_offset = int(os.environ.get("TIMEZONE_OFFSET", "0"))
+
+    # 获取当前时间（用于补充时分秒）
+    now = datetime.now()
 
     # 如果是 ISO 8601 格式（如 2026-03-08T16:00:43+08:00），转换为 UTC
     if "T" in date_str:
@@ -83,9 +87,8 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
 
     # 处理相对时间（如 "3 分钟前", "2 小时前", "1 天前"）
     if "分钟前" in date_str or "小时前" in date_str or "天前" in date_str or "秒前" in date_str:
-        now = datetime.now()  # 当前本地时间
         from datetime import timedelta
-        
+
         if "分钟前" in date_str:
             try:
                 minutes = int(date_str.replace("分钟前", "").strip())
@@ -126,7 +129,7 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
                 return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
             except:
                 pass
-        
+
         # 默认返回当前时间（根据时区偏移调整）
         if timezone_offset > 0:
             return (now - timedelta(hours=timezone_offset)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
@@ -136,6 +139,9 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
     if date_format:
         try:
             dt = datetime.strptime(date_str, date_format)
+            # 如果只有日期部分（没有时分秒），使用当前时间的时分秒
+            if date_format.count('H') == 0:  # 格式中没有时分秒
+                dt = dt.replace(hour=now.hour, minute=now.minute, second=now.second)
             # 如果设置了时区偏移，转换为 UTC
             if timezone_offset > 0:
                 from datetime import timedelta
@@ -143,7 +149,7 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
             return dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         except ValueError:
             pass
-        
+
         # 尝试备用格式（英文月份缩写）
         alternate_formats = [
             "%b %d, %Y",  # Mar 10, 2026
@@ -154,6 +160,9 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
         for alt_fmt in alternate_formats:
             try:
                 dt = datetime.strptime(date_str, alt_fmt)
+                # 如果只有日期部分（没有时分秒），使用当前时间的时分秒
+                if alt_fmt.count('H') == 0:
+                    dt = dt.replace(hour=now.hour, minute=now.minute, second=now.second)
                 if timezone_offset > 0:
                     from datetime import timedelta
                     dt = dt - timedelta(hours=timezone_offset)
@@ -177,6 +186,9 @@ def normalize_date(date_str: str, date_format: str = None) -> str:
     for fmt in formats:
         try:
             dt = datetime.strptime(date_str, fmt)
+            # 如果只有日期部分（没有时分秒），使用当前时间的时分秒
+            if fmt.count('H') == 0:
+                dt = dt.replace(hour=now.hour, minute=now.minute, second=now.second)
             # 如果设置了时区偏移，转换为 UTC
             if timezone_offset > 0:
                 from datetime import timedelta
@@ -1102,6 +1114,87 @@ def scrape_coherent(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_iccsz(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取讯石光通讯 (iccsz.com) 的文章列表
+    结构：ul.main_list li
+    - 标题和链接：a
+    - 发布时间：span.news_date (日期格式：(2026-03-13))
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            timeout=10,
+            proxies={"http": None, "https": None}
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找文章列表：ul.main_list li
+        articles = soup.select("ul.main_list li")
+
+        for article in articles[:limit]:
+            # 提取标题和链接：a
+            title_tag = article.select_one("a")
+            if not title_tag:
+                continue
+
+            title = title_tag.get_text(strip=True)
+            link = title_tag.get("href", "")
+
+            # 处理相对链接
+            if link:
+                link = urljoin(url, link)
+
+            # 提取日期：span.news_date
+            date_tag = article.select_one("span.news_date")
+            date_str = ""
+            if date_tag:
+                date_str = date_tag.get_text(strip=True)
+                # 去除括号，例如：(2026-03-13) -> 2026-03-13
+                date_str = date_str.strip("() （）")
+
+            # 标准化日期（格式：2026-03-13）
+            published_date = normalize_date(date_str, "%Y-%m-%d")
+
+            if title and link:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        return results
+
+    except Exception as e:
+        print(f"爬取讯石光通讯失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -1113,6 +1206,7 @@ SCRAPER_FUNCTIONS = {
     "nvidia-dev": scrape_nvidia_dev,
     "intel": scrape_intel,
     "coherent": scrape_coherent,
+    "iccsz": scrape_iccsz,
 }
 
 
