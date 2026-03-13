@@ -32,4 +32,4 @@ jobs:
           RSS_INTERVAL_SECONDS: ${{ vars.RSS_INTERVAL_SECONDS || 3600 }}
           TIMEZONE_OFFSET: 0  # GitHub Action 使用 UTC 时间，不需要转换
         run: |
-          python jiclaw.py "https://ir.appliedmaterials.com/rss/news-releases.xml" "https://www.tomshardware.com/feeds.xml" "https://thelec.net/rss/S1N3.xml" "https://www.trendforce.com/feed/Semiconductors.html" "https://www.trendforce.com/feed/LED.html" scraper:semi-insights scraper:icsmart scraper:aijiwei scraper:lam-research scraper:lumentum scraper:nvidia scraper:nvidia-dev scraper:intel
+          python jiclaw.py "https://ir.appliedmaterials.com/rss/news-releases.xml" "https://www.tomshardware.com/feeds.xml" "https://thelec.net/rss/S1N3.xml" "https://www.trendforce.com/feed/Semiconductors.html" "https://www.trendforce.com/feed/LED.html" scraper:semi-insights scraper:icsmart scraper:aijiwei scraper:lam-research scraper:lumentum scraper:nvidia scraper:nvidia-dev scraper:intel scraper:coherent

@@ -76,4 +76,13 @@ SCRAPER_CONFIG = {
         "date_selector": "p.item-post-date",
         "date_format": "%B %d, %Y",  # 日期格式：March 12, 2026
     },
+    "coherent": {
+        "name": "Coherent Press Releases",
+        "url": "https://www.coherent.com/news/press-releases",
+        "list_selector": "li.ais-InfiniteHits-item",
+        "title_selector": "h3",
+        "url_base": "https://www.coherent.com",
+        "date_selector": "p",
+        "date_format": "%m/%d/%Y",  # 日期格式：03/12/2026
+    },
 }
