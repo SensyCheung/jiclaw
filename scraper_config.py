@@ -94,4 +94,13 @@ SCRAPER_CONFIG = {
         "date_selector": "span.news_date",
         "date_format": "%Y-%m-%d",  # 日期格式：(2026-03-13)
     },
+    "broadcom": {
+        "name": "Broadcom News",
+        "url": "https://www.broadcom.com/company/news",
+        "list_selector": "li",
+        "title_selector": "a.lnk",
+        "url_base": "https://www.broadcom.com",
+        "date_selector": "span.news-date",
+        "date_format": "%m/%d/%Y",  # 日期格式：03/12/2026
+    },
 }

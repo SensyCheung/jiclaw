@@ -1195,6 +1195,112 @@ def scrape_iccsz(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_broadcom(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Broadcom News (broadcom.com/company/news) 的文章列表
+    使用 Playwright 处理 JavaScript 动态加载内容
+    结构：li
+    - 标题和链接：a.lnk
+    - 发布时间：span.news-date (日期格式：03/12/2026)
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    from playwright.sync_api import sync_playwright
+
+    results = []
+
+    try:
+        with sync_playwright() as p:
+            # 启动浏览器
+            browser = p.chromium.launch(
+                headless=True,
+                args=['--disable-blink-features=AutomationControlled', '--no-sandbox']
+            )
+
+            page = browser.new_page()
+            page.set_viewport_size({"width": 1920, "height": 1080})
+
+            # 隐藏 WebDriver 特征
+            page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+            """)
+
+            print(f"  正在访问 {url}...")
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+
+            # 等待动态内容加载
+            print("  等待动态内容加载...")
+            page.wait_for_timeout(8000)
+
+            # 尝试滚动页面触发更多内容加载
+            try:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(3000)
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(2000)
+            except:
+                pass
+
+            # 获取页面 HTML
+            html_content = page.content()
+            browser.close()
+
+        print(f"  页面大小：{len(html_content)} 字节")
+
+        soup = BeautifulSoup(html_content, "html.parser")
+
+        # 查找文章列表：ul.news-list > li
+        news_list = soup.select_one("ul.news-list")
+        if not news_list:
+            print("  未找到 ul.news-list")
+            return []
+
+        articles = news_list.select("li")
+        print(f"  找到 {len(articles)} 篇新闻文章")
+
+        for article in articles[:limit]:
+            # 提取链接和标题：a.lnk
+            link_tag = article.select_one("a.lnk")
+            if not link_tag:
+                continue
+
+            link = link_tag.get("href", "")
+            title = link_tag.get_text(strip=True)
+
+            # 处理相对链接
+            if link:
+                link = urljoin(url, link)
+
+            # 提取日期：span.news-date
+            date_tag = article.select_one("span.news-date")
+            date_str = ""
+            if date_tag:
+                date_str = date_tag.get_text(strip=True)
+
+            # 标准化日期（格式：03/12/2026）
+            published_date = normalize_date(date_str, "%m/%d/%Y")
+
+            if title and link:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        print(f"  成功获取 {len(results)} 篇文章")
+        return results
+
+    except Exception as e:
+        print(f"爬取 Broadcom 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -1207,6 +1313,7 @@ SCRAPER_FUNCTIONS = {
     "intel": scrape_intel,
     "coherent": scrape_coherent,
     "iccsz": scrape_iccsz,
+    "broadcom": scrape_broadcom,
 }
 
 

@@ -258,6 +258,8 @@ def get_website_name(feed_url: str) -> str:
         "coherent.com": "Coherent",
         "www.iccsz.com": "讯石光通讯",
         "iccsz.com": "讯石光通讯",
+        "www.broadcom.com": "Broadcom",
+        "broadcom.com": "Broadcom",
     }
 
     return domain_map.get(domain, domain.split(".")[0])
