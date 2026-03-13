@@ -97,10 +97,19 @@ SCRAPER_CONFIG = {
     "broadcom": {
         "name": "Broadcom News",
         "url": "https://www.broadcom.com/company/news",
-        "list_selector": "li",
+        "list_selector": "ul.news-list li",
         "title_selector": "a.lnk",
         "url_base": "https://www.broadcom.com",
         "date_selector": "span.news-date",
         "date_format": "%m/%d/%Y",  # 日期格式：03/12/2026
+    },
+    "broadcom-blog": {
+        "name": "Broadcom Blog",
+        "url": "https://www.broadcom.com/blog",
+        "list_selector": "div.featuredPromo.container",
+        "title_selector": "h3",
+        "url_base": "https://www.broadcom.com",
+        "date_selector": "div.pub_date",
+        "date_format": "%B %d, %Y",  # 日期格式：November 12, 2025
     },
 }

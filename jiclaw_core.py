@@ -106,6 +106,11 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
 
 def fetch_article_content(url: str) -> str:
     """抓取网页正文内容，返回纯文本。"""
+    
+    # 针对 Broadcom 的特殊处理：使用 Playwright 抓取 JS 动态内容
+    if "broadcom.com" in url:
+        return fetch_broadcom_blog_content(url)
+    
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -156,6 +161,61 @@ def fetch_article_content(url: str) -> str:
     # 兜底：直接取整个 body 文本
     body = soup.body.get_text(separator="\n", strip=True) if soup.body else ""
     return body
+
+
+def fetch_broadcom_blog_content(url: str) -> str:
+    """使用 Playwright 抓取 Broadcom Blog 文章内容（JS 动态加载）"""
+    from playwright.sync_api import sync_playwright
+    
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(
+                headless=True,
+                args=['--disable-blink-features=AutomationControlled', '--no-sandbox']
+            )
+            
+            page = browser.new_page()
+            page.set_viewport_size({"width": 1920, "height": 1080})
+            
+            # 隐藏 WebDriver 特征
+            page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+            """)
+            
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            
+            # 等待内容加载
+            page.wait_for_timeout(5000)
+            
+            # 获取页面 HTML
+            html_content = page.content()
+            browser.close()
+        
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # Broadcom Blog 文章正文通常在 div.blogContent 或 div.content 中
+        candidates = [
+            "div.blogContent",
+            "div.content",
+            "article",
+            "div.post-content",
+            "div.entry-content",
+        ]
+        
+        for selector in candidates:
+            node = soup.select_one(selector)
+            if node:
+                text = node.get_text(separator="\n", strip=True)
+                if len(text) > 200:
+                    return text
+        
+        # 兜底：取整个 body
+        body = soup.body.get_text(separator="\n", strip=True) if soup.body else ""
+        return body
+        
+    except Exception as e:
+        print(f"抓取 Broadcom Blog 内容失败：{e}")
+        return ""
 
 
 def summarize_with_ai(
@@ -241,6 +301,7 @@ def get_website_name(feed_url: str) -> str:
     """根据 RSS URL 提取网站名称。"""
     parsed = urlparse(feed_url)
     domain = parsed.netloc.lower()
+    path = parsed.path.lower()
 
     if domain.startswith("www."):
         domain = domain[4:]
@@ -258,9 +319,14 @@ def get_website_name(feed_url: str) -> str:
         "coherent.com": "Coherent",
         "www.iccsz.com": "讯石光通讯",
         "iccsz.com": "讯石光通讯",
-        "www.broadcom.com": "Broadcom",
-        "broadcom.com": "Broadcom",
     }
+
+    # Broadcom 特殊处理：根据路径区分 News 和 Blog
+    if domain == "broadcom.com" or domain == "www.broadcom.com":
+        if "/blog" in path:
+            return "Broadcom Blog"
+        else:
+            return "Broadcom"
 
     return domain_map.get(domain, domain.split(".")[0])
 
