@@ -258,15 +258,15 @@ Proper Nouns Translation:
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
 
 1. 提取 <3 reaction theme Tags，优先提取公司名称或技术关键词。
-   Suggest Tags: ['Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'DRAM', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'HPC', 'AI chip', 'Software', 'GaN', 'iOS', 'PCIe', 'Cooling']
+   Top Tags: ['Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'DRAM', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'HPC', 'AI chip', 'Software', 'GaN', 'iOS', 'PCIe', 'Cooling']
    Prohibited tags: ['Reviews', 'Featured Tech News', 'Tech News', 'technology', 'Tech Industry', 'Hardware', 'semiconductor', 'Industry', 'electronics', 'Manufacturing', 'Sales']
 
 2. 将英文标题翻译为简体中文（title_cn）。
 
-3. 基于正文内容，生成"要点式"的摘要：
-   - summary_en：用英文输出 2-4 个要点，使用 HTML 段落标签包装，
+3. 基于正文内容，生成"要点式"的摘要（要提取真正的干货信息）：
+   - summary_en：用英文输出 3-8 个要点，使用 HTML 段落标签包装，
      例如："<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>"
-   - summary_cn：用简体中文输出 2-4 个要点，格式同上。
+   - summary_cn：用简体中文输出 3-8 个要点，格式同上。
 
 只输出严格 JSON 格式，不要任何解释或额外文本：
 {
@@ -275,7 +275,7 @@ Proper Nouns Translation:
   "summary_en": "<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>",
   "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>"
 }
-请最后检查输出是否符合要求，不要出现任何错误。
+请最后检查输出是否符合要求，不要出现任何错误，比如翻译要准确，标签要完全匹配等。
                 ''',
             },
             {
