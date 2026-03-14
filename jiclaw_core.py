@@ -105,12 +105,30 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
 
 
 def fetch_article_content(url: str) -> str:
-    """抓取网页正文内容，返回纯文本。"""
+    """抓取网页正文内容，返回纯文本。
     
-    # 针对 Broadcom 的特殊处理：使用 Playwright 抓取 JS 动态内容
-    if "broadcom.com" in url:
-        return fetch_broadcom_blog_content(url)
+    优化策略：
+    1. 针对 JS 动态加载网站使用 Playwright
+    2. 针对静态网站使用 requests（更快）
+    3. 智能正文提取：基于文本密度、链接密度等
+    4. 多选择器尝试，提高成功率
+    5. 添加重试机制
+    """
     
+    # 需要 Playwright 处理的 JS 动态加载网站列表
+    playwright_sites = [
+        "broadcom.com",
+        "coherent.com",
+        "developer.nvidia.com",
+    ]
+    
+    # 检查是否需要 Playwright
+    use_playwright = any(site in url for site in playwright_sites)
+    
+    if use_playwright:
+        return fetch_article_content_playwright(url)
+    
+    # 静态网站使用 requests
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -119,52 +137,184 @@ def fetch_article_content(url: str) -> str:
         )
     }
 
-    resp = requests.get(url, headers=headers, timeout=10)
-    resp.raise_for_status()
-    html = resp.text
+    # 重试机制
+    max_retries = 2
+    for attempt in range(max_retries):
+        try:
+            resp = requests.get(url, headers=headers, timeout=15)
+            resp.raise_for_status()
+            html = resp.text
+            break
+        except Exception as e:
+            if attempt == max_retries - 1:
+                print(f"抓取网页失败：{e}")
+                return ""
+            continue
 
     soup = BeautifulSoup(html, "html.parser")
+    
+    # 移除无关元素（脚本、样式、导航等）
+    for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript"]):
+        tag.decompose()
 
-    # 针对 thelec.net 的特殊处理：获取 section#user-container 内容
+    # 针对特定网站的特殊处理
+    text = fetch_site_specific_content(url, soup)
+    if text and len(text) > 200:
+        return text
+
+    # 智能正文提取
+    text = extract_main_content(soup)
+    if text and len(text) > 200:
+        return text
+
+    # 兜底：直接取整个 body 文本
+    body = soup.body.get_text(separator="\n", strip=True) if soup.body else ""
+    return body if len(body) > 100 else ""
+
+
+def fetch_site_specific_content(url: str, soup) -> str:
+    """针对特定网站的正文提取规则"""
+    
+    # thelec.net
     if "thelec.net" in url:
         node = soup.select_one("section#user-container")
         if node:
-            text = node.get_text(separator="\n", strip=True)
-            if len(text) > 200:
-                return text
-
-    # 针对 tomshardware.com 的特殊处理：获取 div#widgetArea16 内容
+            return node.get_text(separator="\n", strip=True)
+    
+    # tomshardware.com
     if "tomshardware.com" in url:
         node = soup.select_one("div#widgetArea16")
         if node:
-            text = node.get_text(separator="\n", strip=True)
-            if len(text) > 200:
-                return text
+            return node.get_text(separator="\n", strip=True)
+    
+    # Nvidia News
+    if "nvidianews.nvidia.com" in url:
+        node = soup.select_one("div.nv-content-wrap")
+        if node:
+            return node.get_text(separator="\n", strip=True)
+    
+    # Intel Newsroom
+    if "newsroom.intel.com" in url:
+        node = soup.select_one("div.article-body, div.content")
+        if node:
+            return node.get_text(separator="\n", strip=True)
+    
+    # Lam Research
+    if "lamresearch.com" in url:
+        node = soup.select_one("div.article-content, main")
+        if node:
+            return node.get_text(separator="\n", strip=True)
+    
+    return ""
 
-    # 常见正文容器，可按目标网站结构自行调整
+
+def extract_main_content(soup) -> str:
+    """
+    智能提取网页正文内容
+    基于文本密度、链接密度、节点深度等特征
+    """
+    # 常见正文容器选择器（按优先级排序）
     candidates = [
         "article",
         "main",
         "div#content",
+        "div.content",
+        "div#article",
+        "div.article",
         "div.post-content",
         "div.entry-content",
         "div.article-content",
+        "div.post-body",
+        "div.story-content",
+        "div.body",
+        "section.article",
+        "div[class*='article']",
+        "div[class*='content']",
+        "div[class*='post']",
+        "div[class*='story']",
     ]
-
+    
+    best_node = None
+    best_score = 0
+    
     for selector in candidates:
-        node = soup.select_one(selector)
-        if node:
-            text = node.get_text(separator="\n", strip=True)
-            if len(text) > 200:
-                return text
+        nodes = soup.select(selector)
+        for node in nodes:
+            score = calculate_content_score(node)
+            if score > best_score:
+                best_score = score
+                best_node = node
+    
+    if best_node and best_score > 50:
+        text = best_node.get_text(separator="\n", strip=True)
+        if len(text) > 200:
+            return text
+    
+    # 如果没有找到合适的节点，尝试查找文本最密集的 div
+    divs = soup.find_all("div")
+    best_div = None
+    best_div_score = 0
+    
+    for div in divs:
+        score = calculate_content_score(div)
+        if score > best_div_score:
+            best_div_score = score
+            best_div = div
+    
+    if best_div and best_div_score > 30:
+        text = best_div.get_text(separator="\n", strip=True)
+        if len(text) > 200:
+            return text
+    
+    return ""
 
-    # 兜底：直接取整个 body 文本
-    body = soup.body.get_text(separator="\n", strip=True) if soup.body else ""
-    return body
+
+def calculate_content_score(node) -> float:
+    """
+    计算节点的内容质量分数
+    基于：文本长度、链接密度、文本密度等
+    """
+    text = node.get_text(separator=" ", strip=True)
+    text_len = len(text)
+    
+    if text_len < 50:
+        return 0
+    
+    # 计算链接文本比例
+    links_text = ""
+    for a in node.find_all("a"):
+        links_text += a.get_text(" ", strip=True)
+    link_ratio = len(links_text) / text_len if text_len > 0 else 0
+    
+    # 链接比例过高可能是导航或列表
+    if link_ratio > 0.5:
+        return 0
+    
+    # 计算文本密度（文本长度/HTML 长度）
+    html_len = len(str(node))
+    text_density = text_len / html_len if html_len > 0 else 0
+    
+    # 计算节点深度（不要太深也不要太浅）
+    depth = 0
+    parent = node.parent
+    while parent:
+        depth += 1
+        parent = parent.parent
+    
+    # 分数计算
+    score = text_len * 0.5  # 基础分
+    score += text_density * 100  # 文本密度加分
+    score -= link_ratio * 50  # 链接比例扣分
+    
+    # 深度适中加分
+    if 3 <= depth <= 10:
+        score += 20
+    
+    return score
 
 
-def fetch_broadcom_blog_content(url: str) -> str:
-    """使用 Playwright 抓取 Broadcom Blog 文章内容（JS 动态加载）"""
+def fetch_article_content_playwright(url: str) -> str:
+    """使用 Playwright 抓取 JS 动态加载的网页内容"""
     from playwright.sync_api import sync_playwright
     
     try:
@@ -187,35 +337,47 @@ def fetch_broadcom_blog_content(url: str) -> str:
             # 等待内容加载
             page.wait_for_timeout(5000)
             
-            # 获取页面 HTML
+            # 尝试滚动触发懒加载
+            try:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(2000)
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(1000)
+            except:
+                pass
+            
             html_content = page.content()
             browser.close()
         
         soup = BeautifulSoup(html_content, "html.parser")
         
-        # Broadcom Blog 文章正文通常在 div.blogContent 或 div.content 中
-        candidates = [
-            "div.blogContent",
-            "div.content",
-            "article",
-            "div.post-content",
-            "div.entry-content",
-        ]
+        # 移除无关元素
+        for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript"]):
+            tag.decompose()
         
-        for selector in candidates:
-            node = soup.select_one(selector)
-            if node:
-                text = node.get_text(separator="\n", strip=True)
-                if len(text) > 200:
-                    return text
+        # 针对特定网站的处理
+        text = fetch_site_specific_content(url, soup)
+        if text and len(text) > 200:
+            return text
         
-        # 兜底：取整个 body
+        # 智能正文提取
+        text = extract_main_content(soup)
+        if text and len(text) > 200:
+            return text
+        
+        # 兜底
         body = soup.body.get_text(separator="\n", strip=True) if soup.body else ""
-        return body
+        return body if len(body) > 100 else ""
         
     except Exception as e:
-        print(f"抓取 Broadcom Blog 内容失败：{e}")
+        print(f"Playwright 抓取失败：{e}")
         return ""
+
+
+def fetch_broadcom_blog_content(url: str) -> str:
+    """使用 Playwright 抓取 Broadcom Blog 文章内容（JS 动态加载）"""
+    # 已整合到 fetch_article_content_playwright
+    return fetch_article_content_playwright(url)
 
 
 def summarize_with_ai(
@@ -249,6 +411,7 @@ Proper Nouns Translation:
 "DeepCool" : "九州风神 DeepCool"
 "Noctua" : "奥地利猫头鹰 Noctua"
 "Microchip" : "Microchip"(不翻译)
+"Micron" : "美光科技(Micron)"
 "X-Epic" : "芯华章"
 'Made by Google' : 'Made by Google'(不翻译)
 'Lam Research' : '泛林集团'
