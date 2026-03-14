@@ -405,7 +405,7 @@ def summarize_with_ai(
             {
                 "role": "system",
                 "content": '''
-Proper Nouns Translation:
+术语翻译规范 (Strict):
 'Agile Analog' : 'Agile Analog'(不翻译)
 "Silicon Catalyst" : "Silicon Catalyst"(不翻译)
 "DeepCool" : "九州风神 DeepCool"
@@ -420,13 +420,14 @@ Proper Nouns Translation:
 你将看到一篇科技/半导体/硬件等方向的文章信息（标题 + RSS 摘要 + 抓取到的正文）。
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
 
-1. 提取 <3 reaction theme Tags，优先提取公司名称或技术关键词。
-   Top Tags: ['Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'DRAM', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'HPC', 'AI chip', 'Software', 'GaN', 'iOS', 'PCIe', 'Cooling']
-   Prohibited tags: ['Reviews', 'Featured Tech News', 'Tech News', 'technology', 'Tech Industry', 'Hardware', 'semiconductor', 'Industry', 'electronics', 'Manufacturing', 'Sales']
-
+1. **Tags 提取**: 
+   - 从下方的 [Candidate Tags] 列表中选择 **1-3 个** 最相关的标签。
+   - **禁止原则**: 严禁选择正文中未提及的公司或技术。如果列表中没有合适的，请优先提取正文中的公司名。
+   - [Candidate Tags]: 'Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'AI chip', 'Software', 'GaN', 'iOS', 'Cooling'.
+   - [Prohibited Tags]: 'Reviews', 'Featured Tech News', 'Tech News', 'technology', 'Tech Industry', 'Hardware', 'semiconductor', 'Industry', 'electronics', 'Manufacturing', 'Sales'.
 2. 将英文标题翻译为简体中文（title_cn）。
 
-3. 基于正文内容，生成"要点式"的摘要（要提取真正的干货信息）：
+3. 要点摘要：基于正文内容，提取正文中的硬核技术/商业信息。：
    - summary_en：用英文输出 3-8 个要点，使用 HTML 段落标签包装，
      例如："<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>"
    - summary_cn：用简体中文输出 3-8 个要点，格式同上。
