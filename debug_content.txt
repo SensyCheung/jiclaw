@@ -1,0 +1,205 @@
+URL: https://semiwiki.com/events/367107-qnity-and-silicon-catalyst-light-a-path-to-success/
+--------------------
+Guests have limited access.
+Join our community today!
+You are currently viewing SemiWiki as a guest which gives you limited access to the site. To view blog comments and experience other SemiWiki features you must be a registered member. Registration is fast, simple, and absolutely free so please,
+join our community today
+!
+Add Event
+View All
+View Calendar
+Search Semiwiki
+Blogs
+Events
+Jobs
+Wikis
+Forum
+All
+Search
+Recent Silicon Catalyst Articles
+Qnity and Silicon Catalyst Light a Path to Success  at the Chiplet Summit
+March 11, 2026
+Silicon Catalyst at the Chiplet Summit: Advancing the Chiplet Economy
+February 12, 2026
+Silicon Catalyst: Searching for the Next Great Start-up
+January 4, 2026
+Revitalizing Semiconductor StartUps
+December 9, 2025
+Silicon Catalyst on the Road to $1 Trillion Industry
+November 14, 2025
+The 2025 Semi Industry Forum: On the Road to a $1 Trillion Industry
+October 13, 2025
+The Impact of AI on Semiconductor Startups
+September 23, 2025
+CEO Interview with Adam Khan of Diamond Quanta
+September 19, 2025
+CEO Interview with Andrew Skafel of Edgewater Wireless
+August 1, 2025
+Cutting Through the Fog: Hype versus Reality in Emerging Technologies
+March 14, 2025
+CEO Interview: John Chang of Jmem Technology Co., Ltd.
+January 17, 2025
+CEO Interview: Dr. Zeynep Bayram of 35ELEMENTS
+January 10, 2025
+Navigating Frontier Technology Trends in 2024
+October 9, 2024
+Silicon Catalyst Ventures Launched With 8 Fundings
+June 24, 2024
+Silicon Catalyst Announces Winners of the 2024 Arm Startups Contest
+June 14, 2024
+A Webinar with Silicon Catalyst, ST Microelectronics and an Exciting MEMS Development Contest
+May 17, 2024
+Silicon Catalyst partners with Arm to launch the Arm Flexible Access for Startups Contest!
+April 12, 2024
+CEO Interview: Patrick T. Bowen of Neurophos
+March 15, 2024
+BDD-Based Formal for Floating Point. Innovation in Verification
+February 27, 2024
+A Candid Chat with Sean Redmond About ChipStart in the UK
+February 23, 2024
+WP_Term Object
+WP_Term Object
+Qnity and Silicon Catalyst Light a Path to Success  at the Chiplet Summit
+by
+Mike Gianfagna
+on 03-11-2026 at 10:00 am
+View Profile
+View Forum Posts
+View Articles
+Private Message
+Categories:
+3D IC
+,
+Chiplet
+,
+Events
+,
+Semiconductor Services
+,
+Silicon Catalyst
+Key takeaways
+▼
+The
+Chiplet Summit
+recently concluded. Multi-die heterogeneous design is a hot topic these days and chiplets are a key enabler for this trend. The conference was noticeably larger this year. There were many presentations and exhibits that focused on areas such as how to design chiplets, what standards are important, how to integrate chiplets and what applications show the most promise. All important, exciting and useful topics. There was one session hosted by Silicon Catalyst that stood out for me as different.
+Silicon Catalyst is a different kind of organization. One that doesn’t make chips (or chiplets), develop standards or build software design tools. Instead, it has developed a unique, worldwide incubator to bring semiconductor startups
+from PowerPoint to product
+. The organization did showcase a number of promising new companies at the show. More on that later. What I want to focus on first is
+Qnity,
+a strategic partner of Silicon Catalyst that has substantial size with more than 10,000 employees serving customers in more than 80 countries. This organization is also the last pure-play electronics supplier in the U.S.
+The breadth and depth of Qnity create a powerful force for the semiconductor supply chain. Let’s examine how Qnity and Silicon Catalyst light a path to success at the Chiplet Summit
+The Silicon Catalyst Footprint
+You can learn a lot about Silicon Catalyst and what the organization does
+on SemiWiki here
+. Nick Kepler, COO of Silicon Catalyst gave an excellent keynote at the Chiplet Summit that provided some good context as to what the organization does for chiplets and why it’s unique.  Nick explained that Silicon Catalyst is the only accelerator focused on the global semiconductor industry including chips, chiplets, materials, IP and silicon fabrication. Applications include photonics, MEMS, sensors, life science and quantum.
+He went on to describe the extensive, worldwide ecosystem that the organization has built. Many organizations have a
+logo slide
+. The one from Silicon Catalyst is quite impressive. It is included below.
+Silicon Catalyst ecosystem
+Qnity and its Unique Impact on the Semiconductor Supply Chain
+Chris Gilmore
+Chris Gilmore, Advanced Packaging Technology Strategy Leader for Qnity, presented at the Silicon Catalyst session. (The company name is pronounced “Quenity”.) The company was formed when DuPont spun out its electronics business last year, creating a publicly traded (NYSE: “Q”), worldwide force in advanced electronics materials and solutions empowering AI, high performance computing, and advanced connectivity.
+Qnity has 39 manufacturing sites and 17 R&D facilities around the world. The majority of its portfolio is tied directly to semiconductors, giving the company a total addressable market exceeding $30 billion. Qnity gains more than 40% of its revenue in interconnect technologies, including metallization chemistry and laminates, alongside thermal materials through subsidiary Laird Performance Materials.  This vast size and technology base is what unlocks the opportunity for a substantial impact on the chiplet market. More on that in a moment.
+With a Ph.D. in synthetic organic chemistry and well over a decade of experience in advanced packaging and materials research at Dow Chemical and DuPont, Chris brought substantial knowledge of the current semiconductor supply chain challenges.
+He explained that Qnity has two primary areas of focus. In semiconductor technologies, it provides consumable materials and solutions for semiconductor chip fabrication, fab equipment, and advanced display panels. In interconnect solutions, it provides advanced materials, systems and engineering solutions for signal integrity, power management and thermal management to address interconnect challenges. This totals about a $4.75B business for the company. The figure below provides a view of the company’s product mix.
+It turns out this broad technology base provides Qnity with a unique perspective to advance chiplet designs. Chris explained that chiplets are a simple concept with a complex execution path. One of the primary drivers of this complexity is the fact that chiplets invert typical supply chain dynamics. He explained that the traditional semiconductor supply chain is characterized by
+low mix/high volume
+requirements. Due to the many specialized solutions offered by chiplets, the new chiplet supply chain requires
+a high mix/low volume
+dynamic.
+He explained that chiplet-based design winners will be chosen by performance against high value challenges in
+many
+diverse targeted fields of use. The figure below illustrates the wide impact Qnity has on the entire semiconductor value chain. This is unique to Qnity and is the source of its substantial impact on the chiplet market.
+Qnity technology portfolio
+Thanks to the incredible breadth of Qnity’s offerings, the company is uniquely positioned to rebalance the semiconductor ecosystem to manage the demands of the new chiplet-based breed of design. Chris described a focus of interdisciplinary investment and innovation to help bring chiplets to fruition with broad and deep collaboration across the supply chain.
+If you are contemplating a high-volume chiplet application, Qnity is a company to be aware of, and probably one to work with. You can explore the
+company’s website here
+.
+To Learn More
+Silicon Catalyst has put together a video summary of the Qnity presentation at the Chiplet Summit. You can view it at on
+the Silicon Catalyst website here.
+There were many other significant events that were part of the Silicon Catalyst session. Other Silicon Catalyst portfolio companies that presented include:
+Athos Silicon
+delivers safe AI for the physical world with a product called Chiptile, the Athos-designed foundational compute chiplet, and the building block of its Multiple Systems on Chip (mSoC) architecture for safety-critical autonomy across robotics, automotive, and aerospace.
+CrossFire Technologies
+tackles Interconnect challenges with an approach called Wire Abundance. No silicon interposer is required, and the product works with current chiplets, SoCs and memory die, delivering a 10X smaller area.
+HEPT Lab
+provides 3D sensors for harsh environments. The HEPT Lab sensor is based on silicon photonics technology that was developed at CalTech for over 10 years. The goal is to make silicon photonics sensors as ubiquitous as cameras.
+Quadric
+delivers a new approach to scalable AI at the edge with a fully programmable stand-alone processor. The architecture is not an accelerator, but rather a processor that is programmable in C++ and Python.
+The Silicon Catalyst session ended with a spirited panel discussion. The participants are shown below,
+And that’s how Qnity and Silicon Catalyst light a path to success at the Chiplet Summit.
+Share this post via:
+Comments
+There are no comments yet.
+You must
+register
+or
+log in
+to view/post comments.
+Sponsor
+Silicon Catalyst Wiki
+CEO Interview
+Newsletter
+Contact Silicon Catalyst
+Silicon Catalyst Socials
+LinkedIn
+Instance
+Recent Silicon Catalyst Press
+ScaleBridge Labs and Silicon Catalyst Launch National Initiative to Accelerate Semiconductor Innovation for the Defense Industry
+started by
+AmandaK
+on
+March 10, 2026
+Ainekko Merges with Veevx, Expands Open Silicon Platform with Breakthrough Memory and Embedded AI Capabilities
+started by
+AmandaK
+on
+February 11, 2026
+Silicon Catalyst Showcases the Next Wave of Chiplet Startups at Chiplet Summit 2026
+started by
+AmandaK
+on
+February 10, 2026
+Silicon Catalyst Portfolio Company Neurophos Secures $110 Million Series A to Launch Exaflop-Scale Photonic AI Chips
+started by
+AmandaK
+on
+February 3, 2026
+Silicon Catalyst Alumnus Quadric, Inference Engine for On-Device AI Chips, Raises $30M Series C as Design Wins Accelerate Across Edge LLMs, Automotive
+started by
+AmandaK
+on
+January 21, 2026
+Silicon Catalyst Portfolio Companies at CES 2026
+started by
+AmandaK
+on
+January 7, 2026
+Silicon Catalyst Announces Ecosystem Expansion for Quantum with 6 New In-Kind Partners to Support Startups
+started by
+AmandaK
+on
+December 10, 2025
+Silicon Catalyst Announces Seven Newly Admitted Companies to Semiconductor Industry Accelerator
+started by
+AmandaK
+on
+November 12, 2025
+Silicon Catalyst Announces the Launch of Silicon Catalyst Japan to Accelerate Semiconductor Innovation
+started by
+AmandaK
+on
+November 12, 2025
+Silicon Catalyst Expands to Australia Partnering with the Queensland Venture Capital Development Fund: Building a Bridge from Australia to Silicon Val
+started by
+AmandaK
+on
+November 3, 2025
+Blogs
+Events
+Jobs
+Wikis
+Forum
+All
+Search

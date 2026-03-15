@@ -20,6 +20,30 @@ from scraper_config import SCRAPER_CONFIG
 from jiclaw_twitter import fetch_twitter_tweets
 
 
+# 直接使用 RSS 摘要的 feed 名单
+# 在这个名单中的 feed 直接使用 RSS 提供的摘要，不抓取网页正文
+# 不在名单中的 feed 都会抓取网页正文
+USE_RSS_SUMMARY_FEEDS = [
+    "semiwiki.com",
+    # 可以添加更多直接使用 RSS 摘要的 feed 域名
+]
+
+
+def _should_fetch_content(feed_url: str) -> bool:
+    """判断是否需要抓取网页正文内容
+    
+    Returns:
+        True: 需要抓取正文
+        False: 使用 RSS 摘要
+    """
+    # 在名单中的 feed 不抓取正文，直接使用 RSS 摘要
+    for domain in USE_RSS_SUMMARY_FEEDS:
+        if domain in feed_url:
+            return False
+    # 不在名单中的 feed 都抓取正文
+    return True
+
+
 def get_latest_item(feed_url: str):
     """从 RSS 源中获取最新一篇文章的标题、链接和摘要。"""
     feed = feedparser.parse(feed_url)
@@ -248,7 +272,7 @@ def extract_main_content(soup) -> str:
     if best_node and best_score > 50:
         text = best_node.get_text(separator="\n", strip=True)
         if len(text) > 200:
-            return text
+            return clean_article_content(text)
     
     # 如果没有找到合适的节点，尝试查找文本最密集的 div
     divs = soup.find_all("div")
@@ -264,9 +288,112 @@ def extract_main_content(soup) -> str:
     if best_div and best_div_score > 30:
         text = best_div.get_text(separator="\n", strip=True)
         if len(text) > 200:
-            return text
+            return clean_article_content(text)
     
     return ""
+
+
+def clean_article_content(text: str) -> str:
+    """
+    清理文章内容，过滤无用信息
+
+    过滤内容：
+    1. XenForo/XPress 调试输出
+    2. PHP 对象结构
+    3. 堆栈跟踪
+    4. 其他框架调试信息
+    """
+    import re
+
+    lines = text.split('\n')
+    cleaned_lines = []
+
+    # 标记是否在处理调试块
+    in_debug_block = False
+    debug_block_depth = 0
+
+    # 调试信息特征
+    debug_keywords = [
+        'XF\\Mvc\\Entity',
+        'XF\\M\\',
+        'ThemeHouse\\',
+        'ArrayCollection',
+        '=> Array',
+        '=> Object',
+        '[entities:protected]',
+        '[rootClass:protected]',
+        '[_uniqueEntityId',
+        '[_useReplaceInto',
+        '[_newValues:protected]',
+        '[_error:protected]',
+        '[private]',
+        '[protected]',
+        'Threads',  # XenForo 调试输出开头
+        '[node_name]',  # XenForo 节点信息
+        '[_deleted:protected]',
+        '[_readOnly:protected]',
+        '[_writePending:protected]',
+        'Nodes',  # XenForo Nodes 调试输出
+    ]
+
+    for line in lines:
+        stripped = line.strip()
+
+        # 检测调试块开始
+        if 'ArrayCollection' in stripped or 'XF\\Mvc\\Entity' in stripped or 'Nodes' in stripped:
+            in_debug_block = True
+            debug_block_depth = 0
+            continue
+
+        # 过滤 PHP 数组/对象格式的行（如 "[0] => 2" 或 "[node_name] => xxx"）
+        if re.match(r'^\[[\w_:]+\]\s*=>\s*.*$', stripped):
+            continue
+        
+        # 过滤保护属性行（如 "[_writeRunning:protected] =>"）
+        if re.match(r'^\[_\w+:[\w:]+\]\s*=>\s*.*$', stripped):
+            continue
+
+        if in_debug_block:
+            # 计算括号深度
+            debug_block_depth += stripped.count('(') - stripped.count(')')
+
+            # 检查是否是调试信息行
+            is_debug = False
+            for keyword in debug_keywords:
+                if keyword in stripped:
+                    is_debug = True
+                    break
+
+            # 检查是否是括号行
+            if stripped in ['(', ')', 'Array', 'Object', '']:
+                is_debug = True
+
+            # 如果深度回到 0 且有正常内容，退出调试块
+            if debug_block_depth <= 0 and not is_debug and len(stripped) > 10:
+                in_debug_block = False
+            elif is_debug or debug_block_depth > 0:
+                continue
+
+        # 过滤单独的括号和空行
+        if stripped in ['(', ')', 'Array', 'Object']:
+            continue
+
+        # 过滤包含调试关键词的行
+        is_debug_line = False
+        for keyword in debug_keywords:
+            if keyword in stripped:
+                is_debug_line = True
+                break
+
+        if not is_debug_line and stripped:
+            cleaned_lines.append(stripped)
+
+    # 重新组合，去除多余空行
+    result = '\n'.join(cleaned_lines)
+    result = re.sub(r'\n{3,}', '\n\n', result)  # 多个空行变一个
+    result = result.strip()
+
+    return result
 
 
 def calculate_content_score(node) -> float:
@@ -725,6 +852,12 @@ def _process_items(
     if notion_db_id is None:
         notion_db_id = os.environ.get("NOTION_DATABASE_ID")
 
+    # 判断是否需要抓取正文（只针对 RSS feed，爬虫和 Twitter 始终抓取）
+    fetch_content = True  # 默认抓取
+    if source.startswith("http"):
+        # RSS feed，根据名单决定是否抓取
+        fetch_content = _should_fetch_content(source)
+
     for item in items:
         title = item["title"]
         link = item["link"]
@@ -755,7 +888,19 @@ def _process_items(
         if not content:
             content = summary
 
+        # --- Debug 代码开始 ---
+        try:
+            with open("debug_content.txt", "w", encoding="utf-8") as f:
+                f.write(f"URL: {link}\n") # 记录来源方便对照
+                f.write("-" * 20 + "\n")
+                f.write(content)
+            print("Debug: 内容已成功写入 debug_content.txt")
+        except Exception as debug_e:
+            print(f"Debug 写入失败: {debug_e}")
+        # --- Debug 代码结束 ---
+
         print("正在调用大模型生成摘要...")
+
         data = summarize_with_ai(title, summary, content, model=model)
 
         print("AI 结果 JSON：")
