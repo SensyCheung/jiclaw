@@ -569,7 +569,9 @@ def summarize_with_ai(
 "X-Epic" : "芯华章"
 'Made by Google' : 'Made by Google'(不翻译)
 'Lam Research' : '泛林集团'
-"Silicon Motion" : "慧荣科技SMI" 
+"Silicon Motion" : "慧荣科技(SMI)"
+"ZEPHYR": "西风泽弗(ZEPHYR)" 
+"MSI": "微星(MSI)"
 ---
 你将看到一篇科技/半导体/硬件等方向的文章信息（标题 + RSS 摘要 + 抓取到的正文）。
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
