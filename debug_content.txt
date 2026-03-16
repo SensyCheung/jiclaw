@@ -1,86 +1,148 @@
-URL: https://www.electronicdesign.com/technologies/eda/video/55360848/mirabilis-design-how-visualsim-architect-models-ucie-chiplet-latency-and-multi-die-cpu-tradeoffs
+URL: https://anysilicon.com/full-service-foundry-accelerate-your-analog-mixed-signal-prototyping-with-the-2026-mpw-calendar/
 --------------------
-Sponsored
-Modeling Chiplet Latency with VisualSim Architect
-VisualSim Architect shows how system-level modeling can expose latency, power, and thermal tradeoffs early in chiplet-based designs.
-Deepak Shankar
-,
-Cabe Atwell
-Sponsored:
-Mirabilis Design
-March 11, 2026
-2 min read
-What you'll learn:
-How VisualSim Architect models complex multi-die and chiplet-based systems before implementation.
-Why UCIe latency analysis is important when integrating chiplets from different vendors.
-How comparing 2- and 4-die CPU configurations can reveal performance, power, and thermal tradeoffs.
-Designing virtually is the least costly and most effective way to design complex systems.
-VisualSim Architect
-from Mirabilis Design lets engineers combine and test complex systems like cars, satellites, all the way down to chiplets. Systems can become even more complex when combining different components from different vendors. VisualSim Architect helps simulate that system ahead of time.
-System modeling isn't just component assemblies, but also the flow, or the communication, between them all.
-Chiplet UCIe modeling accuracy
-is essential in any design. Predictability and testing early on save time and money. But, how is accuracy dealt with when integrating chiplets from
-different vendors
-?
-In the video, Deepak Shankar, Founder of Mirabilis Design, delves into the latency of transmitting 64 bytes versus 128 bytes across the same system. He brought forth how 128 might be more efficient in some cases, but not enough to go beyond 64. Simulating a UCIe interface here allowed the exploration of results with simple parameters injected into the system.
-In a more complex example, Shankar shows a
-2-die vs. a 4-die CPU model
-. In both examples, applications run on the CPUs, showing power demand, heat generated, and latency over time. The 4-die CPU configuration experienced a significant increase in latency over the 2-die configuration. This reveals that parameters inside the system model cause the increase in latency. Optimization ahead of time is the true benefit of system simulation. VisualSim Architect is essential in the design process.
->>Check out more of our Chiplet Summit 2026 coverage
-Santa Clara Convenction Center | Chiplet Summit
-Latest Technology at the 2026 Chiplet Summit
-Check out the breaking news, videos, and podcasts coming from this year's Chiplet Summit.
-William Wong | Santa Clara Convention Center
-Reflecting on the 2026 Chiplet Summit
-Editor Bill Wong’s observations from the recent 2026 Chiplet Summit.
-About the Author
-Deepak Shankar
-Founder, Mirabilis Design
-Deepak Shankar, founder of Mirabilis Design, has over two decades of experience in management and marketing of system-level design tools. Prior to establishing Mirabilis Design, he was Vice President, Business Development at MemCall, a fabless semiconductor company and SpinCircuit, a joint venture of Hewlett-Packard, Flextronics, and Cadence. He started his career designing network simulators for the U.S. Federal Agencies, and managing discrete-event simulators for Cadence.
-Email
-Cabe Atwell
-Technology Editor, Electronic Design
-Cabe is a Technology Editor for Electronic Design.
-Engineer, Machinist, Maker, Writer. A graduate Electrical Engineer actively plying his expertise in the industry and at his company, Gunhead. When not designing/building, he creates a steady torrent of projects and content in the media world. Many of his projects and articles are online at element14 & SolidSmack, industry-focused work at
-EETimes
-&
-EDN
-, and offbeat articles at
-Make Magazine
-. Currently, you can find him hosting webinars and contributing to
-Electronic Design
+1117 Views
+Full-Service Foundry: accelerate your analog mixed-signal prototyping with the 2026 MPW calendar
+The ams OSRAM 2026 MPW (Multi-Project Wafer) program expands its technology offering with new 180nm options, including the C18 CMOS specialty platform further enriching the MPW portfolio. For mixed-signal designs in mature nodes, this extension delivers strong analog, high-voltage and BCD capabilities tailored to customer needs.
+The MPW program provides design engineers with a low-entry-barrier, cost-efficient way to accelerate integrate-circuit development through fast and affordable prototyping in a high-volume, automotive-grade European full-service foundry. It supports established companies, design houses, startups, and research institutions in prototyping and validating ICs without the cost of full wafer runs, while maintaining a seamless path to high-volume production.
+The MPW program is also ideal for companies looking to test designs and reduce supply-chain risks by exploring ‘local for local’ manufacturing solutions.
+What
+i
+s
+n
+ew in 2026?
+The 2026 MPW program introduces new
+180nm mixed-signal CMOS
 and
-Machine Design
-.
-Cabe is an electrical engineer, design consultant and author  with 25 years’ experience. His most recent book is “
-Essential 555 IC: Design,  Configure, and Create Clever Circuits
-”
-Cabe writes the
-Engineering on Friday
-blog on Electronic Design.
-Sign up for our eNewsletters
-Get the latest news and updates
-Sign Up
-Related
-Perform Advanced Semi Analysis with Double-Pulse Testing
-Take the Proper Steps to Flight-Test-Instrumentation Design
-Sponsored
-Smarter Sunroof Control with MPS Power ICs
-Sponsored
-Optimized Power for Wiper Control Systems
-Voice Your Opinion!
-To join the conversation, and become an exclusive member of Electronic Design, create an account today!
-Join today!
-I already have an account
-Trending
-Beware of Too Many Magicians and Politicians
-Efficient Power Conversion from an Intermediate Voltage Rail
-How Does Lockstep Architecture Enhance MCU Performance?
-Sponsored Picks
-Sponsored
-LT8645/LT8646 Synchronous Step-Down Regulators
-Sponsored
-Designing Accurate Gas Monitoring Systems with Chemiresistive Devices
-Sponsored
-Connectivity – The Backbone of Sustainable Automation
-Load More Content
+180nm BCD (Bipolar-CMOS
+‑DMOS)
+technology platforms. These versatile 180nm technology platforms support
+1.8
+V/3.3
+V, 1.8
+V/5
+V
+, and
+1.8
+V/5
+V/70
+V (BCD)
+power-supply  domains. This expansion is central to ams OSRAM’s drive to be a European foundry of choice by offering reliable supply, cycle time, and trusted long-term partnerships with consistent quality and transparency.
+These 180nm platforms enable a wide range of designs such as power-management ICs, motor management ICs, motor‑driver ICs, LED/laser driver ICs, actuator driver and control ICs, sensor interfaces, mixed-signal circuits, and high-voltage devices. Engineered for high reliability and performance, the 180nm platforms meet the demanding requirements of automotive and other high-performance analog applications, and are suitable for industrial, medical, consumer, security, defense and space applications.
+The MPW program also continues to offer proven technologies such as 350nm CMOS, CMOS high-voltage and embedded‑flash options, giving designers flexibility across many application areas.
+Global access made easy
+Participation in the MPW program is made seamless and locally supported through collaboration with leading organizations and strategic partners worldwide.
+In Europe, access is provided through CIME‑P (formerly CMP) and Fraunhofer IIS via EUROPRACTICE.
+In Asia, MEDS Technologies supports customers across the region.
+US customers are also supported via California-based office of Fraunhofer IIS.
+These long‑standing partnerships give universities, research institutes, startups, design houses, and established companies worldwide easy access to our trusted foundry services.
+Customers benefit from a one-stop‑shop that covers wafer fabrication, optional analog IP, memory generation, and delivery of diced wafers or packaged parts in ceramic or plastic packages. This integrated approach simplifies development and reduces coordination effort for engineering teams.
+Automotive-grade processes trusted by major manufacturers
+As a European-based foundry, ams OSRAM places quality and reliability at the core of everything we do. Our processes meet stringent automotive and industrial standards, and we provide comprehensive design support through a
+Cadence based Process Design Kit (PDK)
+that includes all essential libraries, IO cells, and analog blocks.
+How to join a 2026 MPW run
+Participation in an MPW run is based on a completed GDSII database submitted in line with the published tape out dates. After successful data checks and mask preparation, customers typically receive untested samples (dice and/or packaged parts) within about ten to twelve weeks, depending on the chosen process.
+To join an MPW run, prospective customers follow three steps:
+Step 1:
+Select the target process and a suitable 2026 tape-out date from the new MPW calendar.
+Step 2:
+Contact the relevant access partner or reach out to ams OSRAM directly for guidance.
+Step 3:
+Design your chip or test structures using ams OSRAM PDK and sign the necessary agreements so that your GDSII can be accepted on the chosen run.
+Next steps
+The 2026 MPW calendar including process options and practical details on tape-out and deliverables, is now available on the ams OSRAM Full-Service Foundry pages. Design teams that plan early can secure a preferred shuttle slot and move faster from concept to qualified silicon.
+Take this opportunity to bring your ideas to life.
+Contact our MPW team:
+foundry@ams-osram.com
+Author:
+Joni Jukka Krister Mellin
+Biography:
+Principal Product Marketing Manager, Full-Service Foundry at ams OSRAM, has over two decades of experience in semiconductor and photonics technologies. His career spans engineering, business leadership, and foundry operations across ams OSRAM, X‑FAB, Nokia, Microsoft and Micro Analog Systems, backed by technical degrees from Aalto University and a dual global executive MBA.
+Recent Stories
+CEO Talk: Uttam Singhal of SignOff Semiconductors
+Read More »
+28nm vs 40nm vs 65nm — The Real Cost, Risk, and Power Trade-Off for ASICs
+Read More »
+TSMC 22nm vs UMC 22nm vs GF 22FDX — Which Should You Choose?
+Read More »
+Exclusive Interview: Mika Jäsberg Discusses CoreHW’s RTLS Offering
+Read More »
+Find a Local Semiconductor/ASIC/IP Sales Representative (Asia, Europe, US)
+Read More »
+The Future of Semiconductors: A Deep Dive with Howard Pakosh
+Read More »
+Innovation Meets Customization: Unlocking breakthroughs in next-gen sensing
+Read More »
+28nm Wafer & MPW Cost Explained: Constraints, Risk, and When It Makes Sense
+Read More »
+Get Price for ASIC Design Services
+Get Price for IC Packaging
+Today’s News
+Keysight Launches 224G Test Solutions for 1.6T Optical Networks
+Credo Purchases CoMira Solutions
+Silvaco Announces Q4 and Full-Year 2025 Financial Results
+GlobalFoundries Sets Prices for Public Offering and Share Buyback
+SEMIFIVE Secures KRW 18 Billion Turnkey Design Deal with AI Chip Firm
+Transforming Europe's Tech Scene
+Find Vendors
+IP Cores
+Find ASIC Services
+Keywords
+Category
+All
+ASIC design companies
+IC Layout
+Top ASIC Verification Companies
+Foundries
+IC Packaging
+IC Testing
+Turnkey
+IC Qualification
+Failure Analysis
+Find IP Cores
+Keywords
+Foundry
+All
+TSMC
+Samsung
+GF
+UMC
+SMIC
+SkyWater
+Tower
+N/A
+Get Price Offers From
+ASIC Design Houses
+Wafer Foundries
+Chip Packaging
+IC Testing
+IP Core Vendors
+FPGA Design
+Featured Vendor
+AnSem
+Welcome New Vendors
+BitSim Now
+AnaBatIC Semiconductor
+TMS Test Services
+Pacific MicroCHIP
+XQWave
+Recent Posts
+CAST Debuts TSN-EP-10G IP for High-Performance, Time-Sensitive Networking Ethernet Designs
+TES Unveils High-Performance 8/40MHz Oscillator and Clock Buffer IPs for Reliable On-Chip Timing Solutions for X-FAB XT018 – 0.18µm BCD-on-SOI technology.
+CAST Introduces 400 Gbps UDP/IP Hardware Stack IP Core for High-Performance ASIC Designs
+Full-Service Foundry: accelerate your analog mixed-signal prototyping with the 2026 MPW calendar
+CEO Talk: Uttam Singhal of SignOff Semiconductors
+28nm vs 40nm vs 65nm — The Real Cost, Risk, and Power Trade-Off for ASICs
+Most Popular Blog Posts
+TSMC to Break Ground on 1.4nm “A14” Fab on November 5
+Amkor Technology Breaks Ground on New Semiconductor Advanced Packaging and Test Campus in Arizona; Expands Investment to $7 Billion
+AMD signs AI chip-supply deal with OpenAI, gives it option to take a 10% stake
+A Brief History of SkyWater Technology
+Weebit Nano tapes out embedded ReRAM test chips at onsemi production fab
+Tools
+ASIC Price Calculator
+IC Packages Price Calculator
+Die Per Wafer Calculator
+Bonding Diagram Tool
+CPU IP Core Search Engine
+Find Consultants
