@@ -1403,6 +1403,149 @@ def scrape_broadcom_blog(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_tweaktown(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Tweaktown (tweaktown.com/news/storage) 的文章列表
+    使用 Playwright 处理 JavaScript 动态加载内容（带 stealth 绕过 Cloudflare）
+    结构：article.latestpost
+    - 标题和链接：h2 -> a
+    - 发布时间：div.content-latestpost-infobar (格式：Mar 15, 2026 11:29 PM CDT)
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    from playwright.sync_api import sync_playwright
+
+    results = []
+
+    try:
+        with sync_playwright() as p:
+            # 启动浏览器（使用 stealth 模式绕过 Cloudflare）
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    '--disable-blink-features=AutomationControlled',
+                    '--no-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--disable-gpu',
+                    '--window-size=1920,1080',
+                ]
+            )
+
+            context = browser.new_context(
+                viewport={'width': 1920, 'height': 1080},
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+            )
+            page = context.new_page()
+
+            # stealth 设置
+            page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+                Object.defineProperty(document, 'hidden', {get: () => false});
+                Object.defineProperty(document, 'visibilityState', {get: () => 'visible'});
+            """)
+
+            print(f"  正在访问 {url}...")
+            page.goto(url, wait_until="domcontentloaded", timeout=120000)
+
+            # 等待动态内容加载
+            print("  等待动态内容加载...")
+            page.wait_for_timeout(15000)
+
+            # 尝试滚动页面触发更多内容加载
+            try:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(5000)
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(3000)
+            except:
+                pass
+
+            # 获取页面 HTML
+            html_content = page.content()
+            browser.close()
+
+        print(f"  页面大小：{len(html_content)} 字节")
+
+        soup = BeautifulSoup(html_content, "html.parser")
+
+        # 查找文章列表：article.latestpost
+        articles = soup.select("article.latestpost")
+        print(f"  找到 {len(articles)} 篇文章")
+
+        for article in articles[:limit]:
+            # 提取标题和链接：h2 -> a
+            title_tag = article.select_one("h2 a")
+            if not title_tag:
+                continue
+
+            title = title_tag.get_text(strip=True)
+            link = title_tag.get("href", "")
+
+            # 处理相对链接
+            if link:
+                link = urljoin(url, link)
+
+            # 提取日期：div.content-latestpost-infobar
+            # 格式示例：Mar 15, 2026 11:29 PM CDT
+            date_tag = article.select_one("div.content-latestpost-infobar")
+            date_str = ""
+            published_date = None
+            if date_tag:
+                date_text = date_tag.get_text(strip=True)
+                # 提取日期部分（作者名之后的日期）
+                # 格式：Author Name | Mar 15, 2026 11:29 PM CDT
+                if "|" in date_text:
+                    date_str = date_text.split("|")[-1].strip()
+                    # 移除时区缩写（如 CDT, PST 等）
+                    import re
+                    date_str = re.sub(r'\s+(CDT|PST|PDT|EST|EDT|CST|GMT|UTC)$', '', date_str, flags=re.IGNORECASE)
+                    # 提取日期和时分部分
+                    date_match = re.match(r'(\w+\s+\d{1,2},?\s+\d{4})\s+(\d{1,2}:\d{2})\s*(AM|PM)?', date_str, re.IGNORECASE)
+                    if date_match:
+                        date_part = date_match.group(1)  # Mar 15, 2026
+                        time_part = date_match.group(2)  # 11:29
+                        am_pm = date_match.group(3) or "AM"  # PM
+                        
+                        # 转换 12 小时制为 24 小时制
+                        hour, minute = map(int, time_part.split(":"))
+                        if am_pm.upper() == "PM" and hour != 12:
+                            hour += 12
+                        elif am_pm.upper() == "AM" and hour == 12:
+                            hour = 0
+                        
+                        # 解析日期
+                        published_date = normalize_date(date_part, "%b %d, %Y")
+                        # 手动添加时分秒
+                        if published_date:
+                            published_date = published_date.replace(
+                                published_date.split("T")[1].split(".")[0],
+                                f"{hour:02d}:{minute:02d}:00"
+                            )
+
+            if title and link:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        print(f"  成功获取 {len(results)} 篇文章")
+        return results
+
+    except Exception as e:
+        print(f"爬取 Tweaktown 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -1417,6 +1560,7 @@ SCRAPER_FUNCTIONS = {
     "iccsz": scrape_iccsz,
     "broadcom": scrape_broadcom,
     "broadcom-blog": scrape_broadcom_blog,
+    "tweaktown": scrape_tweaktown,
 }
 
 

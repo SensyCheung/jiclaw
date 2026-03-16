@@ -1,153 +1,167 @@
-URL: https://news.mit.edu/2026/new-sensor-sniffs-out-pneumonia-patients-breath-0316
+URL: https://www.tweaktown.com/news/storage/news/110372/storage-crisis-has-led-to-nintendo-switch-2-owners-buying-fewer-games/index.html
 --------------------
-Breadcrumb
-MIT News
-New sensor sniffs out pneumonia on a patient’s breath
-New sensor sniffs out pneumonia on a patient’s breath
-The technology could enable fast, point-of-care diagnoses for pneumonia and other lung conditions.
-Jennifer Chu
-|
-MIT News
-Publication Date
-:
-March 16, 2026
-Press Inquiries
-Press Contact
-:
-Abby
-Abazorius
-Email:
-abbya@mit.edu
-Phone:
-617-253-2709
-MIT News Office
-Media Download
-↓
-Download Image
-Caption
-:
-MIT MechE Postdoctoral Associate Aditya Garg (left) and MechE Doctoral student Seleem Badawy stand behind the Raman microscope used to evaluate the Plasmosniff chip.
-Credits
-:
-Photo: Tony Pulsone
-↓
-Download Image
-Caption
-:
-Photo of the PlasmoSniff chip next to a coin for scale. “In practice, we envision that a patient would inhale nanoparticles and, within about 10 minutes, exhale a synthetic biomarker that reports on lung status,” says Garg.
-Credits
-:
-Photo: Tony Pulsone
-↓
-Download Image
-Caption
-:
-Loza Tadesse, left, and her group looked to design a sensitive, portable breath test. Tadesse and Aditya Garg stand next to the Raman microscope.
-Credits
-:
-Photo: Tony Pulsone
-↓
-Download Image
-Caption
-:
-Seleem Badawy places the PlasmoSniff chip on the Raman microscope.
-Credits
-:
-Photo: Tony Pulsone
-*Terms of Use:
-Images for download on the MIT News office website are made available to non-commercial entities, press and the general public under a
-Creative Commons Attribution Non-Commercial No Derivatives license
-.
-You may not alter the images provided, other than to crop them to size. A credit line must be used when reproducing images; if one is not provided
-below, credit the images to "MIT."
-Close
-Caption
-:
-MIT MechE Postdoctoral Associate Aditya Garg (left) and MechE Doctoral student Seleem Badawy stand behind the Raman microscope used to evaluate the Plasmosniff chip.
-Credits
-:
-Photo: Tony Pulsone
-Caption
-:
-Photo of the PlasmoSniff chip next to a coin for scale. “In practice, we envision that a patient would inhale nanoparticles and, within about 10 minutes, exhale a synthetic biomarker that reports on lung status,” says Garg.
-Credits
-:
-Photo: Tony Pulsone
-Caption
-:
-Loza Tadesse, left, and her group looked to design a sensitive, portable breath test. Tadesse and Aditya Garg stand next to the Raman microscope.
-Credits
-:
-Photo: Tony Pulsone
-Caption
-:
-Seleem Badawy places the PlasmoSniff chip on the Raman microscope.
-Credits
-:
-Photo: Tony Pulsone
-Previous image
-Next image
-Diagnosing some diseases could be as easy as breathing into a tube. MIT engineers have developed a test to detect disease-related compounds in a patient’s breath. The new test could provide a faster way to diagnose pneumonia and other lung conditions. Rather than sit for a chest X-ray or wait hours for a lab result, a patient may one day take a breath test and get a diagnosis within minutes.
-The new breath test is a portable, chip-scale sensor that traps and detects synthetic compounds, or “biomarkers,” of disease, which are initially attached to inhalable nanoparticles. The biomarkers serve as tiny tags that can only be unlocked and detached from the nanoparticle by a very particular key, such as a disease-related enzyme.
-The idea is that a person would first breathe in the nanoparticles, similar to inhaling asthma medicine. If the person is healthy, the nanoparticles would eventually circulate out of the body intact. If a disease such as pneumonia is present, however, enzymes produced as a result of the infection would snip off the nanoparticles’ biomarkers. These untethered biomarkers would be exhaled and measured, confirming the presence of the disease.
-Until now, detecting such exhaled biomarkers required laboratory-grade instruments that are not available in most doctor’s offices. The MIT team has now shown they can detect exhaled biomarkers of pneumonia at extremely low concentrations using the new portable, chip-scale breath test, which they’ve dubbed “PlasmoSniff.”
-They plan to incorporate the new sensor into a handheld instrument that could be used in clinical or at-home settings to quickly diagnose pneumonia and other diseases.
-“In practice, we envision that a patient would inhale nanoparticles and, within about 10 minutes, exhale a synthetic biomarker that reports on lung status,” says Aditya Garg, a postdoc in MIT’s Department of Mechanical Engineering. “Our new PlasmoSniff technology would enable detection of these exhaled biomarkers within minutes at the point of care.”
-Garg is the first author of a study that details the team’s new sensor design. The study
-appears online in the journal
-Nano Letters
-. MIT co-authors include Marissa Morales, Aashini Shah, Daniel Kim, Ming Lei, Jia Dong, Seleem Badawy, Sahil Patel, Sangeeta Bhatia, and Loza Tadesse.
-Tailored tags
-PlasmoSniff is a project led by Loza Tadesse, an assistant professor of mechanical engineering at MIT. Tadesse’s group builds diagnostic devices that can be used directly in doctor’s office and other point-of-care settings. Her work specializes in spectroscopy, using light to identify key fingerprints in a chemical or molecule.
-Several years ago, Tadesse teamed up with Sangeeta Bhatia, the John and Dorothy Wilson Professor of Health Sciences and Technology and of Electrical Engineering and Computer Science at MIT. Bhatia’s group focuses in part on developing nanoparticle sensors — tiny particles that can be tagged with a synthetic biomarker. Bhatia can tailor these biomarkers to cleave from their nanoparticle only in the presence of specific “protease” enzymes that are produced by certain diseases.
-In work that was
-reported in 2020
-, Bhatia’s group demonstrated they could detect cleaved biomarkers of pneumonia from the breath of infected mice. The biomarkers were exhaled at extremely low concentrations, of about 10 parts per billion. Nevertheless, the researchers were able to detect the compounds using mass spectrometry — a technology that is highly sensitive but requires bulky and expensive instrumentation that is not widely available in clinical settings.
-“We thought, ‘How can we achieve that same sensitivity, in a way that’s accessible, at the point of need, and in a chip format that can be scalable in terms of cost?’” Tadesse says.
-A fingerprint trap
-For their new study, Tadesse’s group looked to design a sensitive, portable breath test to quickly detect Bhatia’s biomarkers. Their new design centers on “plasmonics” — the study and manipulation of light and how it interacts with matter at the nanoscale.
-The researchers noted that molecules exhibit characteristic vibrational modes, corresponding to the motions of atoms within their chemical bonds. These vibrations can be detected using Raman spectroscopy, an optical technique in which molecules are illuminated with light. A small fraction of the scattered light shifts in energy due to interactions with a molecule’s vibrations. By measuring these energy shifts, researchers can identify molecules based on their distinctive vibrational fingerprints.
-To detect Bhatia’s biomarkers, however, they would need to isolate the comparatively few molecules from the dense cloud of many other exhaled molecules. They would also need to boost the biomarker’s vibrational signal, as the Raman-scattered light by an individual molecule is inherently extremely small.
-“This is a needle-in-a-haystack problem,” Tadesse says. “Our method detects that needle that would otherwise be embedded in the noise.”
-The team’s new sensor is designed to trap target biomarkers and boost their vibrational signal. The core of the sensor is made from a thin gold film, above which the researchers suspended a layer of gold nanoparticles. The gold nanoparticles are coated with a porous silica shell, generating a 5-nanometer-wide gap between the gold nanoparticles and the gold film. The silica is modified to strongly bond with molecules of water. The hydrogen in water can in turn bond with the target biomarkers. If any biomarkers pass through the sensor’s gap, they stick to the water molecules like Velcro.
-The sensor’s gap is engineered to strongly amplify light due to plasmonic resonance, where electrons in the nearby gold structures collectively oscillate in response to incoming light, concentrating the electromagnetic field into the gap. Biomarkers trapped in these gaps experience a greatly enhanced electromagnetic field, which amplifies their Raman scattering signal. The researchers can then measure the Raman scattered light, and compare the pattern to the biomarker’s known “fingerprint,” to confirm its presence.
-The team worked with Daniel Kim, a graduate student in Bhatia’s lab, and tested the sensor’s performance on samples of lung fluid that they obtained from healthy mice. They spiked these samples with biomarkers of pneumonia that Bhatia’s group previously designed. They then placed the spiked fluid in a vial and heated it to evaporate the fluid, to simulate exhaled breath. They placed the new sensor on the underside of the vial’s cap and used a Raman spectrometer to measure the scattered light as the fluid vapor passed through the sensor.
-Through these experiments, they showed the sensor quickly detected biomarkers of pneumonia at extremely low, clinically relevant concentrations.
-“Our next goal is to have a breath collection system, like a mask you can breathe into,” Garg says. “A patient would first use something like an asthma inhaler to inhale the nanoparticles. They could then breathe through the mask sensor for five minutes. We could then integrate a handheld Raman spectrometer to detect whatever biomarker is breathed out, within minutes.”
-Breath tests for disease, sometimes referred to as disease breathalyzers, are an emerging technology. Most designs are still in the experimental stage, and take different approaches to detect various conditions such as certain cancers, intestinal infections, and viruses such as Covid-19. The MIT team notes that its design can be used to detect diseases beyond pneumonia, as well as biomarkers that are not related to disease, as long as the biomarker of interest has a known vibrational “fingerprint.”
-“It’s not just limited to these biomarkers or even diagnostic applications,” Tadesse says. “It can sniff out industrial chemicals or airborne pollutants as well. If a molecule can form hydrogen bonds with water, we can use its vibrational fingerprint to detect it. It’s a pretty universal platform.”
-This work was supported, in part, by funding from Open Philanthropy (now Coefficient Giving). Several characterization and fabrication steps were conducted at MIT.nano.
-Share
-this news article on:
-X
-Facebook
-LinkedIn
-Reddit
-Print
-Paper: “Towards breath based diagnostics via water-mediated capture of synthetic breath biomarkers in SERS-active plasmonic nanogaps”
-Check for open access version(s) of the research mentioned in this article.
-Related Links
-Loza Tadesse
-Department of Mechanical Engineering
-School of Engineering
-Related Topics
-Research
-Disease
-Diagnostics
-Sensors
-Bacteria
-Biological engineering
-Medicine
-Biology
-Chemistry
-Health care
-Mechanical engineering
-Nanoscience and nanotechnology
-MIT.nano
-School of Engineering
-Related Articles
-Exhaled biomarkers can reveal lung disease
-Checking the quality of materials just got easier with a new AI tool
-Tiny magnetic beads produce an optical signal that could be used to quickly detect pathogens
-Previous item
-Next item
+💾
+Storage
+Get the latest storage news, covering new solid-state drives (SSDs), hard disk drives (HDDs), flash storage, performance benchmarks & more.
+Add TweakTown as a source on Google
+As an Amazon Associate, we earn from qualifying purchases. TweakTown may also earn commissions from other affiliate partners at no extra cost to you.
+Silicon Motion new SM8008 PCIe Gen5 controller, 14GB/s speeds on less than 5W
+Kosta Andreadis
+| Mar 15, 2026 11:29 PM CDT
+Silicon Motion has announced the launch of its latest PCIe Gen5 x4 NVMe SSD controller, the SM8008. Designed and purpose-built for data center drives and enterprise storage, where NVMe SSDs are becoming the go-to option for the AI era, the SM8008 is all about delivering performance, power efficiency, and stability.
+Built on TSMC's 6nm process technology, the SM8008 delivers up to 14 GB/s or 14,000 MB/sec with over 2.3 million random IOPS (4K) while maintaining a power draw of under 5W. NVMe 2.0a and OCP Hyperscale NVMe Boot SSD Specification Version 1.0 compliant, you've also got inline DDR4-3200 or LPDDR4-3200 to enhance power efficiency and affordability for large-scale deployments.
+On that note, Silicon Motion says that SSDs with the SM8008 controller can operate continuously across thousands or even "millions" of servers. Although it's difficult to visualize what millions of SSDs in a data center would look like, the point is that with PCIe Gen5 speeds and power consumption of under 5W, this translates to "significant reductions in total data center power consumption."
+Continue reading: Silicon Motion new SM8008 PCIe Gen5 controller, 14GB/s speeds on less than 5W (full post)
+Storage crisis has led to Nintendo Switch 2 owners buying fewer games
+Kosta Andreadis
+| Mar 5, 2026 11:58 PM CST
+A new report from
+Bloomberg
+has shed light on a new aspect of the current memory and storage crisis affecting the supply and prices of consumer tech, specifically flash storage. With NAND flash pricing expected to soar by up to 90% this quarter, this will affect the prices of the microSD Express cards required to expand the storage capacity of the Nintendo Switch 2.
+As the console ships with only 256GB of internal storage, storage expansion was already a concern before the console launched due to the move to the new (and more costly) microSD Express format. Unlike in the original Switch era, when affordable microSD cards were plentiful, microSD Express cards are much more expensive.
+And with the current state of things, in Japan, microSD Express prices have already increased by around 30% since the console's launch, and that number will continue to rise. With storage for the Nintendo Switch 2 set to become much more expensive than on PC or the PlayStation 5, the adverse effect is that gamers will buy fewer games.
+Continue reading: Storage crisis has led to Nintendo Switch 2 owners buying fewer games (full post)
+Microsoft's new method of storing data could make SSDs obsolete
+Jak Connor
+| Mar 4, 2026 12:10 AM CST
+Microsoft is working on a
+new method for storing data
+, with the goal of developing an ultra-durable archival medium capable of preserving data for hundreds or even thousands of years without degradation.
+Currently, Solid State Storage (SSD) and mechanical hard drives generally last 5 to 20 years, with the lifespan of any given drive dependent on how often it is accessed. Instead of improving NAND flash or the mechanical design of a hard drive, Microsoft looked to borosilicate glass, which can withstand temperatures over 500 degrees Celsius, microwaves, water submersion, magnetic interference, electromagnetic pulses, and surface damage such as scratches.
+In a
+new paper
+, Microsoft reports successfully storing 4.8TB of data on a 120mm-square piece of borosilicate glass measuring 2mm thick. For comparison, a hard drive storage measures typically 63.5 to 88.9mm wide, and can only store 1 or 2GB. To achieve this feat in data storage, Microsoft used femtosecond lasers to write data inside the glass.
+Continue reading: Microsoft's new method of storing data could make SSDs obsolete (full post)
+Seagate announces next-gen Mozaic hard drives with up to 44TB capacity
+Kosta Andreadis
+| Mar 3, 2026 6:29 PM CST
+Seagate has announced its next-generation Mozaic 4+ storage platform, which leverages the company's heat-assisted magnetic recording (HAMR) based storage technology. Qualified and currently in production, Seagate notes that its latest HAMR drives will support capacities up to 44TB in hyperscale environments.
+Although they look like traditional platter hard drives, Seagate's HAMR-based storage opens the door to increased storage density and capacity through a process that uses lasers to heat and cool in nanoseconds. Currently, the 4+ TB of storage per-disk or layer has led to capacities reaching an impressive 44TB, with Seagate's roadmap forecasting a future where 10TB per-disk will enable drives with 100TB of storage.
+To achieve higher capacity, Seagate has incorporated a next-gen suspension architecture and an enhanced system-on-a-chip for higher-density recording while maintaining "enterprise-class reliability." The big thing here is that these hard drives present a high-capacity, cost-efficient storage option for data centers and AI models that require and use large volumes of data for training and other purposes.
+Continue reading: Seagate announces next-gen Mozaic hard drives with up to 44TB capacity (full post)
+Sandisk unveils next-gen portable SSD lineup, includes 8TB Extreme PRO model with 4GB/s speed
+Kosta Andreadis
+| Feb 25, 2026 10:03 PM CST
+Sandisk has announced its next-gen lineup of portable SSD and storage solutions for professionals, creatives, and gamers, with the new Sandisk Portable SSD, Sandisk Extreme Portable SSD, and Sandisk Extreme PRO Portable SSD. The latter is, of course, the pro-grade model and is designed to deliver the performance and speed required for demanding workloads, such as creatives working with 4K, 8K, and even 12K video, with capacities of up to 8TB.
+The Sandisk Extreme Portable SSD is also for creatives, photographers, videographers, and professionals who need a lot of storage capacity. With "nearly twice the speed of its predecessor and enhanced durability," the Sandisk Extreme Portable SSD range offers read speeds of up to 2,000 MB/s, which is enough bandwidth to transfer 1,000 high-def photos in under a minute.
+Available in three capacities, 1TB, 2TB, and 4TB (with a 500GB model coming in the second half of 2026), the Sandisk Extreme Portable SSD is available now with pricing for the 1TB model starting at $259.99. The full line-up of Sandisk Portable SSDs and Sandisk Extreme PRO Portable SSDs is set to begin rolling out later in the year.
+Continue reading: Sandisk unveils next-gen portable SSD lineup, includes 8TB Extreme PRO model with 4GB/s speed (full post)
+KIOXIA's UFS 5.0 flash storage will bring next-gen speeds to next-gen smartphones
+Kosta Andreadis
+| Feb 23, 2026 11:29 PM CST
+UFS 5.0 is set to become the new standard for embedded flash storage in next-gen mobile devices, including high-end smartphones. Delivering the speed and performance required for on-device AI and other hardware-intensive workloads, UFS 5.0's new M-PHY version 6.0 introduces a new mode that can theoretically support speeds of up to 46.6 Gigabits per second (Gb/s) per lane.
+And with that, compact next-gen devices with UFS 5.0 flash storage should be able to achieve read/write performance of around 10.8 GB/s (10,800 MB/s) across two lanes. And with that, even though UFS 5.0 is still being standardized by JEDEC, KIOXIA has begun shipping evaluation samples of UFS 5.0 flash memory to chipset vendors.
+These samples feature a custom in-house controller for UFS 5.0 alongside KIOXIA's groundbreaking 8th-generation BiCS FLASH 3D flash memory, with CBA (CMOS directly Bonded to Array) technology to boost power efficiency, performance, and density. With a compact 7.5 x 13mm size and capacities of 512GB and 1 TB, these samples are all about flexibility and suitability for a wide range of devices and applications.
+Continue reading: KIOXIA's UFS 5.0 flash storage will bring next-gen speeds to next-gen smartphones (full post)
+Western Digital runs out of HDD capacity: CEO says massive AI deals secured, price surges ahead
+Anthony Garreffa
+| Feb 14, 2026 8:22 PM CST
+Western Digital has said that it has run out of HDD capacity, while its consumer share has dropped to just 5% as enterprise and AI eats up storage as if it were oxygen in a tiny room.
+We all know about the insane AI demand that has been eating up all of the DRAM supply, but we've been warned for months that mechanical HDDs would be affected... where we wrote a story just a few months ago that HDD prices surged to their highest point in 2 years with demand coming out of the US and China alone.
+WD CEO Irving Tan said during the Q2 earnings call: "
+As we highlighted, we're pretty much sold out for calendar 2026. We have firm POs with our top seven customers. And we've also established LTAs with two of them for calendar 2027 and one of them for calendar 2028. Obviously, these LTAs have a combination of volume of exabytes and price
+".
+Continue reading: Western Digital runs out of HDD capacity: CEO says massive AI deals secured, price surges ahead (full post)
+Micron now mass producing the world's first PCIe Gen6 SSD: up to 28GB/sec read speeds
+Anthony Garreffa
+| Feb 14, 2026 5:33 PM CST
+Micron has started mass production of the world's first PCIe Gen6 SSD, offering an eye-watering 28GB/sec read speeds and in both air, and liquid-cooled models.
+The new Micron 9650 Gen6 SSD features its in-house G9 NAND flash, aimed at high performance and low latencies for data center servers. Micron's new family of three SSDs uses vertical integration and its in-house G9 NAND, DRAM, and firmware to ensure that its new SSDs pack leading performance for servers, high capacity, high speeds, lower latencies, all while consuming less power.
+Micron's new 9650 Gen6 SSD has up to 28GB/sec of sequential read speeds -- twice that of the 14GB/sec capable in Gen5 SSDs -- and up to 14GB/sec in sequential writes. This means that Micron's new 9650 Gen6 SSD has the fastest speeds out of the box, but does it with 25% improved efficiency at random writes, and up to 67% better efficiency at random reads.
+Continue reading: Micron now mass producing the world's first PCIe Gen6 SSD: up to 28GB/sec read speeds (full post)
+How good can Walmart's tech bargains get? Clearance aisle visit scores four SSDs at 85% off
+Darren Allan
+| Feb 6, 2026 10:50 AM CST
+There's another tale of bargains to be had in Walmart's clearance aisle, and this time rather than snagging GPUs at ridiculously low prices, it's SSDs that were bought.
+Tom's Hardware noticed
+that a Redditor managed to secure a haul of multiple SSDs with yellow sticker reductions in clearance, spending a total of $210 for three high-end drives and a 1TB SSD upgrade kit.
+The actual total value of these SSDs is over a staggering $1,300, so the buyer has got more than a grand off with these models.
+Continue reading: How good can Walmart's tech bargains get? Clearance aisle visit scores four SSDs at 85% off (full post)
+WD teases new HDD solutions at Innovation Day: 100TB+ in 2029, new High Bandwidth Drive tech
+Anthony Garreffa
+| Feb 4, 2026 10:10 PM CST
+Western Digital just hosted its Innovation Day 2026 event, unveiling new consumer-focused roadmaps that will see the reinvention of the HDD for AI, and reinforcing the company's position as a strategic storage infrastructure partner for the new AI-driven data economy.
+The company laid out plans to unveil a gigantic 100TB+ HDD by 2029, reinforcing its dual ePMR and HAMR technologies, announcing a new 40TB UltraSMR ePMR HDD in its qualification with two hyperscaler companies and volume production coming in the second half of 2026.
+WD plans to extend ePMR to 60TB by using HAMR innovations, all without increasing power consumption, while HAMR will be scaling to the lofty heights of 100TB by 2029. WD is using a dual-path approach as both ePMR and HAMR are built on a common architecture, something that the company says enables greater manufacturing efficiencies, yields, and a smoother customer product transition.
+Continue reading: WD teases new HDD solutions at Innovation Day: 100TB+ in 2029, new High Bandwidth Drive tech (full post)
+Redditor buys 2TB Samsung 990 PRO SSD, gets scammed: locked to 20MB/sec, like a 2005 USB stick
+Anthony Garreffa
+| Feb 2, 2026 9:09 PM CST
+A user on Reddit purchased a fake 2TB Samsung 990 PRO SSD, ending up with a fake SSD that performed like a USB stick from 2005 at just 20MB/sec... instead of what it's actually capable of at 7000MB/sec+ (7GB/sec) reads.
+The drive detected normally at first, with Windows detecting it as the Samsung 990 PRO 2TB SSD, but the link speed showed PCIe 3.0 x4 instead of PCIe 4.0... the first clue. After that, the Redditor experienced super-slow file transfers, with large copies only hitting 20MB/sec reads and 9-10MB/sec writes, with CrystalDiskMark noting the same numbers... where he should be getting 7000MB/sec reads... much, much faster.
+The Redditor started off with "
+A few days ago, a friend of mine (who's a PC peripherals distributor and someone I've bought legit stuff from before) posted that he had Samsung 990 PRO 2TB units for sale at just 19,000 INR ($205 USD). Official price right now is usually 30,000+ INR (even more on Amazon/Flipkart sometimes), so yeah way too good to be true. But since I know the guy and have history with him, I didn't overthink it. Messaged him, booked one, paid, and it arrived the next day
+".
+Continue reading: Redditor buys 2TB Samsung 990 PRO SSD, gets scammed: locked to 20MB/sec, like a 2005 USB stick (full post)
+Samsung's new PM9E1 is the world's first 4TB Gen 5 SSD in the tiny M.2 22x42 form factor
+Kosta Andreadis
+| Jan 29, 2026 11:59 PM CST
+Unveiled and showcased at CES 2026, Samsung's PM9E1 M.2 22x42 SSD is the industry's first PCIe Gen 5 SSD in this ultra-compact form factor. Described as an AI-optimized storage solution, it's built for modern, compact AI supercomputers such as NVIDIA's DGX Spark and other NVIDIA GB10-powered devices.
+Samsung says that the PM9E1 M.2 (22x42mm) SSD offers over double the performance of its predecessor while also increasing power efficiency, measured in MB/s per Watt, by an impressive 45%.
+"While AI accelerators enable systems to harness the vast power of AI," Samsung writes. "Only pairing them with performance-optimized, purpose-built storage technology like the Samsung PM9E1 can provide the massive capacity and blazing access speeds to unleash that power that may lead to the development of tomorrow's killer AI apps."
+Continue reading: Samsung's new PM9E1 is the world's first 4TB Gen 5 SSD in the tiny M.2 22x42 form factor (full post)
+KIOXIA begins sampling high-capacity QLC UFS 4.1 flash memory for mobile devices
+Kosta Andreadis
+| Jan 27, 2026 8:02 AM CST
+KIOXIA has announced that it has begun sampling new UFS 4.1 (Universal Flash Storage) embedded memory devices powered by the company's 8th-generation BiCS FLASH 3D flash memory technology. With 4-bit-per-cell, quadruple-level cell (QLC) technology, you've got higher bit density for mobile applications that demand higher storage capacity.
+KIOXIA notes that advancements in controller technology and error correction have enabled its QLC technology memory to not only offer a more effective high-capacity solution but also deliver competitive performance. According to the company, UFS 4.1 boosts sequential write speeds by 25% and random read speeds by 90% when compared to the previous UFS 4.0 generation.
+Compared to UFS 3.1, it offers 2.1 times the sequential read performance and 2.5 times the sequential write performance.
+Continue reading: KIOXIA begins sampling high-capacity QLC UFS 4.1 flash memory for mobile devices (full post)
+KIOXIA says that it has already 'sold out' of NAND flash and SSDs for 2026
+Kosta Andreadis
+| Jan 22, 2026 1:32 AM CST
+It's not just memory; the current AI boom is also affecting the supply of flash-based storage and SSDs. Sitting down with South Korean media outlet
+Digital Daily
+, Shunsuke Nakato, Managing Director of Kioxia's Memory Business Unit, has confirmed that the company has already sold through its production capacity for this year.
+"To be honest, this year's production volume is already in a 'sold-out' state," Shunsuke Nakato says (machine translated). Adding that this trend will likely continue through 2027, with prices already increasing by around 30%. Nakato adds that KIOXIA isn't simply selling to the highest bidder, but instead to trusted customers and partners who will work with the company long-term, in what the company calls a 'gentleman's approach.'
+"There is a sense of crisis that companies will be eliminated the moment they stop investing in AI, so they have no choice but to continue investing," Shunsuke Nakato responded when asked about the current market trends. "There are risk factors such as power shortages in the United States and foundry supply constraints, but NAND demand itself will not decrease next year."
+Continue reading: KIOXIA says that it has already 'sold out' of NAND flash and SSDs for 2026 (full post)
+TerraMaster's D1 SSD Pro external enclosure can transfer 6GB in one second
+Kosta Andreadis
+| Jan 20, 2026 11:01 PM CST
+TerraMaster's new fanless external SSD enclosure is built to tap into 80Gbps Thunderbolt 5 speeds with the M.2 NVMe D1 SSD Pro enclosure delivering transfer speeds of up to 7,061 MB/s. This is enough to transfer a 6GB file in around 1 second, making it one of the fastest portable external storage solutions currently available.
+With this level of speed, it's an SSD enclosure capable of handling even the most demanding workloads, including editing both 4K and 8K video and high-resolution images. Internally, the TerraMaster D1 SSD Pro includes a dual-chip setup with an Intel JHL9480 Thunderbolt controller paired with the JMS583 USB bridge. This makes it compatible with Thunderbolt 5, 4, and 3, as well as supporting full USB4 and USB 3.x standards for broad compatibility.
+As an SSD enclosure, the D1 SSD Pro also supports a wide range of M.2 2280-form-factor SSDs, including PCIe 3.0, 4.0, and 5.0. TerraMaster notes that its recorded 7,061 MB/s read speed and 6,816 MB/s write speeds for the D1 SSD Pro were captured with a Samsung 990 Pro SSD.
+Continue reading: TerraMaster's D1 SSD Pro external enclosure can transfer 6GB in one second (full post)
+Minisforum's new N5 MAX NAS stores 40TB of SSDs + 150TB of HDDs, powered by AMD Strix Halo APU
+Anthony Garreffa
+| Jan 9, 2026 12:12 AM CST
+Minisforum showed off its new N5 MAX NAS at CES 2026, where we got some hands-on time with the new AMD Strix Halo APU-powered NAS. Check it out:
+The new Minisforum N5 MAX takes up to 5 x M.2 SSDs and 5 x HDDs for a total of 40TB of SSD storage (5 x 8TB drives) and up to 150TB of HDD storage (5 x 30TB drives) for a grand total of 190TB of storage. It's powered by up to the AMD Ryzen AI Max+ 395 "Strix Halo" APU, giving you 16 cores and 32 threads of power.
+Not only do you have the 16C/32T of Zen 5 CPU power, but up to 128GB of LPDDR5X-8000 memory. The M.2 SSD slots are split between 1 x M.2 2280 (PCIe 4.0 x4), 1 x M.2 2230/2280 (PCIe 4.0 x1), and 3 x M.2 2280 (PCIe 4.0 x1). The other 5 slots can take 3.5-inch or 2.5-inch HDDs up to 30TB a drive.
+Continue reading: Minisforum's new N5 MAX NAS stores 40TB of SSDs + 150TB of HDDs, powered by AMD Strix Halo APU (full post)
+The world's fastest SSD just became capacity leader, too: Phison E28 Gen5 coming in huge 8TB
+Anthony Garreffa
+| Jan 8, 2026 12:12 AM CST
+Phison announced at CES 2026 that its flagship E28 controller will power new waves of Gen5 SSDs at a monster 8TB capacity, all enjoying 14.9GB/sec speeds.
+The Phison PS5028-E28 supports up to 14.9GB/sec of sequential read speeds, up to 14GB/sec sequential writes, 2600K IOPS random read, and 3000K IOPS random write. Phison unveiled its new E37T Gen5 SSD controller at CES 2026, taking a different path: providing its kick ass performance (14.7GB/sec reads) with crazy power efficiency, and it'll be cheaper.
+The new Phison E37T uses a higher-end DRAM-less design, with active power consumption below an uber-impressive 2.3W. The DRAM-less design allows for single-sided Gen5 SSDs that can push 14.7GB/sec without heating up too much, and the 2.3W power consumption will also keep down heat generation.
+Continue reading: The world's fastest SSD just became capacity leader, too: Phison E28 Gen5 coming in huge 8TB (full post)
+Phison intros new E37T Gen5 SSD controller: up to 14.7GB/sec reads, DRAM-less, under 2.3W power
+Anthony Garreffa
+| Jan 7, 2026 11:20 PM CST
+Phison unveiled its new PS5037-E37T Gen5 SSD controller at CES 2026, with the new offering designed to be more cost-effective, sporting a DRAM-less design. Check it out:
+The company says it built the new PS5037-E37T Gen5 SSD controller with 3D NAND to deliver competitive price-to-performance value for customers. Phison says that its new E37T has core architecture refinements over previous generations to support the latest 3D NAND with up to 4800 MT/s speeds, resulting in 38% more performance for maximum value.
+Phison's new E37T controller features a DRAM-less design and 4 channels, meaning it's a glorious single-sided SSD that is designed for laptops, gaming handhelds, and small systems without needing additional cooling as there's only one side of chips, the other side doesn't get hot at all.
+Continue reading: Phison intros new E37T Gen5 SSD controller: up to 14.7GB/sec reads, DRAM-less, under 2.3W power (full post)
+MSI unveils its flagship SPATIUM M571 DLP Gen5 SSD at CES 2026: up to 14GB/sec speeds
+Anthony Garreffa
+| Jan 7, 2026 12:40 AM CST
+MSI unveiled its new flagship SPATIUM M571 DLP SSD at CES 2026, powered by the Phison E28 Gen5 SSD controller, and pushes up to 14GB/sec reads.
+The new SPATIUM M571 DLP SSD is based on the Phison E28 Gen5 SSD controller, which is fabbed at TSMC on its 6nm process node, with MSI claiming power consumption is lowered by up to 50% while incorporating MSI's in-house Data Loss Protection (DLP) technology, securing critical data during unexpected disruptions to power.
+The new MSI SPATIUM M571 DLP SSD will come in 1TB, 2TB, and 4TB capacities, with a launch in the coming months, while pricing is unknown at the moment.
+Continue reading: MSI unveils its flagship SPATIUM M571 DLP Gen5 SSD at CES 2026: up to 14GB/sec speeds (full post)
+Sandisk Optimus is the new SSD brand for PC gamers formerly known as WD_BLACK
+Kosta Andreadis
+| Jan 6, 2026 2:42 AM CST
+At CES 2026, Sandisk unveiled its new Sandisk Optimus line of SSDs for consumers. Well, new in the sense that Sandisk Optimus is the new name for the popular SSDs formerly known as WD Blue and WD_BLACK under Western Digital.
+The Sandisk Optimus GX line-up represents high-performance SSDs for PC gamers that were previously found under the WD_BLACK brand, such as the WD_BLACK SN7100 NVMe SSD.
+The flagship Sandisk Optimus GX PRO line is all about the best of the best and cutting-edge PCIe Gen5 speeds. Built for gamers, creators, and professionals, the Sandisk Optimus GX PRO line includes the lightning-fast WD_BLACK SN8100 NVMe SSD released in 2025.
+Continue reading: Sandisk Optimus is the new SSD brand for PC gamers formerly known as WD_BLACK (full post)
+1
+2
+3
+4
+...
+72
+Next »

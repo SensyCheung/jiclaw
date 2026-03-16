@@ -145,6 +145,7 @@ def fetch_article_content(url: str) -> str:
         "coherent.com",
         "developer.nvidia.com",
         "fiercesensors.com",
+        "tweaktown.com",
     ]
     
     # 检查是否需要 Playwright
@@ -199,37 +200,48 @@ def fetch_article_content(url: str) -> str:
 
 def fetch_site_specific_content(url: str, soup) -> str:
     """针对特定网站的正文提取规则"""
-    
+
     # thelec.net
     if "thelec.net" in url:
         node = soup.select_one("section#user-container")
         if node:
             return node.get_text(separator="\n", strip=True)
-    
+
     # tomshardware.com
     if "tomshardware.com" in url:
         node = soup.select_one("div#widgetArea16")
         if node:
             return node.get_text(separator="\n", strip=True)
-    
+
     # Nvidia News
     if "nvidianews.nvidia.com" in url:
         node = soup.select_one("div.nv-content-wrap")
         if node:
             return node.get_text(separator="\n", strip=True)
-    
+
     # Intel Newsroom
     if "newsroom.intel.com" in url:
         node = soup.select_one("div.article-body, div.content")
         if node:
             return node.get_text(separator="\n", strip=True)
-    
+
     # Lam Research
     if "lamresearch.com" in url:
         node = soup.select_one("div.article-content, main")
         if node:
             return node.get_text(separator="\n", strip=True)
-    
+
+    # Tweaktown
+    if "tweaktown.com" in url:
+        # 文章正文在 div.article-content 中
+        node = soup.select_one("div.article-content")
+        if not node:
+            node = soup.select_one("div.content")
+        if not node:
+            node = soup.select_one("article")
+        if node:
+            return node.get_text(separator="\n", strip=True)
+
     return ""
 
 
@@ -442,57 +454,71 @@ def calculate_content_score(node) -> float:
 
 
 def fetch_article_content_playwright(url: str) -> str:
-    """使用 Playwright 抓取 JS 动态加载的网页内容"""
+    """使用 Playwright 抓取 JS 动态加载的网页内容（带 stealth 绕过 Cloudflare）"""
     from playwright.sync_api import sync_playwright
-    
+
     try:
         with sync_playwright() as p:
             browser = p.chromium.launch(
                 headless=True,
-                args=['--disable-blink-features=AutomationControlled', '--no-sandbox']
+                args=[
+                    '--disable-blink-features=AutomationControlled',
+                    '--no-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--disable-gpu',
+                    '--window-size=1920,1080',
+                ]
             )
-            
-            page = browser.new_page()
-            page.set_viewport_size({"width": 1920, "height": 1080})
-            
-            # 隐藏 WebDriver 特征
+
+            context = browser.new_context(
+                viewport={'width': 1920, 'height': 1080},
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+            )
+            page = context.new_page()
+
+            # stealth 设置
             page.add_init_script("""
                 Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+                Object.defineProperty(document, 'hidden', {get: () => false});
+                Object.defineProperty(document, 'visibilityState', {get: () => 'visible'});
             """)
-            
-            page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            
+
+            page.goto(url, wait_until="domcontentloaded", timeout=120000)
+
             # 等待内容加载
-            page.wait_for_timeout(5000)
-            
+            page.wait_for_timeout(10000)
+
             # 尝试滚动触发懒加载
             try:
                 page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                page.wait_for_timeout(2000)
+                page.wait_for_timeout(3000)
                 page.evaluate("window.scrollTo(0, 0)")
-                page.wait_for_timeout(1000)
+                page.wait_for_timeout(2000)
             except:
                 pass
-            
+
             html_content = page.content()
             browser.close()
-        
+
         soup = BeautifulSoup(html_content, "html.parser")
-        
+
         # 移除无关元素
         for tag in soup(["script", "style", "nav", "header", "footer", "aside", "noscript"]):
             tag.decompose()
-        
+
         # 针对特定网站的处理
         text = fetch_site_specific_content(url, soup)
         if text and len(text) > 200:
             return text
-        
+
         # 智能正文提取
         text = extract_main_content(soup)
         if text and len(text) > 200:
             return text
-        
+
         # 兜底
         body = soup.body.get_text(separator="\n", strip=True) if soup.body else ""
         return body if len(body) > 100 else ""

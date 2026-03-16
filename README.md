@@ -73,6 +73,15 @@ SCRAPER_CONFIG = {
         "date_selector": "span.date",
         "date_format": "%Y.%m.%d",
     },
+    "tweaktown": {
+        "name": "Tweaktown News",
+        "url": "https://www.tweaktown.com/news/storage/index.html",
+        "list_selector": "article.latestpost",
+        "title_selector": "h2 a",
+        "url_base": "https://www.tweaktown.com",
+        "date_selector": "div.content-latestpost-infobar",
+        "date_format": "%b %d, %Y",
+    },
 }
 ```
 
