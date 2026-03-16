@@ -1,3 +1,86 @@
-URL: https://entegrisinc.gcs-web.com/news-releases/news-release-details/entegris-reports-results-fourth-quarter-2025
+URL: https://www.electronicdesign.com/technologies/eda/video/55360848/mirabilis-design-how-visualsim-architect-models-ucie-chiplet-latency-and-multi-die-cpu-tradeoffs
 --------------------
-Net sales of $824&nbsp;million. GAAP diluted EPS of $0.32. Non-GAAP diluted EPS of $0.70. BILLERICA, Mass. --(BUSINESS WIRE)--Feb. 10, 2026-- Entegris, Inc. (NASDAQ: ENTG), today reported its financial results for the Company’s fourth quarter ended December 31, 2025.
+Sponsored
+Modeling Chiplet Latency with VisualSim Architect
+VisualSim Architect shows how system-level modeling can expose latency, power, and thermal tradeoffs early in chiplet-based designs.
+Deepak Shankar
+,
+Cabe Atwell
+Sponsored:
+Mirabilis Design
+March 11, 2026
+2 min read
+What you'll learn:
+How VisualSim Architect models complex multi-die and chiplet-based systems before implementation.
+Why UCIe latency analysis is important when integrating chiplets from different vendors.
+How comparing 2- and 4-die CPU configurations can reveal performance, power, and thermal tradeoffs.
+Designing virtually is the least costly and most effective way to design complex systems.
+VisualSim Architect
+from Mirabilis Design lets engineers combine and test complex systems like cars, satellites, all the way down to chiplets. Systems can become even more complex when combining different components from different vendors. VisualSim Architect helps simulate that system ahead of time.
+System modeling isn't just component assemblies, but also the flow, or the communication, between them all.
+Chiplet UCIe modeling accuracy
+is essential in any design. Predictability and testing early on save time and money. But, how is accuracy dealt with when integrating chiplets from
+different vendors
+?
+In the video, Deepak Shankar, Founder of Mirabilis Design, delves into the latency of transmitting 64 bytes versus 128 bytes across the same system. He brought forth how 128 might be more efficient in some cases, but not enough to go beyond 64. Simulating a UCIe interface here allowed the exploration of results with simple parameters injected into the system.
+In a more complex example, Shankar shows a
+2-die vs. a 4-die CPU model
+. In both examples, applications run on the CPUs, showing power demand, heat generated, and latency over time. The 4-die CPU configuration experienced a significant increase in latency over the 2-die configuration. This reveals that parameters inside the system model cause the increase in latency. Optimization ahead of time is the true benefit of system simulation. VisualSim Architect is essential in the design process.
+>>Check out more of our Chiplet Summit 2026 coverage
+Santa Clara Convenction Center | Chiplet Summit
+Latest Technology at the 2026 Chiplet Summit
+Check out the breaking news, videos, and podcasts coming from this year's Chiplet Summit.
+William Wong | Santa Clara Convention Center
+Reflecting on the 2026 Chiplet Summit
+Editor Bill Wong’s observations from the recent 2026 Chiplet Summit.
+About the Author
+Deepak Shankar
+Founder, Mirabilis Design
+Deepak Shankar, founder of Mirabilis Design, has over two decades of experience in management and marketing of system-level design tools. Prior to establishing Mirabilis Design, he was Vice President, Business Development at MemCall, a fabless semiconductor company and SpinCircuit, a joint venture of Hewlett-Packard, Flextronics, and Cadence. He started his career designing network simulators for the U.S. Federal Agencies, and managing discrete-event simulators for Cadence.
+Email
+Cabe Atwell
+Technology Editor, Electronic Design
+Cabe is a Technology Editor for Electronic Design.
+Engineer, Machinist, Maker, Writer. A graduate Electrical Engineer actively plying his expertise in the industry and at his company, Gunhead. When not designing/building, he creates a steady torrent of projects and content in the media world. Many of his projects and articles are online at element14 & SolidSmack, industry-focused work at
+EETimes
+&
+EDN
+, and offbeat articles at
+Make Magazine
+. Currently, you can find him hosting webinars and contributing to
+Electronic Design
+and
+Machine Design
+.
+Cabe is an electrical engineer, design consultant and author  with 25 years’ experience. His most recent book is “
+Essential 555 IC: Design,  Configure, and Create Clever Circuits
+”
+Cabe writes the
+Engineering on Friday
+blog on Electronic Design.
+Sign up for our eNewsletters
+Get the latest news and updates
+Sign Up
+Related
+Perform Advanced Semi Analysis with Double-Pulse Testing
+Take the Proper Steps to Flight-Test-Instrumentation Design
+Sponsored
+Smarter Sunroof Control with MPS Power ICs
+Sponsored
+Optimized Power for Wiper Control Systems
+Voice Your Opinion!
+To join the conversation, and become an exclusive member of Electronic Design, create an account today!
+Join today!
+I already have an account
+Trending
+Beware of Too Many Magicians and Politicians
+Efficient Power Conversion from an Intermediate Voltage Rail
+How Does Lockstep Architecture Enhance MCU Performance?
+Sponsored Picks
+Sponsored
+LT8645/LT8646 Synchronous Step-Down Regulators
+Sponsored
+Designing Accurate Gas Monitoring Systems with Chemiresistive Devices
+Sponsored
+Connectivity – The Backbone of Sustainable Automation
+Load More Content
