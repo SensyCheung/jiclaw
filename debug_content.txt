@@ -1,68 +1,153 @@
-URL: https://www.servethehome.com/10gtek-quad-port-2-5gbe-realtek-rtl8125-nic-review/
+URL: https://news.mit.edu/2026/new-sensor-sniffs-out-pneumonia-patients-breath-0316
 --------------------
-Home
-Networking
-10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Review
-Networking
-Facebook
+Breadcrumb
+MIT News
+New sensor sniffs out pneumonia on a patient’s breath
+New sensor sniffs out pneumonia on a patient’s breath
+The technology could enable fast, point-of-care diagnoses for pneumonia and other lung conditions.
+Jennifer Chu
+|
+MIT News
+Publication Date
+:
+March 16, 2026
+Press Inquiries
+Press Contact
+:
+Abby
+Abazorius
+Email:
+abbya@mit.edu
+Phone:
+617-253-2709
+MIT News Office
+Media Download
+↓
+Download Image
+Caption
+:
+MIT MechE Postdoctoral Associate Aditya Garg (left) and MechE Doctoral student Seleem Badawy stand behind the Raman microscope used to evaluate the Plasmosniff chip.
+Credits
+:
+Photo: Tony Pulsone
+↓
+Download Image
+Caption
+:
+Photo of the PlasmoSniff chip next to a coin for scale. “In practice, we envision that a patient would inhale nanoparticles and, within about 10 minutes, exhale a synthetic biomarker that reports on lung status,” says Garg.
+Credits
+:
+Photo: Tony Pulsone
+↓
+Download Image
+Caption
+:
+Loza Tadesse, left, and her group looked to design a sensitive, portable breath test. Tadesse and Aditya Garg stand next to the Raman microscope.
+Credits
+:
+Photo: Tony Pulsone
+↓
+Download Image
+Caption
+:
+Seleem Badawy places the PlasmoSniff chip on the Raman microscope.
+Credits
+:
+Photo: Tony Pulsone
+*Terms of Use:
+Images for download on the MIT News office website are made available to non-commercial entities, press and the general public under a
+Creative Commons Attribution Non-Commercial No Derivatives license
+.
+You may not alter the images provided, other than to crop them to size. A credit line must be used when reproducing images; if one is not provided
+below, credit the images to "MIT."
+Close
+Caption
+:
+MIT MechE Postdoctoral Associate Aditya Garg (left) and MechE Doctoral student Seleem Badawy stand behind the Raman microscope used to evaluate the Plasmosniff chip.
+Credits
+:
+Photo: Tony Pulsone
+Caption
+:
+Photo of the PlasmoSniff chip next to a coin for scale. “In practice, we envision that a patient would inhale nanoparticles and, within about 10 minutes, exhale a synthetic biomarker that reports on lung status,” says Garg.
+Credits
+:
+Photo: Tony Pulsone
+Caption
+:
+Loza Tadesse, left, and her group looked to design a sensitive, portable breath test. Tadesse and Aditya Garg stand next to the Raman microscope.
+Credits
+:
+Photo: Tony Pulsone
+Caption
+:
+Seleem Badawy places the PlasmoSniff chip on the Raman microscope.
+Credits
+:
+Photo: Tony Pulsone
+Previous image
+Next image
+Diagnosing some diseases could be as easy as breathing into a tube. MIT engineers have developed a test to detect disease-related compounds in a patient’s breath. The new test could provide a faster way to diagnose pneumonia and other lung conditions. Rather than sit for a chest X-ray or wait hours for a lab result, a patient may one day take a breath test and get a diagnosis within minutes.
+The new breath test is a portable, chip-scale sensor that traps and detects synthetic compounds, or “biomarkers,” of disease, which are initially attached to inhalable nanoparticles. The biomarkers serve as tiny tags that can only be unlocked and detached from the nanoparticle by a very particular key, such as a disease-related enzyme.
+The idea is that a person would first breathe in the nanoparticles, similar to inhaling asthma medicine. If the person is healthy, the nanoparticles would eventually circulate out of the body intact. If a disease such as pneumonia is present, however, enzymes produced as a result of the infection would snip off the nanoparticles’ biomarkers. These untethered biomarkers would be exhaled and measured, confirming the presence of the disease.
+Until now, detecting such exhaled biomarkers required laboratory-grade instruments that are not available in most doctor’s offices. The MIT team has now shown they can detect exhaled biomarkers of pneumonia at extremely low concentrations using the new portable, chip-scale breath test, which they’ve dubbed “PlasmoSniff.”
+They plan to incorporate the new sensor into a handheld instrument that could be used in clinical or at-home settings to quickly diagnose pneumonia and other diseases.
+“In practice, we envision that a patient would inhale nanoparticles and, within about 10 minutes, exhale a synthetic biomarker that reports on lung status,” says Aditya Garg, a postdoc in MIT’s Department of Mechanical Engineering. “Our new PlasmoSniff technology would enable detection of these exhaled biomarkers within minutes at the point of care.”
+Garg is the first author of a study that details the team’s new sensor design. The study
+appears online in the journal
+Nano Letters
+. MIT co-authors include Marissa Morales, Aashini Shah, Daniel Kim, Ming Lei, Jia Dong, Seleem Badawy, Sahil Patel, Sangeeta Bhatia, and Loza Tadesse.
+Tailored tags
+PlasmoSniff is a project led by Loza Tadesse, an assistant professor of mechanical engineering at MIT. Tadesse’s group builds diagnostic devices that can be used directly in doctor’s office and other point-of-care settings. Her work specializes in spectroscopy, using light to identify key fingerprints in a chemical or molecule.
+Several years ago, Tadesse teamed up with Sangeeta Bhatia, the John and Dorothy Wilson Professor of Health Sciences and Technology and of Electrical Engineering and Computer Science at MIT. Bhatia’s group focuses in part on developing nanoparticle sensors — tiny particles that can be tagged with a synthetic biomarker. Bhatia can tailor these biomarkers to cleave from their nanoparticle only in the presence of specific “protease” enzymes that are produced by certain diseases.
+In work that was
+reported in 2020
+, Bhatia’s group demonstrated they could detect cleaved biomarkers of pneumonia from the breath of infected mice. The biomarkers were exhaled at extremely low concentrations, of about 10 parts per billion. Nevertheless, the researchers were able to detect the compounds using mass spectrometry — a technology that is highly sensitive but requires bulky and expensive instrumentation that is not widely available in clinical settings.
+“We thought, ‘How can we achieve that same sensitivity, in a way that’s accessible, at the point of need, and in a chip format that can be scalable in terms of cost?’” Tadesse says.
+A fingerprint trap
+For their new study, Tadesse’s group looked to design a sensitive, portable breath test to quickly detect Bhatia’s biomarkers. Their new design centers on “plasmonics” — the study and manipulation of light and how it interacts with matter at the nanoscale.
+The researchers noted that molecules exhibit characteristic vibrational modes, corresponding to the motions of atoms within their chemical bonds. These vibrations can be detected using Raman spectroscopy, an optical technique in which molecules are illuminated with light. A small fraction of the scattered light shifts in energy due to interactions with a molecule’s vibrations. By measuring these energy shifts, researchers can identify molecules based on their distinctive vibrational fingerprints.
+To detect Bhatia’s biomarkers, however, they would need to isolate the comparatively few molecules from the dense cloud of many other exhaled molecules. They would also need to boost the biomarker’s vibrational signal, as the Raman-scattered light by an individual molecule is inherently extremely small.
+“This is a needle-in-a-haystack problem,” Tadesse says. “Our method detects that needle that would otherwise be embedded in the noise.”
+The team’s new sensor is designed to trap target biomarkers and boost their vibrational signal. The core of the sensor is made from a thin gold film, above which the researchers suspended a layer of gold nanoparticles. The gold nanoparticles are coated with a porous silica shell, generating a 5-nanometer-wide gap between the gold nanoparticles and the gold film. The silica is modified to strongly bond with molecules of water. The hydrogen in water can in turn bond with the target biomarkers. If any biomarkers pass through the sensor’s gap, they stick to the water molecules like Velcro.
+The sensor’s gap is engineered to strongly amplify light due to plasmonic resonance, where electrons in the nearby gold structures collectively oscillate in response to incoming light, concentrating the electromagnetic field into the gap. Biomarkers trapped in these gaps experience a greatly enhanced electromagnetic field, which amplifies their Raman scattering signal. The researchers can then measure the Raman scattered light, and compare the pattern to the biomarker’s known “fingerprint,” to confirm its presence.
+The team worked with Daniel Kim, a graduate student in Bhatia’s lab, and tested the sensor’s performance on samples of lung fluid that they obtained from healthy mice. They spiked these samples with biomarkers of pneumonia that Bhatia’s group previously designed. They then placed the spiked fluid in a vial and heated it to evaporate the fluid, to simulate exhaled breath. They placed the new sensor on the underside of the vial’s cap and used a Raman spectrometer to measure the scattered light as the fluid vapor passed through the sensor.
+Through these experiments, they showed the sensor quickly detected biomarkers of pneumonia at extremely low, clinically relevant concentrations.
+“Our next goal is to have a breath collection system, like a mask you can breathe into,” Garg says. “A patient would first use something like an asthma inhaler to inhale the nanoparticles. They could then breathe through the mask sensor for five minutes. We could then integrate a handheld Raman spectrometer to detect whatever biomarker is breathed out, within minutes.”
+Breath tests for disease, sometimes referred to as disease breathalyzers, are an emerging technology. Most designs are still in the experimental stage, and take different approaches to detect various conditions such as certain cancers, intestinal infections, and viruses such as Covid-19. The MIT team notes that its design can be used to detect diseases beyond pneumonia, as well as biomarkers that are not related to disease, as long as the biomarker of interest has a known vibrational “fingerprint.”
+“It’s not just limited to these biomarkers or even diagnostic applications,” Tadesse says. “It can sniff out industrial chemicals or airborne pollutants as well. If a molecule can form hydrogen bonds with water, we can use its vibrational fingerprint to detect it. It’s a pretty universal platform.”
+This work was supported, in part, by funding from Open Philanthropy (now Coefficient Giving). Several characterization and fabrication steps were conducted at MIT.nano.
+Share
+this news article on:
 X
-Pinterest
-Linkedin
-ReddIt
-Email
+Facebook
+LinkedIn
+Reddit
 Print
-Copy URL
-10Gtek Quad Port Realtek RTL8125BG Front Angled 1
-We recently purchased a 10Gtek quad-port 2.5GbE Realtek RTL8125 NIC. This is an interesting one since it is not a single controller. Instead, there are four Realtek RTL8125BG NICs on a single card. To make it work, there is an ASMedia ASM1812 to allow the four NICs to be used on a single PCIe root without bifurcation. This made it an interesting card to test, so let us get to it.
-Here is an
-Amazon affiliate link
-to the card we purchased.
-10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Hardware Overview
-The card is a fairly simple and small low-profile card. Unlike many of the other NICs we review, instead of the heatsink covering the NIC, the heatsink here is covering the ASMedia ASM1812 PCIe hub.
-10Gtek Quad Port Realtek RTL8125BG Top Angled 1
-Something else a bit different is that this is a PCIe Gen2 x4 card.
-10Gtek Quad Port Realtek RTL8125BG Slot 1
-Here are the transformers and four small RTL8125BG NICs.
-10Gtek Quad Port Realtek RTL8125BG Chip 1
-On the rear, we mostly just get labels.
-10Gtek Quad Port Realtek RTL8125BG Front Angled 4
-The big feature, of course, is the four 2.5GbE ports.
-10Gtek Quad Port Realtek RTL8125BG Front 1
-The card also comes with a low-profile I/O bracket.
-10Gtek Quad Port Realtek RTL8125BG Attachment 1
-The card shows up with four Realtek 2.5GbE NICs in the system.
-10Gtek Quad Port Realtek RTL8125 In Windows Device Manager
-Something strange is that, like another 10Gtek quad port card we looked at recently, when we plugged a cable into the end port, instead of getting a link on the first or fourth enumerated NIC, we got one on the third.
-10Gtek Realtek RTL8125 Quad Port Enumeration In Windows With Far End Port Connected
-This is a small thing, but one that can just be annoying. Next, let us get to performance.
-10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Performance
-We just used our iperf3 test setup for this one:
-10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Performance
-Performance was not ideal. This is probably because of the ASM1812 sitting on the PCIe Gen2 x4 link. The links ran at normal speed when run 2-3 hard, but the challenge came with the test harness and running all four. On the other hand, even with this, we were running well above 2Gbps speeds.
-Final Words
-The Realtek RTL8125 has been around for some time, and this is a relatively inexpensive way to get four on a card. You are still better off with a 10GbE card for raw throughput, but sometimes you just need extra network interfaces. If your options for $45-60 are either a quad-port 1GbE NIC or a quad-port 2.5GbE NIC, there are reasons to just go with the higher throughput option, even if you do not get four ports running at full speed simultaneously. There are still reasons prefer cards like the Intel i350-t4 instead of this type of setup. At the same time we just wanted to see what this card offers.
-10Gtek Quad Port Realtek RTL8125BG Top 1
-Overall, it worked reasonably well, but it is probably not the cleanest solution of all of the quad-port cards we have ever tested.
-Where to Buy
-Here is an
-Amazon affiliate link
-to the card we purchased.
-RELATED ARTICLES
-MORE FROM AUTHOR
-Broadcom Launches Taurus BCM83640 A 3nm 400G Per Lane Optical DSP
-GigaPlus GP-S50-0800 Review An 8-Port 5GbE Switch
-YuanLey 5GbE Realtek RTL8126 PCIe Network Adapter Review
-1 COMMENT
-“ when run 2-3 hard” running?
-“ There are still reasons prefer cards”
-We? To?
-LEAVE A REPLY
-Please enter your comment!
-Please enter your name here
-You have entered an incorrect email address!
-Please enter your email address here
-Save my name, email, and website in this browser for the next time I comment.
-Sign me up for the STH newsletter!
-Δ
-This site uses Akismet to reduce spam.
-Learn how your comment data is processed.
+Paper: “Towards breath based diagnostics via water-mediated capture of synthetic breath biomarkers in SERS-active plasmonic nanogaps”
+Check for open access version(s) of the research mentioned in this article.
+Related Links
+Loza Tadesse
+Department of Mechanical Engineering
+School of Engineering
+Related Topics
+Research
+Disease
+Diagnostics
+Sensors
+Bacteria
+Biological engineering
+Medicine
+Biology
+Chemistry
+Health care
+Mechanical engineering
+Nanoscience and nanotechnology
+MIT.nano
+School of Engineering
+Related Articles
+Exhaled biomarkers can reveal lung disease
+Checking the quality of materials just got easier with a new AI tool
+Tiny magnetic beads produce an optical signal that could be used to quickly detect pathogens
+Previous item
+Next item
