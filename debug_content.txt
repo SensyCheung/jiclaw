@@ -1,49 +1,30 @@
-URL: http://idw-online.de/en/news867454
+URL: https://www.etnews.com/20260316000412
 --------------------
-d
-Instance:
-Share
-Share on:
-03/12/2026 11:27
-With the help of AI: Search robot thinks for itself
-Andreas Schmitz
-Corporate Communications Center
-Technische Universität München
--	Researchers combine 3D image recognition with language models.
--	Artificial intelligence can be integrated into any robot.
--	Robots use continuous probability calculations to guide searches.
-A robot that can locate lost items on command – this is the latest development at the Technical University of Munich (TUM). It combines knowledge from the internet with a spatial map of its surroundings to efficiently find the objects being sought.
-The new robot from Prof. Angela Schoellig’s TUM Learning Systems and Robotics Lab looks like a broomstick on wheels with a camera mounted at the top. It is one of the first robots that not only integrates image understanding but also applies it to a clearly defined task.
-To find a pair of glasses misplaced in the kitchen, for example, the robot has to look around and build a three-dimensional image of the room. The camera initially provides two-dimensional images, but these pixels also contain depth information. This creates a spatial map of the environment that is accurate to the centimeter and is constantly updated. A laptop also provides the robot with information about which objects are visible in the image and what significance they have for humans.
-“We have taught the robot to understand its surroundings,” says Prof. Angela Schoellig. The head of the Robotics Lab at the TUM Chair of Safety, Performance and Reliability for Learning Systems aims to develop robots that can navigate any environment independently. Humanoid robots working in factories or robots in care settings in private homes require this newly developed basic understanding, which, as Schoellig explains, “is important for all robots that move in spaces that are constantly changing”.
-Internet knowledge translated into the robot’s language
-The robot therefore understands that a table or window sill can be used to briefly set down a pair of glasses, whereas a stovetop or a sink are not suitable for this purpose. “The language model captures the relationships between the objects and we convert this information into the robot’s language,” explains Prof. Schoellig. Two-digit numbers appear on the three-dimensional map of the environment, constantly recalculating the likelihood that the object being searched for is located there. According to the research results, the robot then searches the probable locations almost 30 per cent more efficiently than if it searched randomly throughout the room. Artificial intelligence is used in two ways: on the one hand in image recognition and on the other hand through the use of a language model.
-Another special capability of the robot: it remembers previous images and is able to compare them with new images of its surroundings. If a new object suddenly appears in the kitchen, it recognizes the change with a high degree of certainty (95 per cent) and marks these areas as “highly probable” search locations.
-Next step: searching behind cupboard doors
-In the next step, the TUM scientist and board member at the Munich Institute of Robotics and Machine Intelligence (TUM MIRMI) also wants to search for objects that are in a drawer or behind a door. To do this, however, the robot will not merely have to draw on knowledge from the internet but will also have to interact with its surroundings. Robotic arms and hands must open a cupboard and determine whether it opens upwards or sideways and how best to grasp the handle. This will enable the robot to search even in closed spaces such as cupboards or drawers.
-Further information:
-- Prof. Angela Schoellig is a member of the board of the Munich Institute of Robotics and Machine Intelligence (TUM MIRMI). The institute is an integrative research institute at the Technical University of Munich (TUM) that focuses on robotics and AI. The institute brings together expertise in key areas of robotics, including perception and data science. Nearly 80 TUM chairs are networked within MIRMI to develop innovative robotic and AI-supported solutions for the environment, health, mobility, work, as well as security and defense. TUM MIRMI is headed by Prof. Lorenzo Masia. Further information can be found at
-https://www.mirmi.tum.de/
-.
-- A demonstration of the search robot can be seen until Friday, 13 March at the German Robotics Congress in Cologne:
-https://robotics-institute-germany.de/event/grc/
-Additional material for media outlets:
--	Photos for download:
-https://mediatum.ub.tum.de/1846659
--	Scientific video:
-https://utiasdsl.github.io/semi-static-semantic-exploration/
-Contact for scientific information:
-Prof. Angela Schoellig
-Chair of Safety, Performance and Reliability for Learning Systems
-Technical University of Munich (TUM)
-angela.schoellig@tum.de
-Original publication:
-Where did I leave my glasses? Open-Vocabulary Semantic Exploration in Real-World Semi-Static Environments; Benjamin Bogenberger, Oliver Harrison, Orrin Dahanaggamaarachchi, Lukas Brunke, Jingxing Qian, Siqi Zhou, Angela P. Schoellig; IEEE Robotics and Automation Letters, 3 March 2026;
-https://ieeexplore.ieee.org/document/11359697
-Images
-Criteria of this press release:
-Journalists, Scientists and scholars
-Electrical engineering, Information technology, Mathematics, Mechanical engineering
-transregional, national
-Research results
-English
+전자
+중공업
+한국ESG연구소, 최윤범 고려아연 회장 사내이사 재선임안 찬성 권고
+발행일 : 2026-03-16 17:23
+공유하기
+페이스북
+X(트위터)
+메일
+URL 복사
+글자크기 설정
+가
+작게
+가
+보통
+가
+크게
+최윤범 고려아연 회장이 다보스포럼 핵심광물 분야의 전략적 파트너십과 투자 세션에 공식 연사로 나서 발언하고 있다. 고려아연
+고려아연은 한국ESG연구소가 오는 24일 열리는 고려아연 정기주주총회를 앞두고 발간한 의안분석보고서에서 최윤범 회장의 사내이사 선임안에 찬성을 권고하고 영풍·MBK 측이 제안한 이사 6인 선임안에는 반대 의견을 제시했다고 16일 밝혔다.
+한국ESG연구소는 고려아연 현 이사회가 추천한 최윤범 사내이사 후보, 황덕남 사외이사 후보에 대해 찬성을 권고했다. 김보영 감사위원 선임안, 감사위원이 되는 이민호 사외이사 분리선임안에 대해서도 찬성 의견을 제시했다.
+반면 영풍·MBK파트너스 측이 추천한 이사 후보 4인 중 최연석 기타비상무이사 후보, 이선숙 사외이사 후보에 대해 반대를 권고했다.
+이번 정기주총의 핵심 쟁점으로 거론되는 '집중투표에 의해 선임할 이사의 수 결정'과 관련해 한국ESG연구소는 이사 5인 선임안에 찬성하고 영풍·MBK 측이 제안한 이사 6인 선임안에는 반대를 권고했다.
+이외에도 한국ESG연구소는 분리선출 감사위원 확대를 위한 정관 변경, 소수주주에 대한 보호 관련 정관 명문화, 전자주주총회 제도 도입, 이사회 내 독립이사 구성요건 명확화 및 독립이사 명칭 변경, 분기배당 관련 정관 변경 등 회사 측 주요 안건에 모두 찬성을 권고했다.
+고려아연은 한국ESG연구소의 의결권 행사 권고는 고려아연 현 이사회가 지지하는 안건에 우호적 의견을 제시한 글래스루이스, ISS, 한국ESG평가원 등의 판단 흐름에 부합한다고 설명했다. 국내외 주요 의결권 자문사들은 고려아연 현 경영진의 경영 성과와 거버넌스 개선 노력, 주주환원 정책, 중장기 사업 전략 추진을 긍정적으로 평가해 왔다.
+고려아연 관계자는 “한국ESG연구소가 당사 현 경영진의 경영성과와 거버넌스 개선 노력, 주주환원정책 등을 종합적으로 검토해 이사회가 지지하는 이사 후보, 안건에 대해 찬성 의견을 제시한 것으로 보인다”고 밝혔다.
+조성우 기자 good_sw@etnews.com
+조성우 기자
+기사 더보기
+HD한국조선해양, 컨테이너선 10척 수주…8237억원 규모
