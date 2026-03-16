@@ -1,148 +1,49 @@
-URL: https://anysilicon.com/full-service-foundry-accelerate-your-analog-mixed-signal-prototyping-with-the-2026-mpw-calendar/
+URL: http://idw-online.de/en/news867454
 --------------------
-1117 Views
-Full-Service Foundry: accelerate your analog mixed-signal prototyping with the 2026 MPW calendar
-The ams OSRAM 2026 MPW (Multi-Project Wafer) program expands its technology offering with new 180nm options, including the C18 CMOS specialty platform further enriching the MPW portfolio. For mixed-signal designs in mature nodes, this extension delivers strong analog, high-voltage and BCD capabilities tailored to customer needs.
-The MPW program provides design engineers with a low-entry-barrier, cost-efficient way to accelerate integrate-circuit development through fast and affordable prototyping in a high-volume, automotive-grade European full-service foundry. It supports established companies, design houses, startups, and research institutions in prototyping and validating ICs without the cost of full wafer runs, while maintaining a seamless path to high-volume production.
-The MPW program is also ideal for companies looking to test designs and reduce supply-chain risks by exploring ‘local for local’ manufacturing solutions.
-What
-i
-s
-n
-ew in 2026?
-The 2026 MPW program introduces new
-180nm mixed-signal CMOS
-and
-180nm BCD (Bipolar-CMOS
-‑DMOS)
-technology platforms. These versatile 180nm technology platforms support
-1.8
-V/3.3
-V, 1.8
-V/5
-V
-, and
-1.8
-V/5
-V/70
-V (BCD)
-power-supply  domains. This expansion is central to ams OSRAM’s drive to be a European foundry of choice by offering reliable supply, cycle time, and trusted long-term partnerships with consistent quality and transparency.
-These 180nm platforms enable a wide range of designs such as power-management ICs, motor management ICs, motor‑driver ICs, LED/laser driver ICs, actuator driver and control ICs, sensor interfaces, mixed-signal circuits, and high-voltage devices. Engineered for high reliability and performance, the 180nm platforms meet the demanding requirements of automotive and other high-performance analog applications, and are suitable for industrial, medical, consumer, security, defense and space applications.
-The MPW program also continues to offer proven technologies such as 350nm CMOS, CMOS high-voltage and embedded‑flash options, giving designers flexibility across many application areas.
-Global access made easy
-Participation in the MPW program is made seamless and locally supported through collaboration with leading organizations and strategic partners worldwide.
-In Europe, access is provided through CIME‑P (formerly CMP) and Fraunhofer IIS via EUROPRACTICE.
-In Asia, MEDS Technologies supports customers across the region.
-US customers are also supported via California-based office of Fraunhofer IIS.
-These long‑standing partnerships give universities, research institutes, startups, design houses, and established companies worldwide easy access to our trusted foundry services.
-Customers benefit from a one-stop‑shop that covers wafer fabrication, optional analog IP, memory generation, and delivery of diced wafers or packaged parts in ceramic or plastic packages. This integrated approach simplifies development and reduces coordination effort for engineering teams.
-Automotive-grade processes trusted by major manufacturers
-As a European-based foundry, ams OSRAM places quality and reliability at the core of everything we do. Our processes meet stringent automotive and industrial standards, and we provide comprehensive design support through a
-Cadence based Process Design Kit (PDK)
-that includes all essential libraries, IO cells, and analog blocks.
-How to join a 2026 MPW run
-Participation in an MPW run is based on a completed GDSII database submitted in line with the published tape out dates. After successful data checks and mask preparation, customers typically receive untested samples (dice and/or packaged parts) within about ten to twelve weeks, depending on the chosen process.
-To join an MPW run, prospective customers follow three steps:
-Step 1:
-Select the target process and a suitable 2026 tape-out date from the new MPW calendar.
-Step 2:
-Contact the relevant access partner or reach out to ams OSRAM directly for guidance.
-Step 3:
-Design your chip or test structures using ams OSRAM PDK and sign the necessary agreements so that your GDSII can be accepted on the chosen run.
-Next steps
-The 2026 MPW calendar including process options and practical details on tape-out and deliverables, is now available on the ams OSRAM Full-Service Foundry pages. Design teams that plan early can secure a preferred shuttle slot and move faster from concept to qualified silicon.
-Take this opportunity to bring your ideas to life.
-Contact our MPW team:
-foundry@ams-osram.com
-Author:
-Joni Jukka Krister Mellin
-Biography:
-Principal Product Marketing Manager, Full-Service Foundry at ams OSRAM, has over two decades of experience in semiconductor and photonics technologies. His career spans engineering, business leadership, and foundry operations across ams OSRAM, X‑FAB, Nokia, Microsoft and Micro Analog Systems, backed by technical degrees from Aalto University and a dual global executive MBA.
-Recent Stories
-CEO Talk: Uttam Singhal of SignOff Semiconductors
-Read More »
-28nm vs 40nm vs 65nm — The Real Cost, Risk, and Power Trade-Off for ASICs
-Read More »
-TSMC 22nm vs UMC 22nm vs GF 22FDX — Which Should You Choose?
-Read More »
-Exclusive Interview: Mika Jäsberg Discusses CoreHW’s RTLS Offering
-Read More »
-Find a Local Semiconductor/ASIC/IP Sales Representative (Asia, Europe, US)
-Read More »
-The Future of Semiconductors: A Deep Dive with Howard Pakosh
-Read More »
-Innovation Meets Customization: Unlocking breakthroughs in next-gen sensing
-Read More »
-28nm Wafer & MPW Cost Explained: Constraints, Risk, and When It Makes Sense
-Read More »
-Get Price for ASIC Design Services
-Get Price for IC Packaging
-Today’s News
-Keysight Launches 224G Test Solutions for 1.6T Optical Networks
-Credo Purchases CoMira Solutions
-Silvaco Announces Q4 and Full-Year 2025 Financial Results
-GlobalFoundries Sets Prices for Public Offering and Share Buyback
-SEMIFIVE Secures KRW 18 Billion Turnkey Design Deal with AI Chip Firm
-Transforming Europe's Tech Scene
-Find Vendors
-IP Cores
-Find ASIC Services
-Keywords
-Category
-All
-ASIC design companies
-IC Layout
-Top ASIC Verification Companies
-Foundries
-IC Packaging
-IC Testing
-Turnkey
-IC Qualification
-Failure Analysis
-Find IP Cores
-Keywords
-Foundry
-All
-TSMC
-Samsung
-GF
-UMC
-SMIC
-SkyWater
-Tower
-N/A
-Get Price Offers From
-ASIC Design Houses
-Wafer Foundries
-Chip Packaging
-IC Testing
-IP Core Vendors
-FPGA Design
-Featured Vendor
-AnSem
-Welcome New Vendors
-BitSim Now
-AnaBatIC Semiconductor
-TMS Test Services
-Pacific MicroCHIP
-XQWave
-Recent Posts
-CAST Debuts TSN-EP-10G IP for High-Performance, Time-Sensitive Networking Ethernet Designs
-TES Unveils High-Performance 8/40MHz Oscillator and Clock Buffer IPs for Reliable On-Chip Timing Solutions for X-FAB XT018 – 0.18µm BCD-on-SOI technology.
-CAST Introduces 400 Gbps UDP/IP Hardware Stack IP Core for High-Performance ASIC Designs
-Full-Service Foundry: accelerate your analog mixed-signal prototyping with the 2026 MPW calendar
-CEO Talk: Uttam Singhal of SignOff Semiconductors
-28nm vs 40nm vs 65nm — The Real Cost, Risk, and Power Trade-Off for ASICs
-Most Popular Blog Posts
-TSMC to Break Ground on 1.4nm “A14” Fab on November 5
-Amkor Technology Breaks Ground on New Semiconductor Advanced Packaging and Test Campus in Arizona; Expands Investment to $7 Billion
-AMD signs AI chip-supply deal with OpenAI, gives it option to take a 10% stake
-A Brief History of SkyWater Technology
-Weebit Nano tapes out embedded ReRAM test chips at onsemi production fab
-Tools
-ASIC Price Calculator
-IC Packages Price Calculator
-Die Per Wafer Calculator
-Bonding Diagram Tool
-CPU IP Core Search Engine
-Find Consultants
+d
+Instance:
+Share
+Share on:
+03/12/2026 11:27
+With the help of AI: Search robot thinks for itself
+Andreas Schmitz
+Corporate Communications Center
+Technische Universität München
+-	Researchers combine 3D image recognition with language models.
+-	Artificial intelligence can be integrated into any robot.
+-	Robots use continuous probability calculations to guide searches.
+A robot that can locate lost items on command – this is the latest development at the Technical University of Munich (TUM). It combines knowledge from the internet with a spatial map of its surroundings to efficiently find the objects being sought.
+The new robot from Prof. Angela Schoellig’s TUM Learning Systems and Robotics Lab looks like a broomstick on wheels with a camera mounted at the top. It is one of the first robots that not only integrates image understanding but also applies it to a clearly defined task.
+To find a pair of glasses misplaced in the kitchen, for example, the robot has to look around and build a three-dimensional image of the room. The camera initially provides two-dimensional images, but these pixels also contain depth information. This creates a spatial map of the environment that is accurate to the centimeter and is constantly updated. A laptop also provides the robot with information about which objects are visible in the image and what significance they have for humans.
+“We have taught the robot to understand its surroundings,” says Prof. Angela Schoellig. The head of the Robotics Lab at the TUM Chair of Safety, Performance and Reliability for Learning Systems aims to develop robots that can navigate any environment independently. Humanoid robots working in factories or robots in care settings in private homes require this newly developed basic understanding, which, as Schoellig explains, “is important for all robots that move in spaces that are constantly changing”.
+Internet knowledge translated into the robot’s language
+The robot therefore understands that a table or window sill can be used to briefly set down a pair of glasses, whereas a stovetop or a sink are not suitable for this purpose. “The language model captures the relationships between the objects and we convert this information into the robot’s language,” explains Prof. Schoellig. Two-digit numbers appear on the three-dimensional map of the environment, constantly recalculating the likelihood that the object being searched for is located there. According to the research results, the robot then searches the probable locations almost 30 per cent more efficiently than if it searched randomly throughout the room. Artificial intelligence is used in two ways: on the one hand in image recognition and on the other hand through the use of a language model.
+Another special capability of the robot: it remembers previous images and is able to compare them with new images of its surroundings. If a new object suddenly appears in the kitchen, it recognizes the change with a high degree of certainty (95 per cent) and marks these areas as “highly probable” search locations.
+Next step: searching behind cupboard doors
+In the next step, the TUM scientist and board member at the Munich Institute of Robotics and Machine Intelligence (TUM MIRMI) also wants to search for objects that are in a drawer or behind a door. To do this, however, the robot will not merely have to draw on knowledge from the internet but will also have to interact with its surroundings. Robotic arms and hands must open a cupboard and determine whether it opens upwards or sideways and how best to grasp the handle. This will enable the robot to search even in closed spaces such as cupboards or drawers.
+Further information:
+- Prof. Angela Schoellig is a member of the board of the Munich Institute of Robotics and Machine Intelligence (TUM MIRMI). The institute is an integrative research institute at the Technical University of Munich (TUM) that focuses on robotics and AI. The institute brings together expertise in key areas of robotics, including perception and data science. Nearly 80 TUM chairs are networked within MIRMI to develop innovative robotic and AI-supported solutions for the environment, health, mobility, work, as well as security and defense. TUM MIRMI is headed by Prof. Lorenzo Masia. Further information can be found at
+https://www.mirmi.tum.de/
+.
+- A demonstration of the search robot can be seen until Friday, 13 March at the German Robotics Congress in Cologne:
+https://robotics-institute-germany.de/event/grc/
+Additional material for media outlets:
+-	Photos for download:
+https://mediatum.ub.tum.de/1846659
+-	Scientific video:
+https://utiasdsl.github.io/semi-static-semantic-exploration/
+Contact for scientific information:
+Prof. Angela Schoellig
+Chair of Safety, Performance and Reliability for Learning Systems
+Technical University of Munich (TUM)
+angela.schoellig@tum.de
+Original publication:
+Where did I leave my glasses? Open-Vocabulary Semantic Exploration in Real-World Semi-Static Environments; Benjamin Bogenberger, Oliver Harrison, Orrin Dahanaggamaarachchi, Lukas Brunke, Jingxing Qian, Siqi Zhou, Angela P. Schoellig; IEEE Robotics and Automation Letters, 3 March 2026;
+https://ieeexplore.ieee.org/document/11359697
+Images
+Criteria of this press release:
+Journalists, Scientists and scholars
+Electrical engineering, Information technology, Mathematics, Mechanical engineering
+transregional, national
+Research results
+English

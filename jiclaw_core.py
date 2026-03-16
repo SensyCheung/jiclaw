@@ -144,6 +144,7 @@ def fetch_article_content(url: str) -> str:
         "broadcom.com",
         "coherent.com",
         "developer.nvidia.com",
+        "fiercesensors.com",
     ]
     
     # 检查是否需要 Playwright
