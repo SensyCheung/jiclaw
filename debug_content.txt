@@ -1,30 +1,68 @@
-URL: https://www.etnews.com/20260316000412
+URL: https://www.servethehome.com/10gtek-quad-port-2-5gbe-realtek-rtl8125-nic-review/
 --------------------
-전자
-중공업
-한국ESG연구소, 최윤범 고려아연 회장 사내이사 재선임안 찬성 권고
-발행일 : 2026-03-16 17:23
-공유하기
-페이스북
-X(트위터)
-메일
-URL 복사
-글자크기 설정
-가
-작게
-가
-보통
-가
-크게
-최윤범 고려아연 회장이 다보스포럼 핵심광물 분야의 전략적 파트너십과 투자 세션에 공식 연사로 나서 발언하고 있다. 고려아연
-고려아연은 한국ESG연구소가 오는 24일 열리는 고려아연 정기주주총회를 앞두고 발간한 의안분석보고서에서 최윤범 회장의 사내이사 선임안에 찬성을 권고하고 영풍·MBK 측이 제안한 이사 6인 선임안에는 반대 의견을 제시했다고 16일 밝혔다.
-한국ESG연구소는 고려아연 현 이사회가 추천한 최윤범 사내이사 후보, 황덕남 사외이사 후보에 대해 찬성을 권고했다. 김보영 감사위원 선임안, 감사위원이 되는 이민호 사외이사 분리선임안에 대해서도 찬성 의견을 제시했다.
-반면 영풍·MBK파트너스 측이 추천한 이사 후보 4인 중 최연석 기타비상무이사 후보, 이선숙 사외이사 후보에 대해 반대를 권고했다.
-이번 정기주총의 핵심 쟁점으로 거론되는 '집중투표에 의해 선임할 이사의 수 결정'과 관련해 한국ESG연구소는 이사 5인 선임안에 찬성하고 영풍·MBK 측이 제안한 이사 6인 선임안에는 반대를 권고했다.
-이외에도 한국ESG연구소는 분리선출 감사위원 확대를 위한 정관 변경, 소수주주에 대한 보호 관련 정관 명문화, 전자주주총회 제도 도입, 이사회 내 독립이사 구성요건 명확화 및 독립이사 명칭 변경, 분기배당 관련 정관 변경 등 회사 측 주요 안건에 모두 찬성을 권고했다.
-고려아연은 한국ESG연구소의 의결권 행사 권고는 고려아연 현 이사회가 지지하는 안건에 우호적 의견을 제시한 글래스루이스, ISS, 한국ESG평가원 등의 판단 흐름에 부합한다고 설명했다. 국내외 주요 의결권 자문사들은 고려아연 현 경영진의 경영 성과와 거버넌스 개선 노력, 주주환원 정책, 중장기 사업 전략 추진을 긍정적으로 평가해 왔다.
-고려아연 관계자는 “한국ESG연구소가 당사 현 경영진의 경영성과와 거버넌스 개선 노력, 주주환원정책 등을 종합적으로 검토해 이사회가 지지하는 이사 후보, 안건에 대해 찬성 의견을 제시한 것으로 보인다”고 밝혔다.
-조성우 기자 good_sw@etnews.com
-조성우 기자
-기사 더보기
-HD한국조선해양, 컨테이너선 10척 수주…8237억원 규모
+Home
+Networking
+10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Review
+Networking
+Facebook
+X
+Pinterest
+Linkedin
+ReddIt
+Email
+Print
+Copy URL
+10Gtek Quad Port Realtek RTL8125BG Front Angled 1
+We recently purchased a 10Gtek quad-port 2.5GbE Realtek RTL8125 NIC. This is an interesting one since it is not a single controller. Instead, there are four Realtek RTL8125BG NICs on a single card. To make it work, there is an ASMedia ASM1812 to allow the four NICs to be used on a single PCIe root without bifurcation. This made it an interesting card to test, so let us get to it.
+Here is an
+Amazon affiliate link
+to the card we purchased.
+10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Hardware Overview
+The card is a fairly simple and small low-profile card. Unlike many of the other NICs we review, instead of the heatsink covering the NIC, the heatsink here is covering the ASMedia ASM1812 PCIe hub.
+10Gtek Quad Port Realtek RTL8125BG Top Angled 1
+Something else a bit different is that this is a PCIe Gen2 x4 card.
+10Gtek Quad Port Realtek RTL8125BG Slot 1
+Here are the transformers and four small RTL8125BG NICs.
+10Gtek Quad Port Realtek RTL8125BG Chip 1
+On the rear, we mostly just get labels.
+10Gtek Quad Port Realtek RTL8125BG Front Angled 4
+The big feature, of course, is the four 2.5GbE ports.
+10Gtek Quad Port Realtek RTL8125BG Front 1
+The card also comes with a low-profile I/O bracket.
+10Gtek Quad Port Realtek RTL8125BG Attachment 1
+The card shows up with four Realtek 2.5GbE NICs in the system.
+10Gtek Quad Port Realtek RTL8125 In Windows Device Manager
+Something strange is that, like another 10Gtek quad port card we looked at recently, when we plugged a cable into the end port, instead of getting a link on the first or fourth enumerated NIC, we got one on the third.
+10Gtek Realtek RTL8125 Quad Port Enumeration In Windows With Far End Port Connected
+This is a small thing, but one that can just be annoying. Next, let us get to performance.
+10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Performance
+We just used our iperf3 test setup for this one:
+10Gtek Quad Port 2.5GbE Realtek RTL8125 NIC Performance
+Performance was not ideal. This is probably because of the ASM1812 sitting on the PCIe Gen2 x4 link. The links ran at normal speed when run 2-3 hard, but the challenge came with the test harness and running all four. On the other hand, even with this, we were running well above 2Gbps speeds.
+Final Words
+The Realtek RTL8125 has been around for some time, and this is a relatively inexpensive way to get four on a card. You are still better off with a 10GbE card for raw throughput, but sometimes you just need extra network interfaces. If your options for $45-60 are either a quad-port 1GbE NIC or a quad-port 2.5GbE NIC, there are reasons to just go with the higher throughput option, even if you do not get four ports running at full speed simultaneously. There are still reasons prefer cards like the Intel i350-t4 instead of this type of setup. At the same time we just wanted to see what this card offers.
+10Gtek Quad Port Realtek RTL8125BG Top 1
+Overall, it worked reasonably well, but it is probably not the cleanest solution of all of the quad-port cards we have ever tested.
+Where to Buy
+Here is an
+Amazon affiliate link
+to the card we purchased.
+RELATED ARTICLES
+MORE FROM AUTHOR
+Broadcom Launches Taurus BCM83640 A 3nm 400G Per Lane Optical DSP
+GigaPlus GP-S50-0800 Review An 8-Port 5GbE Switch
+YuanLey 5GbE Realtek RTL8126 PCIe Network Adapter Review
+1 COMMENT
+“ when run 2-3 hard” running?
+“ There are still reasons prefer cards”
+We? To?
+LEAVE A REPLY
+Please enter your comment!
+Please enter your name here
+You have entered an incorrect email address!
+Please enter your email address here
+Save my name, email, and website in this browser for the next time I comment.
+Sign me up for the STH newsletter!
+Δ
+This site uses Akismet to reduce spam.
+Learn how your comment data is processed.
