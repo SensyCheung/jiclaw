@@ -639,6 +639,7 @@ def get_website_name(feed_url: str) -> str:
         "coherent.com": "Coherent",
         "www.iccsz.com": "讯石光通讯",
         "iccsz.com": "讯石光通讯",
+        "rss.etnews.com": "etnews",
     }
 
     # Broadcom 特殊处理：根据路径区分 News 和 Blog
