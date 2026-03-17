@@ -640,6 +640,16 @@ def get_website_name(feed_url: str) -> str:
         "www.iccsz.com": "讯石光通讯",
         "iccsz.com": "讯石光通讯",
         "rss.etnews.com": "etnews",
+        "feed.businesswire.com": "Business Wire",
+        "news.mit.edu": "MIT News",
+        "feeds.feedburner.com": "ServeTheHome",
+        "entegrisinc.gcs-web.com": "Entegris",
+        "azonano.com": "Azom Nano",
+        "electronicsweekly.com": "Electronics Weekly",
+        "semiwiki.com": "SemiWiki",
+        "anysilicon.com": "AnySilicon",
+        "idw-online.de": "IDW Online",
+        "seekingalpha.com": "Seeking Alpha",
     }
 
     # Broadcom 特殊处理：根据路径区分 News 和 Blog
