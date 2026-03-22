@@ -1,6 +1,6 @@
 # jiclaw - RSS 和网页爬虫聚合器
 
-自动抓取 RSS 源、网站内容和 Twitter 推文，通过 AI 生成摘要并写入 Notion。
+自动抓取 RSS 源、网站内容和 Twitter 推文，通过 AI 生成摘要并写入 Notion，支持推送到 Telegram。
 
 ## 项目结构
 
@@ -9,6 +9,8 @@ jiclaw/
 ├── jiclaw_core.py          # 核心功能模块
 ├── jiclaw_scraper.py       # 网页爬虫模块（semi-insights 等）
 ├── jiclaw_twitter.py       # Twitter 爬虫模块（twstalker.com）
+├── jiclaw_telegram.py      # Telegram 推送模块
+├── telegram_config.py      # Telegram 配置
 ├── scraper_config.py       # 爬虫网站配置
 ├── twitter_config.py       # Twitter 账号配置
 ├── jiclaw.py               # 单次运行入口
@@ -50,11 +52,15 @@ python jiclaw_local.py twitter:paurooteri
    - `ZHIPU_API_KEY` - 智谱 AI API 密钥
    - `NOTION_API_KEY` - Notion API 密钥
    - `NOTION_DATABASE_ID` - Notion 数据库 ID
+   - `TELEGRAM_BOT_TOKEN` - Telegram Bot Token（可选）
+   - `TELEGRAM_CHAT_ID` - Telegram 频道/群组 ID（可选）
 
 2. （可选）配置 Variables：
    - `RSS_INTERVAL_SECONDS` - 抓取间隔（秒），默认 3600
 
 3. 推送代码后会自动运行，或手动触发
+
+**注意**：Secrets 在 GitHub 仓库的 **Settings** → **Secrets and variables** → **Actions** 中配置。
 
 ## 配置
 
@@ -109,6 +115,8 @@ TWITTER_ACCOUNTS = {
 | `ZHIPU_API_KEY` | 智谱 AI API 密钥 | 是 | - |
 | `NOTION_API_KEY` | Notion API 密钥 | 是 | - |
 | `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 | - |
+| `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | 否 | - |
+| `TELEGRAM_CHAT_ID` | Telegram 频道/群组 ID | 否 | - |
 | `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
 | `TIMEZONE_OFFSET` | 时区偏移（小时数） | 否 | 0 |
 
@@ -126,6 +134,44 @@ export TIMEZONE_OFFSET=8
 python jiclaw.py scraper:aijiwei
 ```
 
+**Telegram 配置说明：**
+
+**GitHub Actions 配置：**
+
+1. 在 GitHub 仓库页面，进入 **Settings** → **Secrets and variables** → **Actions**
+2. 点击 **New repository secret**，添加以下 Secrets：
+   - `TELEGRAM_BOT_TOKEN` - 从 @BotFather 获取的 Bot Token
+   - `TELEGRAM_CHAT_ID` - 频道/群组 ID（频道 ID 通常以 `-100` 开头）
+3. 推送代码后会自动运行，或手动触发 workflow
+
+**本地运行配置：**
+
+1. 在 Telegram 中搜索 `@BotFather`，发送 `/newbot` 创建新 Bot
+2. 按照提示设置 Bot 名称和用户名，获取 `BOT_TOKEN`
+3. 创建频道或群组，将 Bot 添加为管理员
+4. 获取频道/群组 ID（频道 ID 通常以 `-100` 开头）
+   - 方法：将 Bot 拉入频道后发送一条消息，然后访问 `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates` 查看 `chat.id`
+5. 设置环境变量：
+   ```bash
+   # Linux/macOS
+   export TELEGRAM_BOT_TOKEN="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"
+   export TELEGRAM_CHAT_ID="-1001234567890"
+   
+   # Windows PowerShell
+   $env:TELEGRAM_BOT_TOKEN="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"
+   $env:TELEGRAM_CHAT_ID="-1001234567890"
+   
+   # Windows CMD
+   set TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+   set TELEGRAM_CHAT_ID=-1001234567890
+   ```
+
+**测试 Telegram Bot：**
+
+```bash
+python jiclaw_telegram.py
+```
+
 ## 功能特点
 
 | 功能 | 说明 |
@@ -135,6 +181,7 @@ python jiclaw.py scraper:aijiwei
 | Twitter 抓取 | 通过 twstalker.com 抓取，自动过滤转推 |
 | AI 摘要 | 使用智谱 AI 生成中英文摘要和标签 |
 | Notion 集成 | 自动写入 Notion 数据库 |
+| Telegram 推送 | Notion 上传成功后自动推送到 Telegram |
 | 去重 | 基于 URL 哈希值去重 |
 | 循环运行 | 可配置间隔时间持续抓取 |
 

@@ -18,6 +18,7 @@ from openai import OpenAI
 from jiclaw_scraper import scrape_site
 from scraper_config import SCRAPER_CONFIG
 from jiclaw_twitter import fetch_twitter_tweets
+from jiclaw_telegram import send_to_telegram
 
 
 # 直接使用 RSS 摘要的 feed 名单
@@ -826,6 +827,29 @@ def notion_page_exists(
     return len(results) > 0
 
 
+def send_to_telegram_after_notion(
+    title_cn: str,
+    title_en: str,
+    summary_cn: str,
+    link: str,
+    tags: list,
+    website_name: str,
+) -> None:
+    """在 Notion 上传成功后发送到 Telegram"""
+    try:
+        send_to_telegram(
+            title_cn=title_cn,
+            title_en=title_en,
+            summary_cn=summary_cn,
+            link=link,
+            tags=tags,
+            website_name=website_name,
+        )
+    except Exception as e:
+        # Telegram 发送失败不影响主流程
+        print(f"发送到 Telegram 失败：{e}")
+
+
 def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> None:
     """抓取单个 RSS 源的多篇文章并写入 Notion（如已配置）。"""
     # 编码安全输出
@@ -959,7 +983,7 @@ def _process_items(
                 source_url = f"https://twitter.com/{username}"
             else:
                 source_url = ""
-                
+
             create_notion_page(
                 notion_api_key,
                 notion_db_id,
@@ -968,4 +992,15 @@ def _process_items(
                 post_id,
                 model,
                 source_url,
+            )
+
+            # Notion 上传成功后发送到 Telegram
+            print("正在发送到 Telegram...")
+            send_to_telegram_after_notion(
+                title_cn=data.get("title_cn", title),
+                title_en=title,
+                summary_cn=data.get("summary_cn", ""),
+                link=link,
+                tags=data.get("tags", []),
+                website_name=get_website_name(source_url),
             )
