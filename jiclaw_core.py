@@ -19,6 +19,7 @@ from jiclaw_scraper import scrape_site
 from scraper_config import SCRAPER_CONFIG
 from jiclaw_twitter import fetch_twitter_tweets
 from jiclaw_telegram import send_to_telegram
+from jiclaw_discord import send_to_discord
 
 
 # 直接使用 RSS 摘要的 feed 名单
@@ -129,17 +130,61 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
     return items
 
 
+def clean_businesswire_url(url: str) -> str:
+    """
+    清洗 Business Wire 的 URL，移除追踪参数并规范化格式
+    
+    处理规则：
+    1. http:// → https://
+    2. 移除 ?feedref=xxx 追踪参数
+    3. URL 解码并 ASCII 化标题（移除特殊字符如 '）
+    4. 确保末尾无 '/'
+    """
+    from urllib.parse import unquote
+    
+    # 1. 协议升级
+    url = url.replace("http://", "https://")
+    
+    # 2. 移除追踪参数
+    if "?feedref=" in url:
+        url = url.split("?feedref=")[0]
+    elif "?" in url:
+        # 移除其他查询参数
+        url = url.split("?")[0]
+    
+    # 3. URL 解码（将 %E2%80%99 等编码字符还原）
+    url = unquote(url)
+
+    # 4. 替换特殊字符为 ASCII（删除左右单引号、双引号等）
+    # 左单引号 U+2018, 右单引号 U+2019, 左双引号 U+201C, 右双引号 U+201D
+    url = (
+        url.replace("\u2018", "").replace("\u2019", "")
+        .replace("\u201C", "").replace("\u201D", "")
+        .replace("'", "").replace('"', '')
+    )
+
+    # 5. 移除末尾的 '/'
+    url = url.rstrip("/")
+    
+    return url
+
+
 def fetch_article_content(url: str) -> str:
     """抓取网页正文内容，返回纯文本。
-    
+
     优化策略：
     1. 针对 JS 动态加载网站使用 Playwright
     2. 针对静态网站使用 requests（更快）
     3. 智能正文提取：基于文本密度、链接密度等
     4. 多选择器尝试，提高成功率
     5. 添加重试机制
+    6. Business Wire 专用 URL 清洗
     """
-    
+
+    # Business Wire 专用 URL 清洗
+    if "businesswire.com" in url:
+        url = clean_businesswire_url(url)
+
     # 需要 Playwright 处理的 JS 动态加载网站列表
     playwright_sites = [
         "broadcom.com",
@@ -148,13 +193,13 @@ def fetch_article_content(url: str) -> str:
         "fiercesensors.com",
         "tweaktown.com",
     ]
-    
+
     # 检查是否需要 Playwright
     use_playwright = any(site in url for site in playwright_sites)
-    
+
     if use_playwright:
         return fetch_article_content_playwright(url)
-    
+
     # 静态网站使用 requests
     headers = {
         "User-Agent": (
@@ -835,7 +880,8 @@ def send_to_telegram_after_notion(
     tags: list,
     website_name: str,
 ) -> None:
-    """在 Notion 上传成功后发送到 Telegram"""
+    """在 Notion 上传成功后发送到 Telegram 和 Discord"""
+    # Telegram 发送
     try:
         send_to_telegram(
             title_cn=title_cn,
@@ -848,6 +894,20 @@ def send_to_telegram_after_notion(
     except Exception as e:
         # Telegram 发送失败不影响主流程
         print(f"发送到 Telegram 失败：{e}")
+
+    # Discord 发送
+    try:
+        send_to_discord(
+            title_cn=title_cn,
+            title_en=title_en,
+            summary_cn=summary_cn,
+            link=link,
+            tags=tags,
+            website_name=website_name,
+        )
+    except Exception as e:
+        # Discord 发送失败不影响主流程
+        print(f"发送到 Discord 失败：{e}")
 
 
 def process_feed(feed_url: str, model: str = "glm-4-flash", limit: int = 10) -> None:

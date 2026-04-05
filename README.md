@@ -1,6 +1,6 @@
 # jiclaw - RSS 和网页爬虫聚合器
 
-自动抓取 RSS 源、网站内容和 Twitter 推文，通过 AI 生成摘要并写入 Notion，支持推送到 Telegram。
+自动抓取 RSS 源、网站内容和 Twitter 推文，通过 AI 生成摘要并写入 Notion，支持推送到 Telegram 和 Discord。
 
 ## 项目结构
 
@@ -10,7 +10,9 @@ jiclaw/
 ├── jiclaw_scraper.py       # 网页爬虫模块（semi-insights 等）
 ├── jiclaw_twitter.py       # Twitter 爬虫模块（twstalker.com）
 ├── jiclaw_telegram.py      # Telegram 推送模块
+├── jiclaw_discord.py       # Discord 推送模块
 ├── telegram_config.py      # Telegram 配置
+├── discord_config.py       # Discord 配置
 ├── scraper_config.py       # 爬虫网站配置
 ├── twitter_config.py       # Twitter 账号配置
 ├── jiclaw.py               # 单次运行入口
@@ -54,6 +56,8 @@ python jiclaw_local.py twitter:paurooteri
    - `NOTION_DATABASE_ID` - Notion 数据库 ID
    - `TELEGRAM_BOT_TOKEN` - Telegram Bot Token（可选）
    - `TELEGRAM_CHAT_ID` - Telegram 频道/群组 ID（可选）
+   - `DISCORD_BOT_TOKEN` - Discord Bot Token（可选）
+   - `DISCORD_CHANNEL_ID` - Discord 频道 ID（可选）
 
 2. （可选）配置 Variables：
    - `RSS_INTERVAL_SECONDS` - 抓取间隔（秒），默认 3600
@@ -117,6 +121,8 @@ TWITTER_ACCOUNTS = {
 | `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 | - |
 | `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | 否 | - |
 | `TELEGRAM_CHAT_ID` | Telegram 频道/群组 ID | 否 | - |
+| `DISCORD_BOT_TOKEN` | Discord Bot Token | 否 | - |
+| `DISCORD_CHANNEL_ID` | Discord 频道 ID | 否 | - |
 | `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
 | `TIMEZONE_OFFSET` | 时区偏移（小时数） | 否 | 0 |
 
@@ -172,6 +178,45 @@ python jiclaw.py scraper:aijiwei
 python jiclaw_telegram.py
 ```
 
+**Discord 配置说明：**
+
+**GitHub Actions 配置：**
+
+1. 在 GitHub 仓库页面，进入 **Settings** → **Secrets and variables** → **Actions**
+2. 点击 **New repository secret**，添加以下 Secrets：
+   - `DISCORD_BOT_TOKEN` - 从 Discord Developer Portal 获取的 Bot Token
+   - `DISCORD_CHANNEL_ID` - 频道 ID（数字，不带引号）
+3. 推送代码后会自动运行，或手动触发 workflow
+
+**本地运行配置：**
+
+1. 访问 [Discord Developer Portal](https://discord.com/developers/applications)，创建新应用
+2. 进入 **Bot** 页面，点击 **Reset Token** 获取 Bot Token
+3. 在 **OAuth2 → URL Generator** 中，选择 `bot` 权限，复制生成的链接到浏览器打开
+4. 将 Bot 邀请到你的服务器
+5. 在服务器中右键点击频道，选择 **复制频道 ID**（需要开启开发者模式）
+   - 开启开发者模式：用户设置 → 高级 → 开发者模式
+6. 设置环境变量：
+   ```bash
+   # Linux/macOS
+   export DISCORD_BOT_TOKEN="MTIzNDU2Nzg5MDEyMzQ1Njc4OQ.GJKLmN.OpQrStUvWxYz"
+   export DISCORD_CHANNEL_ID="1234567890123456789"
+
+   # Windows PowerShell
+   $env:DISCORD_BOT_TOKEN="MTIzNDU2Nzg5MDEyMzQ1Njc4OQ.GJKLmN.OpQrStUvWxYz"
+   $env:DISCORD_CHANNEL_ID="1234567890123456789"
+
+   # Windows CMD
+   set DISCORD_BOT_TOKEN=MTIzNDU2Nzg5MDEyMzQ1Njc4OQ.GJKLmN.OpQrStUvWxYz
+   set DISCORD_CHANNEL_ID=1234567890123456789
+   ```
+
+**测试 Discord Bot：**
+
+```bash
+python jiclaw_discord.py
+```
+
 ## 功能特点
 
 | 功能 | 说明 |
@@ -182,6 +227,7 @@ python jiclaw_telegram.py
 | AI 摘要 | 使用智谱 AI 生成中英文摘要和标签 |
 | Notion 集成 | 自动写入 Notion 数据库 |
 | Telegram 推送 | Notion 上传成功后自动推送到 Telegram |
+| Discord 推送 | Notion 上传成功后自动推送到 Discord |
 | 去重 | 基于 URL 哈希值去重 |
 | 循环运行 | 可配置间隔时间持续抓取 |
 

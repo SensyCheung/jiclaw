@@ -1403,6 +1403,276 @@ def scrape_broadcom_blog(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_bits_chips(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Bits & Chips (bits-chips.com) 的文章列表
+    结构：div[class*="type-"].post-* -> h2.post-title -> a
+    - 标题和链接：h2.post-title -> a
+    - 发布时间：time.entry-date-published
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    results = []
+
+    try:
+        # 使用系统代理配置
+        session = requests.Session()
+        http_proxy = os.environ.get('HTTP_PROXY') or os.environ.get('http_proxy') or ''
+        https_proxy = os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy') or ''
+        
+        # 只在代理地址有效时使用
+        if http_proxy and http_proxy.startswith('http'):
+            session.proxies.update({'http': http_proxy})
+        if https_proxy and https_proxy.startswith('http'):
+            session.proxies.update({'https': https_proxy})
+        
+        print(f"  使用代理：{https_proxy or http_proxy or '无'}")
+        
+        response = session.get(
+            url,
+            headers=headers,
+            timeout=15
+        )
+        response.encoding = "utf-8"
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # 查找文章列表：div[class*="type-"] 并且包含 post-* class
+        # 例如：div.type-platform_article.post-232116
+        articles = soup.select('div[class*="type-"][class*="post-"]')
+        print(f"  找到 {len(articles)} 篇文章")
+
+        for article in articles[:limit]:
+            # 提取标题和链接：h2.post-title -> a
+            title_tag = article.select_one("h2.post-title a, h2.gb-headline-text a")
+            if not title_tag:
+                continue
+
+            title = title_tag.get_text(strip=True)
+            link = title_tag.get("href", "")
+
+            # 处理相对链接
+            if link:
+                link = urljoin(url, link)
+
+            # 提取日期：time.entry-date-published
+            date_tag = article.select_one("time.entry-date-published, time")
+            date_str = ""
+            published_date = None
+            if date_tag:
+                date_str = date_tag.get_text(strip=True)
+                # 标准化日期（格式：2 April 2026）
+                published_date = normalize_date(date_str, "%d %B %Y")
+
+            if title and link and len(title) > 10:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": "",
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        print(f"  成功获取 {len(results)} 篇文章")
+        return results
+
+    except Exception as e:
+        print(f"爬取 Bits & Chips 失败：{e}")
+        return []
+
+
+def scrape_barrons(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Barrons Technology (barrons.com/topics/technology) 的文章列表
+    尝试多种方式：
+    1. 使用 Google Cache 或其他缓存服务
+    2. 使用 Playwright 处理 JavaScript 动态加载和反爬保护
+    
+    结构：div.c-teaselist__item -> h3.c-teaser__title -> a
+    - 标题和链接：h3.c-teaser__title -> a
+    - 发布时间：time 标签
+
+    Args:
+        url: 网站 URL
+        limit: 获取文章数量上限
+    """
+    from playwright.sync_api import sync_playwright
+
+    results = []
+
+    try:
+        with sync_playwright() as p:
+            # 启动浏览器（使用 stealth 模式绕过反爬）
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    '--disable-blink-features=AutomationControlled',
+                    '--no-sandbox',
+                    '--disable-dev-shm-usage',
+                    '--disable-accelerated-2d-canvas',
+                    '--disable-gpu',
+                    '--window-size=1920,1080',
+                ]
+            )
+
+            context = browser.new_context(
+                viewport={'width': 1920, 'height': 1080},
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                # 设置额外的 headers
+                extra_http_headers={
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Sec-Fetch-User': '?1',
+                    'Cache-Control': 'max-age=0',
+                }
+            )
+            
+            # 添加 stealth 脚本
+            page = context.new_page()
+            page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+                Object.defineProperty(document, 'hidden', {get: () => false});
+                Object.defineProperty(document, 'visibilityState', {get: () => 'visible'});
+                window.chrome = { runtime: {} };
+            """)
+
+            print(f"  正在访问 {url}...")
+            # 使用 networkidle 等待所有资源加载完成
+            page.goto(url, wait_until="networkidle", timeout=120000)
+
+            # 等待更长时间让 CAPTCHA 通过（如果需要）
+            print("  等待页面加载...")
+            page.wait_for_timeout(30000)
+
+            # 检查是否有 DataDome CAPTCHA
+            current_url = page.url
+            if 'captcha-delivery.com' in current_url or 'DataDome' in page.content():
+                print("  检测到 DataDome CAPTCHA，尝试等待自动通过...")
+                page.wait_for_timeout(30000)
+            
+            # 尝试滚动页面触发更多内容加载
+            try:
+                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                page.wait_for_timeout(10000)
+                page.evaluate("window.scrollTo(0, 0)")
+                page.wait_for_timeout(5000)
+            except:
+                pass
+
+            # 获取页面 HTML
+            html_content = page.content()
+            browser.close()
+
+        print(f"  页面大小：{len(html_content)} 字节")
+        
+        # 调试：保存 HTML 以便分析
+        with open("debug_barrons.html", "w", encoding="utf-8") as f:
+            f.write(html_content)
+        print("  已保存调试 HTML 到 debug_barrons.html")
+
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # 调试：查找所有 class
+        all_classes = set()
+        for elem in soup.find_all(class_=True):
+            for cls in elem['class']:
+                all_classes.add(cls)
+        
+        # 查找可能包含新闻的 class
+        news_classes = [c for c in all_classes if any(k in c.lower() for k in ['teaser', 'article', 'story', 'news', 'card', 'list'])]
+        print(f"  找到的新闻相关 class: {news_classes[:20]}")
+
+        # 查找文章列表：div.c-teaselist__item
+        articles = soup.select("div.c-teaselist__item")
+        print(f"  找到 {len(articles)} 篇文章")
+        
+        # 如果没找到，尝试其他选择器
+        if not articles:
+            print("  尝试其他选择器...")
+            selectors = [
+                "div.c-teaser",
+                "article",
+                "div.teaser",
+                "div[class*='teaser']",
+                "div[class*='article']",
+                "a[href*='/news/']",
+                "a[href*='/article/']",
+            ]
+            for selector in selectors:
+                articles = soup.select(selector)
+                if articles:
+                    print(f"  使用选择器 {selector} 找到 {len(articles)} 篇文章")
+                    break
+
+        for article in articles[:limit]:
+            # 提取标题和链接：h3.c-teaser__title -> a
+            title_tag = article.select_one("h3.c-teaser__title a")
+            if not title_tag:
+                # 尝试直接找 a 标签
+                title_tag = article.select_one("a")
+            
+            if title_tag:
+                title = title_tag.get_text(strip=True)
+                link = title_tag.get("href", "")
+
+                # 处理相对链接
+                if link:
+                    link = urljoin(url, link)
+
+                # 提取日期：time 标签
+                date_tag = article.select_one("time")
+                date_str = ""
+                published_date = None
+                if date_tag:
+                    date_str = date_tag.get_text(strip=True)
+                    # 标准化日期（格式：Mar 15, 2026）
+                    published_date = normalize_date(date_str, "%b %d, %Y")
+
+                if title and link and len(title) > 10:
+                    results.append(
+                        {
+                            "title": title,
+                            "link": link,
+                            "summary": "",
+                            "published": date_str,
+                            "published_date": published_date,
+                        }
+                    )
+
+        print(f"  成功获取 {len(results)} 篇文章")
+        return results
+
+    except Exception as e:
+        print(f"爬取 Barrons 失败：{e}")
+        import traceback
+        traceback.print_exc()
+        return []
+
+
 def scrape_tweaktown(url: str, limit: int = 10) -> list[dict]:
     """
     爬取 Tweaktown (tweaktown.com/news/storage) 的文章列表
@@ -1561,6 +1831,8 @@ SCRAPER_FUNCTIONS = {
     "broadcom": scrape_broadcom,
     "broadcom-blog": scrape_broadcom_blog,
     "tweaktown": scrape_tweaktown,
+    "barrons": scrape_barrons,
+    "bits-chips": scrape_bits_chips,
 }
 
 

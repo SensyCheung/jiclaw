@@ -121,4 +121,22 @@ SCRAPER_CONFIG = {
         "date_selector": "div.content-latestpost-infobar",
         "date_format": "%b %d, %Y",  # 日期格式：Mar 15, 2026
     },
+    "barrons": {
+        "name": "Barrons Technology",
+        "url": "https://www.barrons.com/topics/technology?mod=hp_FEEDS_1_TECHNOLOGY_va",
+        "list_selector": "div.c-teaselist__item",
+        "title_selector": "h3.c-teaser__title a",
+        "url_base": "https://www.barrons.com",
+        "date_selector": "time",
+        "date_format": "%b %d, %Y",  # 日期格式：Mar 15, 2026
+    },
+    "bits-chips": {
+        "name": "Bits & Chips",
+        "url": "https://bits-chips.com/",
+        "list_selector": 'div[class*="type-"][class*="post-"]',
+        "title_selector": "h2.post-title a, h2.gb-headline-text a",
+        "url_base": "https://bits-chips.com",
+        "date_selector": "time.entry-date-published, time",
+        "date_format": "%d %B %Y",  # 日期格式：2 April 2026
+    },
 }
