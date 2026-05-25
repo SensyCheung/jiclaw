@@ -5,3 +5,5 @@ openai
 playwright
 playwright-stealth
 psutil
+jieba
+pyvis

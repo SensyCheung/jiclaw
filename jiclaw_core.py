@@ -732,6 +732,7 @@ def create_notion_page(
     summary_en = ai_data.get("summary_en", "")
     summary_cn = ai_data.get("summary_cn", "")
     tags = ai_data.get("tags") or []
+    tags = []
     website_name = get_website_name(feed_url)
 
     def truncate(text: str, max_len: int = 1800) -> str:
