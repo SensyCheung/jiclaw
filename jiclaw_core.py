@@ -581,7 +581,7 @@ def fetch_broadcom_blog_content(url: str) -> str:
 
 
 def summarize_with_ai(
-    title: str, summary: str, content: str, model: str = "glm-4-flash"
+    title: str, summary: str, content: str, model: str = "GLM-4.7-Flash"
 ) -> dict:
     """调用大模型，对文章做中英文摘要与标签提取，返回 JSON 字典。"""
     api_key = os.environ.get("ZHIPU_API_KEY")
