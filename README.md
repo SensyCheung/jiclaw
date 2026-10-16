@@ -55,7 +55,8 @@ python jiclaw_local.py twitter:paurooteri
    - `NOTION_API_KEY` - Notion API 密钥
    - `NOTION_DATABASE_ID` - Notion 数据库 ID
    - `TELEGRAM_BOT_TOKEN` - Telegram Bot Token（可选）
-   - `TELEGRAM_CHAT_ID` - Telegram 频道/群组 ID（可选）
+   - `TELEGRAM_CHAT_ID` - Telegram 频道/群组 ID（半导体文章，可选）
+   - `TELEGRAM_CHAT_ID_OTHER` - Telegram 频道/群组 ID（非半导体文章，可选）
    - `DISCORD_BOT_TOKEN` - Discord Bot Token（可选）
    - `DISCORD_CHANNEL_ID` - Discord 频道 ID（可选）
 
@@ -120,7 +121,8 @@ TWITTER_ACCOUNTS = {
 | `NOTION_API_KEY` | Notion API 密钥 | 是 | - |
 | `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 | - |
 | `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | 否 | - |
-| `TELEGRAM_CHAT_ID` | Telegram 频道/群组 ID | 否 | - |
+| `TELEGRAM_CHAT_ID` | Telegram 频道/群组 ID（半导体文章） | 否 | - |
+| `TELEGRAM_CHAT_ID_OTHER` | Telegram 频道/群组 ID（非半导体文章） | 否 | - |
 | `DISCORD_BOT_TOKEN` | Discord Bot Token | 否 | - |
 | `DISCORD_CHANNEL_ID` | Discord 频道 ID | 否 | - |
 | `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
@@ -142,12 +144,21 @@ python jiclaw.py scraper:aijiwei
 
 **Telegram 配置说明：**
 
+系统会用 AI 对每篇文章做行业分类，并按分类推送到不同群组：
+
+- **半导体行业文章**（芯片/IC、晶圆制造、设备材料、存储、封装、EDA、光刻等）→ `TELEGRAM_CHAT_ID`
+- **非半导体文章**（家电、消费电子整机、泛科技/软件、游戏、汽车整车等）→ `TELEGRAM_CHAT_ID_OTHER`
+
+> 若未配置 `TELEGRAM_CHAT_ID_OTHER`，非半导体文章会被**剔除**（不推送），只保留半导体文章推送到主群组。
+> 若希望所有文章都推送到同一个群组，将 `TELEGRAM_CHAT_ID_OTHER` 设为与 `TELEGRAM_CHAT_ID` 相同即可。
+
 **GitHub Actions 配置：**
 
 1. 在 GitHub 仓库页面，进入 **Settings** → **Secrets and variables** → **Actions**
 2. 点击 **New repository secret**，添加以下 Secrets：
    - `TELEGRAM_BOT_TOKEN` - 从 @BotFather 获取的 Bot Token
-   - `TELEGRAM_CHAT_ID` - 频道/群组 ID（频道 ID 通常以 `-100` 开头）
+   - `TELEGRAM_CHAT_ID` - 半导体文章的频道/群组 ID（频道 ID 通常以 `-100` 开头）
+   - `TELEGRAM_CHAT_ID_OTHER` - 非半导体文章的频道/群组 ID（可选）
 3. 推送代码后会自动运行，或手动触发 workflow
 
 **本地运行配置：**
@@ -162,14 +173,17 @@ python jiclaw.py scraper:aijiwei
    # Linux/macOS
    export TELEGRAM_BOT_TOKEN="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"
    export TELEGRAM_CHAT_ID="-1001234567890"
+   export TELEGRAM_CHAT_ID_OTHER="-1009876543210"
    
    # Windows PowerShell
    $env:TELEGRAM_BOT_TOKEN="1234567890:ABCdefGHIjklMNOpqrsTUVwxyz"
    $env:TELEGRAM_CHAT_ID="-1001234567890"
+   $env:TELEGRAM_CHAT_ID_OTHER="-1009876543210"
    
    # Windows CMD
    set TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
    set TELEGRAM_CHAT_ID=-1001234567890
+   set TELEGRAM_CHAT_ID_OTHER=-1009876543210
    ```
 
 **测试 Telegram Bot：**
@@ -224,9 +238,9 @@ python jiclaw_discord.py
 | RSS 抓取 | 支持多个 RSS 源 |
 | 网页爬虫 | 支持无 RSS 网站（如 semi-insights.com） |
 | Twitter 抓取 | 通过 twstalker.com 抓取，自动过滤转推 |
-| AI 摘要 | 使用智谱 AI 生成中英文摘要和标签 |
+| AI 摘要 | 使用智谱 AI 生成中英文摘要、标签，并判断是否为半导体行业文章 |
 | Notion 集成 | 自动写入 Notion 数据库 |
-| Telegram 推送 | Notion 上传成功后自动推送到 Telegram |
+| Telegram 推送 | 按行业分类推送到不同群组：半导体文章推到主群组，其他文章推到其他群组（未配置则剔除） |
 | Discord 推送 | Notion 上传成功后自动推送到 Discord |
 | 去重 | 基于 URL 哈希值去重 |
 | 循环运行 | 可配置间隔时间持续抓取 |

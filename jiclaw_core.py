@@ -18,7 +18,7 @@ from openai import OpenAI
 from jiclaw_scraper import scrape_site
 from scraper_config import SCRAPER_CONFIG
 from jiclaw_twitter import fetch_twitter_tweets
-from jiclaw_telegram import send_to_telegram
+from jiclaw_telegram import send_to_telegram, resolve_telegram_chat_id
 from jiclaw_discord import send_to_discord
 
 
@@ -622,7 +622,7 @@ def summarize_with_ai(
 你将看到一篇科技/半导体/硬件等方向的文章信息（标题 + RSS 摘要 + 抓取到的正文）。
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
 
-1. **Tags 提取**: 
+1. **Tags 提取**:
    - 从下方的 [Candidate Tags] 列表中选择 **1-3 个** 最相关的标签。
    - **禁止原则**: 严禁选择正文中未提及的公司或技术。如果列表中没有合适的，请优先提取正文中的公司名。
    - [Candidate Tags]: 'Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'AI chip', 'Software', 'GaN', 'iOS', 'Cooling'.
@@ -634,12 +634,23 @@ def summarize_with_ai(
      例如："<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>"
    - summary_cn：用简体中文输出 3-8 个要点，格式同上。
 
+4. **行业分类 (category)**: 判断文章是否属于「半导体行业」，只允许输出 "semiconductor" 或 "other"。
+   - 属于 "semiconductor"（半导体行业）：芯片/IC 设计与销售、晶圆制造与代工、半导体设备与材料、
+     存储（DRAM/NAND/HBM）、先进封装与测试、EDA/IP、光刻、功率/模拟/射频芯片、半导体公司的
+     财报/并购/产能/技术路线/供应链等。光通讯器件、传感器芯片等上游元器件也算半导体。
+   - 属于 "other"（非半导体）：家电、消费电子整机（手机/笔记本整机评测、外设、显示器、机箱、散热）、
+     泛科技/互联网/软件/大模型应用服务、游戏、云计算与运营商商务、汽车整车、纯财经宏观、
+     与芯片无直接实质关系的内容。
+   - 判断依据必须是正文中与半导体直接相关的实质内容；仅标题出现芯片公司名不算半导体。
+   - 若文章同时涉及，仅当其核心主题是半导体时才判为 "semiconductor"。
+
 只输出严格 JSON 格式，不要任何解释或额外文本：
 {
   "tags": ["aaa", "bbb", "ccc"],
   "title_cn": "被翻译的中文标题",
   "summary_en": "<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>",
-  "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>"
+  "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>",
+  "category": "semiconductor"
 }
 请最后检查输出是否符合要求，不要出现任何错误，比如翻译要准确，标签要完全匹配等，JSON格式要正确。
                 ''',
@@ -661,6 +672,38 @@ def summarize_with_ai(
 
     data = json.loads(match.group())
     return data
+
+
+def is_semiconductor_article(ai_data: dict) -> bool:
+    """根据 LLM 返回的 category 字段判断是否为半导体行业文章。
+
+    兼容多种取值（semiconductor/other、true/false、是/否 等）。
+    字段缺失或无法识别时，默认按半导体处理（推送到主群组），避免误剔除。
+    """
+    raw = ai_data.get("category")
+    if raw is None:
+        raw = ai_data.get("is_semiconductor")
+    if isinstance(raw, bool):
+        return raw
+    if raw is None:
+        return True
+
+    text = str(raw).strip().lower()
+    if not text:
+        return True
+
+    if text in ("semiconductor", "semi", "chip", "chips", "ic", "yes", "true", "1", "是"):
+        return True
+    if text in (
+        "other", "no", "false", "0", "non-semiconductor", "nonsemiconductor",
+        "general", "否", "其他", "非半导体",
+    ):
+        return False
+    if "半导体" in text or "芯片" in text:
+        return True
+    if "其他" in text or "泛科技" in text or "家电" in text:
+        return False
+    return True
 
 
 def get_website_name(feed_url: str) -> str:
@@ -880,21 +923,27 @@ def send_to_telegram_after_notion(
     link: str,
     tags: list,
     website_name: str,
+    is_semiconductor: bool = True,
 ) -> None:
     """在 Notion 上传成功后发送到 Telegram 和 Discord"""
-    # Telegram 发送
-    try:
-        send_to_telegram(
-            title_cn=title_cn,
-            title_en=title_en,
-            summary_cn=summary_cn,
-            link=link,
-            tags=tags,
-            website_name=website_name,
-        )
-    except Exception as e:
-        # Telegram 发送失败不影响主流程
-        print(f"发送到 Telegram 失败：{e}")
+    # Telegram 发送（按行业分类路由到不同群组）
+    chat_id, route_desc = resolve_telegram_chat_id(is_semiconductor)
+    if not chat_id:
+        print(f"[Telegram] {route_desc}")
+    else:
+        try:
+            send_to_telegram(
+                title_cn=title_cn,
+                title_en=title_en,
+                summary_cn=summary_cn,
+                link=link,
+                tags=tags,
+                website_name=website_name,
+                chat_id=chat_id,
+            )
+        except Exception as e:
+            # Telegram 发送失败不影响主流程
+            print(f"发送到 Telegram 失败：{e}")
 
     # Discord 发送
     try:
@@ -1056,7 +1105,12 @@ def _process_items(
             )
 
             # Notion 上传成功后发送到 Telegram
-            print("正在发送到 Telegram...")
+            semiconductor = is_semiconductor_article(data)
+            print(
+                "行业分类："
+                + ("半导体" if semiconductor else "其他（非半导体）")
+                + "，正在发送到 Telegram..."
+            )
             send_to_telegram_after_notion(
                 title_cn=data.get("title_cn", title),
                 title_en=title,
@@ -1064,4 +1118,5 @@ def _process_items(
                 link=link,
                 tags=data.get("tags", []),
                 website_name=get_website_name(source_url),
+                is_semiconductor=semiconductor,
             )

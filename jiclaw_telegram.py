@@ -6,7 +6,26 @@ jiclaw_telegram.py - Telegram 推送模块
 import os
 import re
 import requests
-from telegram_config import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, TELEGRAM_ENABLED
+from telegram_config import (
+    TELEGRAM_BOT_TOKEN,
+    TELEGRAM_CHAT_ID,
+    TELEGRAM_CHAT_ID_OTHER,
+    TELEGRAM_ENABLED,
+)
+
+
+def resolve_telegram_chat_id(is_semiconductor: bool):
+    """根据文章行业分类，返回 (chat_id, 说明)。
+
+    - 半导体行业文章：推送到 TELEGRAM_CHAT_ID
+    - 非半导体文章：推送到 TELEGRAM_CHAT_ID_OTHER
+      （未配置该群组时返回 chat_id=None，表示剔除、不推送）
+    """
+    if is_semiconductor:
+        return TELEGRAM_CHAT_ID, "半导体 → 主群组"
+    if TELEGRAM_CHAT_ID_OTHER:
+        return TELEGRAM_CHAT_ID_OTHER, "非半导体 → 其他群组"
+    return None, "非半导体（未配置 TELEGRAM_CHAT_ID_OTHER，已剔除）"
 
 
 def strip_html_tags(text: str) -> str:
