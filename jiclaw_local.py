@@ -52,7 +52,7 @@ def main():
     except ValueError:
         interval = 900
 
-    model = "glm-4-flash"
+    model = "GLM-4.7-Flash"
 
     print(f"将持续运行，每 {interval} 秒抓取一次。可按 Ctrl+C 退出。")
 

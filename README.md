@@ -151,6 +151,7 @@ python jiclaw.py scraper:aijiwei
 
 > 若未配置 `TELEGRAM_CHAT_ID_OTHER`，非半导体文章会被**剔除**（不推送），只保留半导体文章推送到主群组。
 > 若希望所有文章都推送到同一个群组，将 `TELEGRAM_CHAT_ID_OTHER` 设为与 `TELEGRAM_CHAT_ID` 相同即可。
+> 分类采用「拿不准就归其他群组」的保守策略：模型返回缺失、无法识别的取值，一律走 `TELEGRAM_CHAT_ID_OTHER`，主群组只保留判定明确的半导体文章。
 
 **GitHub Actions 配置：**
 

@@ -26,7 +26,7 @@ def main():
         sys.exit(1)
 
     args = sys.argv[1:]
-    model = "glm-4-flash"
+    model = "GLM-4.7-Flash"
 
     for arg in args:
         if arg.startswith("scraper:"):

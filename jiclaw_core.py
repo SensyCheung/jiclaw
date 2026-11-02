@@ -622,37 +622,40 @@ def summarize_with_ai(
 你将看到一篇科技/半导体/硬件等方向的文章信息（标题 + RSS 摘要 + 抓取到的正文）。
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
 
-1. **Tags 提取**:
+1. **行业分类 (category)**：只允许输出 "semiconductor" 或 "other"。必须先做这一步，再写其他字段。
+   - 判为 "semiconductor"：文章**核心主题**是芯片/集成电路产业本身 —— IC 设计与销售、晶圆制造与代工、
+     半导体设备与材料、存储（DRAM/NAND/HBM）、先进封装与测试、EDA/IP、光刻、功率/模拟/射频芯片、
+     传感器芯片、光通讯器件等上游元器件，以及半导体公司的财报/并购/产能/技术路线/供应链。
+   - 判为 "other"：文章核心主题不是芯片产业本身 —— 家电、消费电子整机（手机/笔记本/外设/显示器/
+     机箱/散热 的评测、导购、上架）、服务器与存储系统整机方案、泛科技/互联网/软件/大模型应用、
+     游戏、云计算与运营商商务、汽车整车、纯财经宏观、企业公告与社会类新闻。
+   - 判定规则：
+     * 只能依据正文中与芯片产业直接相关的实质内容；
+     * 标题出现芯片公司名、或正文顺带提到某颗芯片，都**不算**半导体；
+     * 若文章同时涉及，只有核心主题是芯片产业时才判 "semiconductor"；
+     * **拿不准就判 "other"**，禁止为了保险而默认判成 "semiconductor"。
+
+2. **Tags 提取**:
    - 从下方的 [Candidate Tags] 列表中选择 **1-3 个** 最相关的标签。
    - **禁止原则**: 严禁选择正文中未提及的公司或技术。如果列表中没有合适的，请优先提取正文中的公司名。
    - [Candidate Tags]: 'Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'AI chip', 'Software', 'GaN', 'iOS', 'Cooling'.
    - [Prohibited Tags]: 'Reviews', 'Featured Tech News', 'Tech News', 'technology', 'Tech Industry', 'Hardware', 'semiconductor', 'Industry', 'electronics', 'Manufacturing', 'Sales'.
-2. 将英文标题翻译为简体中文（title_cn）。
+3. 将英文标题翻译为简体中文（title_cn）。
 
-3. 要点摘要：基于正文内容，提取正文中的硬核技术/商业信息。：
+4. 要点摘要：基于正文内容，提取正文中的硬核技术/商业信息。：
    - summary_en：用英文输出 3-8 个要点，使用 HTML 段落标签包装，
      例如："<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>"
    - summary_cn：用简体中文输出 3-8 个要点，格式同上。
 
-4. **行业分类 (category)**: 判断文章是否属于「半导体行业」，只允许输出 "semiconductor" 或 "other"。
-   - 属于 "semiconductor"（半导体行业）：芯片/IC 设计与销售、晶圆制造与代工、半导体设备与材料、
-     存储（DRAM/NAND/HBM）、先进封装与测试、EDA/IP、光刻、功率/模拟/射频芯片、半导体公司的
-     财报/并购/产能/技术路线/供应链等。光通讯器件、传感器芯片等上游元器件也算半导体。
-   - 属于 "other"（非半导体）：家电、消费电子整机（手机/笔记本整机评测、外设、显示器、机箱、散热）、
-     泛科技/互联网/软件/大模型应用服务、游戏、云计算与运营商商务、汽车整车、纯财经宏观、
-     与芯片无直接实质关系的内容。
-   - 判断依据必须是正文中与半导体直接相关的实质内容；仅标题出现芯片公司名不算半导体。
-   - 若文章同时涉及，仅当其核心主题是半导体时才判为 "semiconductor"。
-
-只输出严格 JSON 格式，不要任何解释或额外文本：
+只输出严格 JSON 格式，不要任何解释或额外文本（示例中的取值仅示意格式，必须按实际内容判断）：
 {
+  "category": "other",
   "tags": ["aaa", "bbb", "ccc"],
   "title_cn": "被翻译的中文标题",
   "summary_en": "<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>",
-  "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>",
-  "category": "semiconductor"
+  "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>"
 }
-请最后检查输出是否符合要求，不要出现任何错误，比如翻译要准确，标签要完全匹配等，JSON格式要正确。
+请最后检查输出是否符合要求，不要出现任何错误，比如翻译要准确，标签要完全匹配等，JSON格式要正确。category 只能是 "semiconductor" 或 "other" 两个值之一。
                 ''',
             },
             {
@@ -664,46 +667,100 @@ def summarize_with_ai(
     )
 
     result = response.choices[0].message.content
-
-    pattern = re.compile(r"\{.*?\}", re.DOTALL)
-    match = pattern.search(result)
-    if not match:
-        raise ValueError("模型返回中未找到 JSON")
-
-    data = json.loads(match.group())
+    data = _extract_json_object(result)
     return data
+
+
+def _extract_json_object(text: str) -> dict:
+    """从模型输出中提取第一个合法 JSON 对象。
+
+    用 raw_decode 逐字符尝试，既能处理正文里出现花括号的情况，
+    也不会被 JSON 前后的解释文字干扰（正则匹配两种写法都会翻车）。
+    """
+    if not text:
+        raise ValueError("模型返回为空")
+
+    decoder = json.JSONDecoder()
+    for idx, ch in enumerate(text):
+        if ch != "{":
+            continue
+        try:
+            obj, _ = decoder.raw_decode(text[idx:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict):
+            return obj
+
+    raise ValueError("模型返回中未找到 JSON")
+
+
+def _extract_category_value(ai_data: dict):
+    """从 LLM 结果中取出分类字段的原始值（兼容多种键名）。"""
+    for key in ("category", "Category", "行业分类", "category_cn", "is_semiconductor", "isSemiconductor"):
+        if key in ai_data:
+            return ai_data.get(key)
+    return None
+
+
+# 先判"否"，再判"是"：否则 "非半导体" / "other（非半导体）" 这类值
+# 会因为包含"半导体"字样被误判成半导体
+_CATEGORY_NEGATIVE_EXACT = {
+    "other", "others", "no", "false", "0", "general", "否", "其他", "非半导体",
+    "non-semiconductor", "nonsemiconductor", "non_semiconductor", "non-semi",
+    "consumer", "consumer electronics", "hardware", "technology", "tech",
+}
+_CATEGORY_NEGATIVE_KEYWORDS = (
+    "其他", "非半导体", "泛科技", "家电", "消费电子", "整机", "游戏",
+    "软件", "宏观", "汽车", "互联网", "服务器整机", "评测",
+    "other", "non-semi", "consumer", "general",
+)
+_CATEGORY_POSITIVE_EXACT = {
+    "semiconductor", "semi", "chip", "chips", "ic", "yes", "true", "1", "是",
+    "半导体", "芯片",
+}
+_CATEGORY_POSITIVE_KEYWORDS = ("半导体", "芯片", "semiconductor", "chip")
+
+
+def classify_article_category(ai_data: dict):
+    """返回 (is_semiconductor, 原始值, 说明)。
+
+    设计原则：**失败时偏向"其他群组"**。
+    主群组只收半导体文章，模型没说清楚时宁可丢到其他群组，
+    也不要把非半导体文章灌进主群组。
+    """
+    raw = _extract_category_value(ai_data)
+
+    if isinstance(raw, bool):
+        return raw, raw, "布尔值"
+    if raw is None:
+        return False, None, "缺失 category 字段 → 归入其他群组"
+
+    text = str(raw).strip().lower()
+    if not text:
+        return False, raw, "category 为空 → 归入其他群组"
+
+    if text in _CATEGORY_NEGATIVE_EXACT:
+        return False, raw, "精确命中非半导体"
+    for kw in _CATEGORY_NEGATIVE_KEYWORDS:
+        if kw in text:
+            return False, raw, f"命中非半导体关键词「{kw}」"
+
+    if text in _CATEGORY_POSITIVE_EXACT:
+        return True, raw, "精确命中半导体"
+    for kw in _CATEGORY_POSITIVE_KEYWORDS:
+        if kw in text:
+            return True, raw, f"命中半导体关键词「{kw}」"
+
+    return False, raw, "无法识别的取值 → 归入其他群组"
 
 
 def is_semiconductor_article(ai_data: dict) -> bool:
     """根据 LLM 返回的 category 字段判断是否为半导体行业文章。
 
     兼容多种取值（semiconductor/other、true/false、是/否 等）。
-    字段缺失或无法识别时，默认按半导体处理（推送到主群组），避免误剔除。
+    字段缺失或无法识别时按**非半导体**处理，避免非半导体文章误入主群组。
     """
-    raw = ai_data.get("category")
-    if raw is None:
-        raw = ai_data.get("is_semiconductor")
-    if isinstance(raw, bool):
-        return raw
-    if raw is None:
-        return True
-
-    text = str(raw).strip().lower()
-    if not text:
-        return True
-
-    if text in ("semiconductor", "semi", "chip", "chips", "ic", "yes", "true", "1", "是"):
-        return True
-    if text in (
-        "other", "no", "false", "0", "non-semiconductor", "nonsemiconductor",
-        "general", "否", "其他", "非半导体",
-    ):
-        return False
-    if "半导体" in text or "芯片" in text:
-        return True
-    if "其他" in text or "泛科技" in text or "家电" in text:
-        return False
-    return True
+    return classify_article_category(ai_data)[0]
 
 
 def get_website_name(feed_url: str) -> str:
@@ -923,7 +980,7 @@ def send_to_telegram_after_notion(
     link: str,
     tags: list,
     website_name: str,
-    is_semiconductor: bool = True,
+    is_semiconductor: bool = False,
 ) -> None:
     """在 Notion 上传成功后发送到 Telegram 和 Discord"""
     # Telegram 发送（按行业分类路由到不同群组）
@@ -1105,10 +1162,11 @@ def _process_items(
             )
 
             # Notion 上传成功后发送到 Telegram
-            semiconductor = is_semiconductor_article(data)
+            semiconductor, category_raw, category_reason = classify_article_category(data)
             print(
                 "行业分类："
                 + ("半导体" if semiconductor else "其他（非半导体）")
+                + f" | category={category_raw!r} | {category_reason}"
                 + "，正在发送到 Telegram..."
             )
             send_to_telegram_after_notion(
