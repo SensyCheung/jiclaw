@@ -157,19 +157,29 @@ def send_to_telegram(
     
     try:
         resp = requests.post(url, json=payload, timeout=15)
-        resp.raise_for_status()
+
+        if not resp.ok:
+            # 400 常见原因：chat_id 写错/缺 -100 前缀、Bot 未加入该群或被踢出
+            try:
+                detail = resp.json().get("description", "")
+            except ValueError:
+                detail = resp.text[:200]
+            print(
+                f"Telegram 发送失败：HTTP {resp.status_code} | chat_id={cid} | {detail}"
+            )
+            return False
+
         result = resp.json()
-        
         if result.get("ok"):
             message_id = result.get("result", {}).get("message_id")
             print(f"已发送到 Telegram：Message ID {message_id}")
             return True
-        else:
-            print(f"Telegram 发送失败：{result}")
-            return False
-            
+
+        print(f"Telegram 发送失败：chat_id={cid} | {result}")
+        return False
+
     except requests.exceptions.RequestException as e:
-        print(f"Telegram 发送异常：{e}")
+        print(f"Telegram 发送异常：chat_id={cid} | {e}")
         return False
 
 
