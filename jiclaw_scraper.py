@@ -1816,6 +1816,106 @@ def scrape_tweaktown(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+def scrape_imec(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 imec Reading Room (imec-int.com/en/reading-room) 的文章列表
+
+    该站是 Next.js 前端 + Drupal 后端，列表不渲染在 HTML 里，
+    直接从页面数据接口取 JSON：/api/page?route=%2Fen%2Freading-room
+    返回的 blocks 里找 _type == "reading_room" 的块，items 即为文章列表。
+
+    每个 item 字段：
+    - title: 标题
+    - url:   相对链接（/en/press/xxx 或 /en/articles/xxx）
+    - date:  "2026-10-30 13:00:00"（布鲁塞尔当地时间）
+    - _type: press / article / podcast 等
+
+    Args:
+        url: 网站 URL（配置文件里的阅读页地址，用于解析 host 和 route）
+        limit: 获取文章数量上限
+    """
+    from urllib.parse import urlparse, quote
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Accept": "application/json",
+    }
+
+    results = []
+
+    try:
+        parsed = urlparse(url)
+        site_base = f"{parsed.scheme}://{parsed.netloc}"
+        route = parsed.path or "/en/reading-room"
+
+        # Drupal 数据接口（与前端渲染用的是同一个）
+        api_url = (
+            "https://drupal.imec-int.com/api/page?route=" + quote(route, safe="")
+        )
+
+        response = requests.get(
+            api_url,
+            headers=headers,
+            timeout=20,
+            proxies={"http": None, "https": None},
+        )
+
+        if response.status_code != 200:
+            print(f"请求失败，状态码：{response.status_code}")
+            return []
+
+        data = response.json()
+        blocks = data.get("blocks") or []
+
+        items = []
+        for block in blocks:
+            if block.get("_type") == "reading_room":
+                items = block.get("items") or []
+                break
+
+        print(f"  找到 {len(items)} 篇文章")
+
+        for item in items[:limit]:
+            # 播客/专题页不是文章，跳过
+            if item.get("_type") in ("podcast", "dossier"):
+                continue
+
+            title = (item.get("title") or "").strip()
+            link = item.get("url") or ""
+            if link:
+                link = urljoin(site_base, link)
+
+            date_str = (item.get("date") or "").strip()
+            published_date = None
+            if date_str:
+                # "2026-10-30 13:00:00" -> ISO，normalize_date 要求带 T
+                published_date = normalize_date(date_str.replace(" ", "T"))
+
+            summary = item.get("description") or ""
+
+            if title and link:
+                results.append(
+                    {
+                        "title": title,
+                        "link": link,
+                        "summary": summary,
+                        "published": date_str,
+                        "published_date": published_date,
+                    }
+                )
+
+        print(f"  成功获取 {len(results)} 篇文章")
+        return results
+
+    except Exception as e:
+        print(f"爬取 imec 失败：{e}")
+        return []
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -1833,6 +1933,7 @@ SCRAPER_FUNCTIONS = {
     "tweaktown": scrape_tweaktown,
     "barrons": scrape_barrons,
     "bits-chips": scrape_bits_chips,
+    "imec": scrape_imec,
 }
 
 

@@ -139,4 +139,11 @@ SCRAPER_CONFIG = {
         "date_selector": "time.entry-date-published, time",
         "date_format": "%d %B %Y",  # 日期格式：2 April 2026
     },
+    "imec": {
+        "name": "imec Reading Room",
+        "url": "https://www.imec-int.com/en/reading-room",
+        # 列表数据来自 Drupal 接口 /api/page?route=/en/reading-room，无需 DOM 选择器
+        "api_host": "https://drupal.imec-int.com",
+        "date_format": "iso",  # 日期格式：2026-10-30 13:00:00
+    },
 }

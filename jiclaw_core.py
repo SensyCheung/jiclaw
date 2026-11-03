@@ -796,6 +796,7 @@ def get_website_name(feed_url: str) -> str:
         "anysilicon.com": "AnySilicon",
         "idw-online.de": "IDW Online",
         "seekingalpha.com": "Seeking Alpha",
+        "imec-int.com": "imec",
     }
 
     # Broadcom 特殊处理：根据路径区分 News 和 Blog
