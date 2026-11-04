@@ -1916,6 +1916,228 @@ def scrape_imec(url: str, limit: int = 10) -> list[dict]:
         return []
 
 
+_MONTHS = {
+    "january": 1, "february": 2, "march": 3, "april": 4, "may": 5, "june": 6,
+    "july": 7, "august": 8, "september": 9, "october": 10, "november": 11, "december": 12,
+    "jan": 1, "feb": 2, "mar": 3, "apr": 4, "jun": 6, "jul": 7, "aug": 8,
+    "sep": 9, "sept": 9, "oct": 10, "nov": 11, "dec": 12,
+}
+
+
+def _parse_english_date(text: str) -> str:
+    """从英文文本里抓 "November 04, 2026" / "4 November 2026" 这类日期。"""
+    if not text:
+        return ""
+
+    m = re.search(r"([A-Za-z]{3,9})\.?\s+(\d{1,2}),?\s+(\d{4})", text)
+    if m and m.group(1).lower() in _MONTHS:
+        month = _MONTHS[m.group(1).lower()]
+        return f"{m.group(3)}-{month:02d}-{int(m.group(2)):02d}"
+
+    m = re.search(r"(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})", text)
+    if m and m.group(2).lower() in _MONTHS:
+        month = _MONTHS[m.group(2).lower()]
+        return f"{m.group(3)}-{month:02d}-{int(m.group(1)):02d}"
+
+    m = re.search(r"(\d{4})-(\d{2})-(\d{2})", text)
+    if m:
+        return m.group(0)
+
+    return ""
+
+
+def _qualcomm_items_from_sitemap(limit: int = 10) -> list[dict]:
+    """兜底方案：从 sitemap 取最新的新闻稿链接，再用 og:title 补标题。
+
+    Qualcomm 站是 SPA，正文/列表都要 JS 渲染；sitemap 更新有滞后，
+    但比完全抓不到好，而且 Notion 按链接去重，重复项会被自动跳过。
+    """
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        )
+    }
+
+    resp = requests.get(
+        "https://www.qualcomm.com/sitemap.xml",
+        headers=headers,
+        timeout=30,
+        proxies={"http": None, "https": None},
+    )
+    if resp.status_code != 200:
+        print(f"  sitemap 请求失败：{resp.status_code}")
+        return []
+
+    entries = re.findall(
+        r"<url><loc>(.*?)</loc><lastmod>(.*?)</lastmod>", resp.text
+    )
+    releases = [(u, d) for u, d in entries if "/news/releases/" in u]
+    releases.sort(key=lambda x: x[1], reverse=True)
+
+    results = []
+    for link, lastmod in releases[: limit * 2]:
+        if len(results) >= limit:
+            break
+        try:
+            page_resp = requests.get(
+                link, headers=headers, timeout=20, proxies={"http": None, "https": None}
+            )
+            if page_resp.status_code != 200:
+                continue
+            m = re.search(
+                r'<meta[^>]+property="og:title"[^>]+content="([^"]+)"', page_resp.text
+            )
+            if not m:
+                continue
+            title = m.group(1).strip()
+            # og:title 常带 " | Qualcomm" 站点后缀，去掉
+            title = re.sub(r"\s*\|\s*Qualcomm\s*$", "", title, flags=re.I).strip()
+            if len(title) < 10:
+                continue
+            results.append(
+                {
+                    "title": title,
+                    "link": link,
+                    "summary": "",
+                    "published": lastmod,
+                    "published_date": normalize_date(lastmod),
+                }
+            )
+        except Exception:
+            continue
+
+    return results
+
+
+def scrape_qualcomm(url: str, limit: int = 10) -> list[dict]:
+    """
+    爬取 Qualcomm 新闻稿列表 (qualcomm.com/news/releases)
+
+    站点是 AEM + React SPA，列表由 Coveo 搜索结果组件渲染，
+    静态 HTML 里只有 "You need to enable JavaScript to run this app"。
+
+    抓取策略：
+    1. 主路径：sitemap.xml（带 lastmod）+ 每篇页面的 og:title，无需渲染，快且稳定
+    2. 兜底：Playwright 渲染列表页，抽取 a[href*="/news/releases/"]（sitemap 无结果时）
+    
+    Args:
+        url: 新闻列表页地址
+        limit: 获取文章数量上限
+    """
+    # 优先走 sitemap：无需渲染，快且稳定（sitemap 带 lastmod，更新也算及时）
+    results = _qualcomm_items_from_sitemap(limit)
+    if results:
+        print(f"  sitemap 获取 {len(results)} 篇，跳过 Playwright")
+        return results
+
+    print("  sitemap 无结果，改用 Playwright 渲染列表")
+
+    from playwright.sync_api import sync_playwright
+
+    results = []
+    seen = set()
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    "--disable-blink-features=AutomationControlled",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                    "--window-size=1920,1080",
+                ],
+            )
+
+            context = browser.new_context(
+                viewport={"width": 1920, "height": 1080},
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/122.0.0.0 Safari/537.36"
+                ),
+                locale="en-US",
+            )
+
+            page = context.new_page()
+            page.add_init_script(
+                """
+                Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+                Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3, 4, 5]});
+                Object.defineProperty(navigator, 'languages', {get: () => ['en-US', 'en']});
+                """
+            )
+
+            page.goto(url, wait_until="domcontentloaded", timeout=120000)
+
+            # 等 Coveo 列表渲染出来
+            try:
+                page.wait_for_selector(
+                    'a[href*="/news/releases/"]', timeout=45000
+                )
+            except Exception:
+                print("  等待新闻列表超时，尝试继续解析")
+
+            page.wait_for_timeout(3000)
+
+            raw = page.eval_on_selector_all(
+                'a[href*="/news/releases/"]',
+                """
+                els => els.map(e => {
+                    const box = e.closest('li, article, div[class*="result"]') || e.parentElement;
+                    return {
+                        href: e.href,
+                        text: (e.innerText || e.textContent || '').trim(),
+                        box: box ? (box.innerText || '') : ''
+                    };
+                })
+                """,
+            )
+
+            browser.close()
+
+        print(f"  页面解析到 {len(raw)} 个候选链接")
+
+        for item in raw:
+            href = (item.get("href") or "").split("?")[0]
+            title = (item.get("text") or "").strip().replace("\n", " ")
+
+            if not href or href in seen:
+                continue
+            # 过滤列表页/分页链接和非新闻稿
+            if not re.search(r"/news/releases/\d{4}/\d{2}/", href):
+                continue
+            if len(title) < 10:
+                continue
+
+            seen.add(href)
+            box = item.get("box") or ""
+            date_str = _parse_english_date(box) or _parse_english_date(href)
+            published_date = normalize_date(date_str) if date_str else None
+
+            results.append(
+                {
+                    "title": title,
+                    "link": href,
+                    "summary": "",
+                    "published": date_str,
+                    "published_date": published_date,
+                }
+            )
+
+            if len(results) >= limit:
+                break
+
+    except Exception as e:
+        print(f"Playwright 爬取 Qualcomm 失败：{e}")
+
+    print(f"  成功获取 {len(results)} 篇文章")
+    return results
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -1934,6 +2156,7 @@ SCRAPER_FUNCTIONS = {
     "barrons": scrape_barrons,
     "bits-chips": scrape_bits_chips,
     "imec": scrape_imec,
+    "qualcomm": scrape_qualcomm,
 }
 
 

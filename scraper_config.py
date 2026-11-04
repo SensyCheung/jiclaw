@@ -146,4 +146,11 @@ SCRAPER_CONFIG = {
         "api_host": "https://drupal.imec-int.com",
         "date_format": "iso",  # 日期格式：2026-10-30 13:00:00
     },
+    "qualcomm": {
+        "name": "Qualcomm News",
+        "url": "https://www.qualcomm.com/news/releases",
+        # SPA（AEM + Coveo）：主路径走 sitemap + og:title，兜底用 Playwright 渲染
+        "sitemap": "https://www.qualcomm.com/sitemap.xml",
+        "date_format": "%B %d, %Y",  # 日期格式：November 04, 2026
+    },
 }

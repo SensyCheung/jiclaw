@@ -192,6 +192,7 @@ def fetch_article_content(url: str) -> str:
         "developer.nvidia.com",
         "fiercesensors.com",
         "tweaktown.com",
+        "qualcomm.com",  # AEM + React SPA，正文要靠 JS 渲染
     ]
 
     # 检查是否需要 Playwright
@@ -797,6 +798,7 @@ def get_website_name(feed_url: str) -> str:
         "idw-online.de": "IDW Online",
         "seekingalpha.com": "Seeking Alpha",
         "imec-int.com": "imec",
+        "qualcomm.com": "Qualcomm",
     }
 
     # Broadcom 特殊处理：根据路径区分 News 和 Blog
