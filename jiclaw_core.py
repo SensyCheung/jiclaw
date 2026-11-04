@@ -600,9 +600,7 @@ def summarize_with_ai(
         f"Full Article Content:\n{content}"
     )
 
-    response = client.chat.completions.create(
-        model=model,
-        messages=[
+    messages = [
             {
                 "role": "system",
                 "content": '''
@@ -663,13 +661,41 @@ def summarize_with_ai(
                 "role": "user",
                 "content": user_content,
             },
-        ],
-        stream=False,
-    )
+    ]
+
+    response = _chat_with_retry(client, model, messages)
 
     result = response.choices[0].message.content
     data = _extract_json_object(result)
     return data
+
+
+def _chat_with_retry(client, model: str, messages: list, max_attempts: int = 4):
+    """调用大模型，遇到 429 限流 / 5xx 时按退避策略重试。
+
+    智谱免费档在批量抓取时很容易触发 429（"该模型当前访问量过大"），
+    原来一次失败就抛异常，会把整个站点的剩余文章全部丢掉。
+    """
+    import time
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return client.chat.completions.create(
+                model=model,
+                messages=messages,
+                stream=False,
+            )
+        except Exception as e:
+            msg = str(e)
+            retryable = any(
+                k in msg
+                for k in ("429", "Rate limit", "rate_limit", "访问量过大", "500", "502", "503", "504", "timeout", "超时")
+            )
+            if attempt == max_attempts or not retryable:
+                raise
+            wait = 15 * attempt  # 15s / 30s / 45s
+            print(f"  模型调用失败（第 {attempt}/{max_attempts} 次），{wait}s 后重试：{msg[:100]}")
+            time.sleep(wait)
 
 
 def _extract_json_object(text: str) -> dict:
@@ -1135,7 +1161,12 @@ def _process_items(
 
         print("正在调用大模型生成摘要...")
 
-        data = summarize_with_ai(title, summary, content, model=model)
+        try:
+            data = summarize_with_ai(title, summary, content, model=model)
+        except Exception as e:
+            # 单篇失败不拖垮整个源，继续处理后面的文章
+            print(f"AI 摘要失败，跳过该文章：{str(e)[:120]}")
+            continue
 
         print("AI 结果 JSON：")
         # 使用 ensure_ascii=True 避免编码问题
