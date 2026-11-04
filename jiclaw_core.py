@@ -7,6 +7,7 @@ import os
 import json
 import re
 import hashlib
+import time
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -776,7 +777,7 @@ def _chat_with_retry(client, model: str, messages: list, max_attempts: int = 3):
             )
             if attempt == max_attempts or not retryable:
                 raise
-            wait = 10 * attempt  # 10s / 20s
+            wait = 30 if attempt == 1 else 60  # 429 多是分钟级窗口，等够一分钟更有效
             print(f"  模型调用失败（第 {attempt}/{max_attempts} 次），{wait}s 后重试：{msg[:100]}")
             time.sleep(wait)
 
@@ -1245,6 +1246,9 @@ def _process_items(
         # --- Debug 代码结束 ---
 
         print("正在调用大模型生成摘要...")
+
+        # 主动限速：智谱账号有 RPM/TPM 限制，连续请求很容易 429
+        time.sleep(2)
 
         try:
             data = summarize_with_ai(title, summary, content, model=model)
