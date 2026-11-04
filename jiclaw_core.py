@@ -185,6 +185,11 @@ def fetch_article_content(url: str) -> str:
     if "businesswire.com" in url:
         url = clean_businesswire_url(url)
 
+    # Qualcomm 文章页是 AEM + React SPA，静态 HTML 只有空壳，
+    # 用专门的紧凑 Playwright 流程（通用流程固定等待太久，单篇要 2 分钟）
+    if "qualcomm.com" in url:
+        return fetch_qualcomm_content(url)
+
     # 需要 Playwright 处理的 JS 动态加载网站列表
     playwright_sites = [
         "broadcom.com",
@@ -192,7 +197,6 @@ def fetch_article_content(url: str) -> str:
         "developer.nvidia.com",
         "fiercesensors.com",
         "tweaktown.com",
-        "qualcomm.com",  # AEM + React SPA，正文要靠 JS 渲染
     ]
 
     # 检查是否需要 Playwright
@@ -581,6 +585,85 @@ def fetch_broadcom_blog_content(url: str) -> str:
     return fetch_article_content_playwright(url)
 
 
+def fetch_qualcomm_content(url: str) -> str:
+    """抓取 Qualcomm 文章正文（AEM + React SPA，只能靠渲染）。
+
+    通用 Playwright 流程里有多段固定等待（10s + 3s + 2s），一篇文章要 2 分钟以上，
+    批量抓 10 篇就把整轮拖到一个小时。这里用紧凑版本：
+    页面 glyph 出现后直接取 main 的 innerText，单篇 8–15 秒。
+    """
+    from playwright.sync_api import sync_playwright
+
+    text = ""
+
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(
+                headless=True,
+                args=[
+                    "--disable-blink-features=AutomationControlled",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage",
+                    "--disable-gpu",
+                ],
+            )
+            context = browser.new_context(
+                viewport={"width": 1400, "height": 900},
+                user_agent=(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/122.0.0.0 Safari/537.36"
+                ),
+                locale="en-US",
+            )
+            page = context.new_page()
+            page.add_init_script(
+                "Object.defineProperty(navigator,'webdriver',{get:()=>undefined});"
+            )
+
+            page.goto(url, wait_until="domcontentloaded", timeout=45000)
+            try:
+                page.wait_for_selector("main, article", timeout=20000)
+            except Exception:
+                pass
+            page.wait_for_timeout(1500)
+
+            text = page.evaluate(
+                """() => {
+                    const el = document.querySelector('main') || document.body;
+                    return el ? (el.innerText || '') : '';
+                }"""
+            )
+            browser.close()
+
+    except Exception as e:
+        print(f"Qualcomm 正文抓取失败：{e}")
+
+    if text and len(text) > 400:
+        return clean_article_content(text)
+
+    # 兜底：至少拿到 og:title / og:description（通常是标题 + 首段导语）
+    try:
+        resp = requests.get(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+            timeout=20,
+        )
+        parts = []
+        for prop in ("og:title", "og:description"):
+            m = re.search(
+                r'<meta[^>]+property="%s"[^>]+content="([^"]+)"' % prop, resp.text
+            )
+            if m:
+                parts.append(m.group(1).strip())
+        fallback = "\n".join(p for p in parts if p)
+        if fallback:
+            print("  Qualcomm 正文渲染失败，退回 og:title/og:description")
+        return fallback
+    except Exception:
+        return ""
+
+
 def summarize_with_ai(
     title: str, summary: str, content: str, model: str = "GLM-4.7-Flash"
 ) -> dict:
@@ -670,7 +753,7 @@ def summarize_with_ai(
     return data
 
 
-def _chat_with_retry(client, model: str, messages: list, max_attempts: int = 4):
+def _chat_with_retry(client, model: str, messages: list, max_attempts: int = 3):
     """调用大模型，遇到 429 限流 / 5xx 时按退避策略重试。
 
     智谱免费档在批量抓取时很容易触发 429（"该模型当前访问量过大"），
@@ -693,7 +776,7 @@ def _chat_with_retry(client, model: str, messages: list, max_attempts: int = 4):
             )
             if attempt == max_attempts or not retryable:
                 raise
-            wait = 15 * attempt  # 15s / 30s / 45s
+            wait = 10 * attempt  # 10s / 20s
             print(f"  模型调用失败（第 {attempt}/{max_attempts} 次），{wait}s 后重试：{msg[:100]}")
             time.sleep(wait)
 
@@ -1118,6 +1201,8 @@ def _process_items(
         # RSS feed，根据名单决定是否抓取
         fetch_content = _should_fetch_content(source)
 
+    _ai_fail_streak = 0  # 连续调用模型失败计数（用于限流时提前收手）
+
     for item in items:
         title = item["title"]
         link = item["link"]
@@ -1163,9 +1248,14 @@ def _process_items(
 
         try:
             data = summarize_with_ai(title, summary, content, model=model)
+            _ai_fail_streak = 0
         except Exception as e:
             # 单篇失败不拖垮整个源，继续处理后面的文章
-            print(f"AI 摘要失败，跳过该文章：{str(e)[:120]}")
+            _ai_fail_streak += 1
+            print(f"AI 摘要失败（连续第 {_ai_fail_streak} 次），跳过该文章：{str(e)[:120]}")
+            if _ai_fail_streak >= 5:
+                print("连续 5 篇失败，判定为模型限流/故障，结束该源的处理。")
+                break
             continue
 
         print("AI 结果 JSON：")
