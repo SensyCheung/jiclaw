@@ -27,11 +27,14 @@ from jiclaw_discord import send_to_discord
 # 在这个名单中的 feed 直接使用 RSS 提供的摘要，不抓取网页正文
 # 不在名单中的 feed 都会抓取网页正文
 USE_RSS_SUMMARY_FEEDS = [
-    "semiwiki.com",
+    # semiwiki.com 也曾列在这里，但历史上这段名单没生效（一直抓的正文）。
+    # 它的 feed 摘要只有 450 字符左右，抓正文质量更好，故保持抓正文；
+    # 若想改用摘要，取消下面这行注释即可。
+    # "semiwiki.com",
+
     # The Information：文章页被 Cloudflare 拦截（403 "Just a moment"）
-    # 且正文在付费墙后，feed 的 content 就是官方导语（平均 700+ 字符），直接用它
+    # 且正文在付费墙后，feed 的 content 就是官方导语（平均 900+ 字符），直接用它
     "theinformation.com",
-    # 可以添加更多直接使用 RSS 摘要的 feed 域名
 ]
 
 
