@@ -65,7 +65,7 @@ python jiclaw_local.py twitter:paurooteri
 
 2. （可选）配置 Variables：
    - `RSS_INTERVAL_SECONDS` - 抓取间隔（秒），默认 3600
-   - `GEMINI_MODEL` - Gemini 模型名，默认 `gemini-2.5-flash`
+   - `GEMINI_MODEL` - Gemini 模型名，默认 `gemini-flash-lite-latest`
    - `LLM_MODE` - `fallback`（智谱优先、限流才切 Gemini，默认）/ `balance`（两家轮询分摊）
    - `LLM_REQUEST_INTERVAL` - 每篇之间的主动限速秒数，默认 `1`
 
@@ -124,7 +124,7 @@ TWITTER_ACCOUNTS = {
 | 变量名 | 说明 | 必需 | 默认值 |
 |--------|------|------|--------|
 | `ZHIPU_API_KEY` / `GEMINI_API_KEY` | 至少配一个模型密钥 | 是（二选一） | - |
-| `GEMINI_MODEL` | Gemini 模型名 | 否 | `gemini-2.5-flash` |
+| `GEMINI_MODEL` | Gemini 模型名 | 否 | `gemini-flash-lite-latest` |
 | `ZHIPU_MODEL` | 智谱模型名 | 否 | `GLM-4.7-Flash` |
 | `LLM_MODE` | `fallback` 主备 / `balance` 轮询分摊 | 否 | `fallback` |
 | `LLM_PROVIDER_ORDER` | provider 顺序，如 `gemini,zhipu` | 否 | `zhipu,gemini,compat` |
@@ -152,12 +152,19 @@ TWITTER_ACCOUNTS = {
 
 某个 provider 返回 429 / 5xx 会进入 60 秒冷却，Key 无效则冷却 10 分钟；
 Gemini 模型名 404 时会自动降级到 `gemini-flash-latest` 等候选。
-每篇日志会打印 `使用模型：gemini:gemini-2.5-flash`，Notion 的 `LLM` 字段也记录实际使用的模型。
+每篇日志会打印 `使用模型：gemini:gemini-flash-lite-latest`，Notion 的 `LLM` 字段也记录实际使用的模型。
 
 **验证是否生效**：每次运行开头都有 `Check LLM providers` 步骤，逐个打印各模型的
 `[OK]` / `[FAIL]`（端点可达性、Key 有效性、模型名是否正确），失败不阻断抓取。
-在 Actions 页面手动 **Run workflow** 时，把 `llm_mode` 填成 `balance` 可强制两家分摊，
-用一次运行就能确认 Gemini 真的在处理文章。
+在 Actions 页面手动 **Run workflow** 时：
+
+- `probe_only=true`：只自检、不抓取，约 2 分钟结束，日志立即可读；Gemini 失败时会自动
+  列出该 Key 可见的所有模型并逐个试调，直接告诉你该用哪个模型名
+- `llm_mode=balance`：强制两家分摊，用一次完整运行确认 Gemini 真在处理文章
+
+> **模型名注意**：Google 对新建项目不再开放 `gemini-2.5-flash`（实测 404），
+> 默认已设为实测可用的 `gemini-flash-lite-latest`；想换更强的模型，先用 `probe_only` 探测，
+> 再把模型名填进 Variables 的 `GEMINI_MODEL`。
 
 **申请 Gemini 免费 Key**
 

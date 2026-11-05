@@ -767,13 +767,20 @@ def summarize_with_ai(
 _LLM_PROVIDERS = None
 _PROVIDER_STATE = {}
 
-# Gemini 免费层模型名换代较快：默认模型 404 时按序自动降级
+# Gemini 免费层模型名换代快，且「新项目」不开放部分旧模型（gemini-2.5-flash 实测 404）。
+# 2026-11 在 AI Studio 新项目上实测：gemini-flash-lite-latest 可正常调用，
+# gemma-4-* 也可用但会输出 <thought> 思考标签，不适合直接产 JSON，故排最后。
+# 模型 404 / 503 / 超时时按序自动降级。
 _GEMINI_MODEL_CANDIDATES = [
-    "gemini-2.5-flash",
-    "gemini-flash-latest",
-    "gemini-2.5-flash-lite",
-    "gemini-2.0-flash",
     "gemini-flash-lite-latest",
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash-lite",
+    "gemini-flash-latest",
+    "gemini-3.5-flash",
+    "gemini-3.8-flash",
+    "gemma-4-31b-it",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
 ]
 
 _RETRYABLE_MARKERS = (
@@ -865,13 +872,17 @@ def _call_provider(p: dict, messages: list):
             return resp, model
         except Exception as e:
             msg = str(e).lower()
-            if any(k in msg for k in _MODEL_MISSING_MARKERS) and p["candidates"]:
-                if model in p["candidates"]:
-                    nxt = p["candidates"].index(model) + 1
-                    if nxt < len(p["candidates"]):
-                        p["model"] = p["candidates"][nxt]
-                        print(f"  {p['name']} 模型 {model} 不可用，改用 {p['model']}")
-                        continue
+            # 模型名失效、以及该模型过载/超时，换一个模型可能就好了；
+            # 429 是整个项目的配额问题，换模型没意义，直接交给上层切 provider。
+            switchable = any(k in msg for k in _MODEL_MISSING_MARKERS) or any(
+                k in msg for k in ("503", "502", "504", "timeout", "timed out", "unavailable")
+            )
+            if switchable and p["candidates"] and model in p["candidates"]:
+                nxt = p["candidates"].index(model) + 1
+                if nxt < len(p["candidates"]):
+                    p["model"] = p["candidates"][nxt]
+                    print(f"  {p['name']} 模型 {model} 不可用，改用 {p['model']}")
+                    continue
             raise
 
 
@@ -897,9 +908,14 @@ def _diagnose_gemini(p: dict) -> None:
                 for m in r.json().get("models", [])
                 if "generateContent" in (m.get("supportedGenerationMethods") or [])
             ]
-            flash = [n for n in usable if "flash" in n.lower() or "gemma" in n.lower()]
-            print("  可见 flash 类模型：" + (", ".join(flash[:25]) or "无"))
-            candidates = list(dict.fromkeys(flash[:6] + _GEMINI_MODEL_CANDIDATES))
+            flash = [
+                n for n in usable
+                if "flash" in n.lower()
+                and not any(x in n.lower() for x in ("tts", "image", "omni", "preview", "gemma"))
+            ]
+            flash.sort(reverse=True)  # 版本号大的优先
+            print("  可见纯对话 flash 模型：" + (", ".join(flash[:20]) or "无"))
+            candidates = list(dict.fromkeys(flash[:10] + list(_GEMINI_MODEL_CANDIDATES)))
         else:
             print("  models.list 响应：" + r.text[:200])
             candidates = list(_GEMINI_MODEL_CANDIDATES)
@@ -914,6 +930,7 @@ def _diagnose_gemini(p: dict) -> None:
                 model=m,
                 messages=[{"role": "user", "content": "Reply with exactly: OK"}],
                 stream=False,
+                timeout=20,
             )
             txt = (resp.choices[0].message.content or "").strip()[:30] if resp.choices else ""
             print(f"    [OK]   {m} | 回复={txt!r}")
@@ -951,8 +968,8 @@ def check_llm_providers() -> dict:
             report[name] = {"ok": True, "model": used, "latency": round(cost, 1)}
             print(f"  [OK]   {name}:{used} | {cost:.1f}s | 回复={text!r}")
         except Exception as e:
-            report[name] = {"ok": False, "model": model, "error": str(e)[:220]}
-            print(f"  [FAIL] {name}:{model} | {str(e)[:220]}")
+            report[name] = {"ok": False, "model": p["model"], "error": str(e)[:220]}
+            print(f"  [FAIL] {name}:{p['model']} | {str(e)[:220]}")
             if name == "gemini":
                 try:
                     _diagnose_gemini(p)
