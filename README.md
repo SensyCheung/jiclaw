@@ -154,6 +154,11 @@ TWITTER_ACCOUNTS = {
 Gemini 模型名 404 时会自动降级到 `gemini-flash-latest` 等候选。
 每篇日志会打印 `使用模型：gemini:gemini-2.5-flash`，Notion 的 `LLM` 字段也记录实际使用的模型。
 
+**验证是否生效**：每次运行开头都有 `Check LLM providers` 步骤，逐个打印各模型的
+`[OK]` / `[FAIL]`（端点可达性、Key 有效性、模型名是否正确），失败不阻断抓取。
+在 Actions 页面手动 **Run workflow** 时，把 `llm_mode` 填成 `balance` 可强制两家分摊，
+用一次运行就能确认 Gemini 真的在处理文章。
+
 **申请 Gemini 免费 Key**
 
 1. 打开 <https://aistudio.google.com/>，用 Google 账号登录

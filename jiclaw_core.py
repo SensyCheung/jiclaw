@@ -875,6 +875,41 @@ def _call_provider(p: dict, messages: list):
             raise
 
 
+def check_llm_providers() -> dict:
+    """启动时逐个探测已配置模型：端点是否可达、Key 是否有效、模型名是否存在。
+
+    每个 provider 只发一条极短请求；结果打进日志，失败也不影响主流程。
+    在 Actions 里排查「Gemini 通不通 / 模型名是否过期」时非常有用：
+
+        python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
+
+    注意：这里直接复用主流程的 client 配置，所以探测结果与实际抓取一致；
+    若模型名 404，``_call_provider`` 会顺手把 p["model"] 改成可用的那个。
+    """
+    providers = _get_llm_providers()
+    if not providers:
+        print("LLM 自检：未配置任何模型 Key（ZHIPU_API_KEY / GEMINI_API_KEY）")
+        return {}
+
+    print(f"LLM 自检：共 {len(providers)} 个 provider")
+    report = {}
+    for p in providers:
+        name, model = p["name"], p["model"]
+        t0 = time.time()
+        try:
+            resp, used = _call_provider(
+                p, [{"role": "user", "content": "Reply with exactly: OK"}]
+            )
+            text = (resp.choices[0].message.content or "").strip()[:40]
+            cost = time.time() - t0
+            report[name] = {"ok": True, "model": used, "latency": round(cost, 1)}
+            print(f"  [OK]   {name}:{used} | {cost:.1f}s | 回复={text!r}")
+        except Exception as e:
+            report[name] = {"ok": False, "model": model, "error": str(e)[:180]}
+            print(f"  [FAIL] {name}:{model} | {str(e)[:180]}")
+    return report
+
+
 def _chat_with_failover(messages: list, zhipu_model: str = None):
     """轮询分摊 + 故障转移，返回 (response, provider_name, model_name)。"""
     providers = _get_llm_providers(zhipu_model)

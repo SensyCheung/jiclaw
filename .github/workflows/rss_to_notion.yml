@@ -5,6 +5,12 @@ on:
     # 每小时运行一次 (GitHub 免费版建议间隔不要低于 5-15 分钟)
     - cron: '0 * * * *'
   workflow_dispatch: # 允许手动点击运行
+    inputs:
+      llm_mode:
+        description: '本次运行的 LLM 模式（留空用仓库变量；balance 可强制两家分摊以验证 Gemini）'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   run-script:
@@ -24,6 +30,14 @@ jobs:
           pip install -r requirements.txt
           playwright install chromium
 
+      - name: Check LLM providers
+        continue-on-error: true # 自检失败不阻断抓取
+        env:
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+        run: python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
+
       - name: Run Script
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
@@ -31,7 +45,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
           # fallback=智谱优先、限流才切 Gemini（默认）；balance=两家轮询分摊
-          LLM_MODE: ${{ vars.LLM_MODE || 'fallback' }}
+          LLM_MODE: ${{ github.event.inputs.llm_mode || vars.LLM_MODE || 'fallback' }}
           LLM_REQUEST_INTERVAL: ${{ vars.LLM_REQUEST_INTERVAL || '1' }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
