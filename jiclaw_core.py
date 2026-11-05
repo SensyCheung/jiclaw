@@ -691,12 +691,15 @@ def fetch_qualcomm_content(url: str) -> str:
 
 
 def summarize_with_ai(
-    title: str, summary: str, content: str, model: str = "GLM-4.7-Flash"
+    title: str, summary: str, content: str, model: str = "GLM-4.7-Flash",
+    published_date: str = None,
 ) -> dict:
     """调用大模型，对文章做中英文摘要与标签提取，返回 JSON 字典。
 
     实际使用的模型由环境变量决定（见下方「多模型 Provider」），
     ``model`` 参数作为智谱模型的默认值保留，兼容原有调用方式。
+    ``published_date`` 只作为日期锚点喂给模型：中文新闻常省略年份（"11月5日"），
+    不给出参考日期时模型会瞎猜年份（实测把 2026 的事件写成了 2024）。
     返回值中会额外带一个 ``_llm_model`` 字段记录本次真正用的模型，
     调用方 pop 出来写日志 / Notion，不入库。
     """
@@ -705,6 +708,8 @@ def summarize_with_ai(
         f"RSS Summary: {summary}\n\n"
         f"Full Article Content:\n{content}"
     )
+    if published_date:
+        user_content = f"发布日期: {published_date}\n\n" + user_content
 
     messages = [
             {
@@ -752,15 +757,52 @@ def summarize_with_ai(
      例如："<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>"
    - summary_cn：用简体中文输出 3-8 个要点，格式同上。
 
+5. **风险事件抽取 (risk_event)**：判断本文是否描述了「会影响半导体供应链 / 产能 / 经营连续性」的具体**事件**，
+   并把该事件结构化成固定字段。这一步是给下游风险监控平台入库用的，枚举值必须严格照抄，不要自创。
+   - is_risk_event：布尔值。文章只是讲技术原理、产品参数、评测导购、行业观点、单纯罗列财报数字，
+     而没有发生一个具体事件时，必须为 false。
+   - event_type（枚举）：labor_dispute 劳资纠纷/罢工、natural_disaster 地震台风洪水等、power_outage 停电限电、
+     fire_explosion 火灾爆炸、water_shortage 缺水、material_shortage 原材料短缺、export_control 出口管制/制裁、
+     litigation 诉讼调查、capacity_disruption 停产减产/扩产延期、mna 并购、earnings 财报指引、
+     technology_release 技术制程或产品发布、supply_shortage 缺货涨价、geopolitical 地缘政治、other 其他。
+   - hazard_class（枚举）：operational 运营、natural 自然、regulatory 监管合规、financial 财务、
+     technology 技术、market 市场、other。
+   - entity：事件主体公司或机构的标准名称；多个用英文逗号分隔。统一用中文通用名，首次出现时附英文原名，
+     例如 "美光科技(Micron)"、"台积电(TSMC)"、"SK海力士(SK Hynix)"。不要只写英文，也不要写成 "Micron Technology Inc."。
+   - site：具体厂区或地点描述，统一用中文，例如 "桃园厂"、"Fab 18"、"熊本二厂"；没有明确厂区时填国家或城市。
+     不要写 "Taoyuan Factory" 这类英文。
+   - country_region：国家/地区中文名，例如 "中国台湾"、"美国"、"日本"、"韩国"。
+     台湾、香港、澳门一律写作 "中国台湾"、"中国香港"、"中国澳门"，不得当作国家。
+   - severity：0.0-1.0 的浮点数。0.8-1.0 = 全线停产/重大灾害/直接禁运；0.4-0.7 = 部分产线受影响或工期延误；
+     0.1-0.3 = 局部摩擦、尚未影响生产；纯技术发布给 0.0。
+     涉及十亿美元以上投资、主力产能或先进制程（HBM/DRAM 等紧俏品类）的项目停摆，至少给 0.6。
+   - affected_products：受影响品类数组，例如 ["DRAM","NAND","HBM","成熟制程"]；无法判断给 []。
+   - occurred_at：事件发生日期 "YYYY-MM-DD"；只知年月写 "YYYY-MM"；不确定填 null（不要用文章发布时间凑）。
+     若正文只写了「11月5日」这类省略年份的日期，年份一律以开头给出的「发布日期」为准，不要自行推断其他年份。
+
 只输出严格 JSON 格式，不要任何解释或额外文本（示例中的取值仅示意格式，必须按实际内容判断）：
 {
   "category": "other",
   "tags": ["aaa", "bbb", "ccc"],
   "title_cn": "被翻译的中文标题",
   "summary_en": "<p>➀ xxx; </p><p>➁ xxx; </p><p>➂ xxx</p>",
-  "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>"
+  "summary_cn": "<p>➀ xxx；</p><p>➁ xxx；</p><p>➂ xxx</p>",
+  "risk_event": {
+    "is_risk_event": false,
+    "event_type": null,
+    "hazard_class": null,
+    "entity": null,
+    "site": null,
+    "country_region": null,
+    "severity": 0.0,
+    "affected_products": [],
+    "occurred_at": null
+  }
 }
-请最后检查输出是否符合要求，不要出现任何错误，比如翻译要准确，标签要完全匹配等，JSON格式要正确。category 只能是 "semiconductor" 或 "other" 两个值之一。
+请最后检查输出是否符合要求，不要出现任何错误，比如翻译要准确，标签要完全匹配等，JSON格式要正确。
+category 只能是 "semiconductor" 或 "other" 两个值之一。
+risk_event 必须存在；当 is_risk_event 为 false 时，event_type / hazard_class / entity / site / country_region / occurred_at 全部为 null，
+affected_products 为 []；event_type 与 hazard_class 的取值必须来自上面给出的枚举，不能写中文或自造词。
                 ''',
             },
             {
@@ -775,6 +817,7 @@ def summarize_with_ai(
     data = _extract_json_object(result)
     if not isinstance(data, dict):
         raise ValueError("模型返回的 JSON 不是对象")
+    _normalize_risk_event(data, published_date)
     data["_llm_model"] = f"{provider}:{used_model}"
     return data
 
@@ -1025,9 +1068,11 @@ def check_llm_generation() -> dict:
     used = data.pop("_llm_model", "?")
     print(f"  使用模型：{used}")
     print("  返回 JSON：" + json.dumps(data, ensure_ascii=False)[:400])
-    required = ("category", "tags", "title_cn", "summary_en", "summary_cn")
+    required = ("category", "tags", "title_cn", "summary_en", "summary_cn", "risk_event")
     missing = [k for k in required if k not in data]
     print("  字段校验：" + ("通过" if not missing else "缺失 " + ",".join(missing)))
+    risk = data.get("risk_event") or {}
+    print("  " + format_risk_event(risk))
     return data
 
 
@@ -1178,6 +1223,228 @@ def is_semiconductor_article(ai_data: dict) -> bool:
     字段缺失或无法识别时按**非半导体**处理，避免非半导体文章误入主群组。
     """
     return classify_article_category(ai_data)[0]
+
+
+# ---------------------------------------------------------------------------
+# 风险事件抽取（供 SEISMIQ 等下游风险平台消费）
+#
+# 免费档模型偶发会写中文枚举、拼错、或把 0-100 当 0-1，这里统一收敛成固定 schema：
+# 枚举不认识就降级为 other，severity 夹到 0-1，缺字段补 null/[]，保证下游入库不会炸。
+# ---------------------------------------------------------------------------
+
+_RISK_EVENT_TYPES = {
+    "labor_dispute", "natural_disaster", "power_outage", "fire_explosion",
+    "water_shortage", "material_shortage", "export_control", "litigation",
+    "capacity_disruption", "mna", "earnings", "technology_release",
+    "supply_shortage", "geopolitical", "other",
+}
+
+_HAZARD_CLASSES = {
+    "operational", "natural", "regulatory", "financial",
+    "technology", "market", "other",
+}
+
+# 模型可能吐中文/别名，能做映射的先映射，映射不了的归 other
+_RISK_EVENT_ALIASES = {
+    "罢工": "labor_dispute", "劳资纠纷": "labor_dispute", "劳工": "labor_dispute", "strike": "labor_dispute",
+    "地震": "natural_disaster", "台风": "natural_disaster", "洪水": "natural_disaster",
+    "自然灾害": "natural_disaster", "earthquake": "natural_disaster", "typhoon": "natural_disaster",
+    "停电": "power_outage", "限电": "power_outage", "power": "power_outage",
+    "火灾": "fire_explosion", "爆炸": "fire_explosion", "fire": "fire_explosion",
+    "缺水": "water_shortage", "water": "water_shortage",
+    "原材料短缺": "material_shortage", "material": "material_shortage",
+    "出口管制": "export_control", "制裁": "export_control", "sanction": "export_control",
+    "诉讼": "litigation", "调查": "litigation", "lawsuit": "litigation",
+    "停产": "capacity_disruption", "减产": "capacity_disruption", "扩产延期": "capacity_disruption",
+    "并购": "mna", "收购": "mna", "merger": "mna", "acquisition": "mna",
+    "财报": "earnings", "earnings_call": "earnings",
+    "技术发布": "technology_release", "新品": "technology_release", "product": "technology_release",
+    "缺货": "supply_shortage", "涨价": "supply_shortage", "shortage": "supply_shortage",
+    "地缘政治": "geopolitical", "geopolitics": "geopolitical",
+}
+
+_HAZARD_ALIASES = {
+    "运营": "operational", "operation": "operational",
+    "自然": "natural",
+    "监管": "regulatory", "合规": "regulatory", "regulation": "regulatory",
+    "财务": "financial", "finance": "financial",
+    "技术": "technology",
+    "市场": "market",
+}
+
+
+def _empty_risk_event() -> dict:
+    return {
+        "is_risk_event": False,
+        "event_type": None,
+        "hazard_class": None,
+        "entity": None,
+        "site": None,
+        "country_region": None,
+        "severity": 0.0,
+        "affected_products": [],
+        "occurred_at": None,
+    }
+
+
+def _clean_str(value):
+    """把模型返回值收敛成干净的字符串或 None。"""
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        value = str(value)
+    value = value.strip().strip('"').strip("'").strip()
+    if not value or value.lower() in {"null", "none", "n/a", "na", "unknown", "未知"}:
+        return None
+    return value[:200]
+
+
+def _normalize_enum(value, allowed: set, aliases: dict):
+    """枚举宽松匹配：大小写/连字符/空格归一，中文别名映射，兜底 other。"""
+    raw = _clean_str(value)
+    if not raw:
+        return None
+    key = raw.lower().replace("-", "_").replace(" ", "_")
+    if key in allowed:
+        return key
+    if key in aliases:
+        return aliases[key]
+    if raw in aliases:
+        return aliases[raw]
+    return "other"
+
+
+def _fix_event_year(occurred: str, reference_date: str):
+    """校正「11月5日」被模型补错年份的情况。
+
+    只在**同月**且年份偏早、且差距不超过 2 年时才改，避免把真的旧闻（如回顾 2019 年事件）改坏。
+    """
+    if not occurred or not reference_date:
+        return occurred
+    m_ev = re.match(r"^(\d{4})-(\d{2})(?:-(\d{2}))?", occurred)
+    m_ref = re.match(r"^(\d{4})-(\d{2})(?:-(\d{2}))?", str(reference_date))
+    if not (m_ev and m_ref):
+        return occurred
+
+    ev_y, ev_m, ev_d = m_ev.group(1), m_ev.group(2), m_ev.group(3)
+    ref_y, ref_m, ref_d = m_ref.group(1), m_ref.group(2), m_ref.group(3)
+
+    if ev_y == ref_y or ev_m != ref_m:
+        return occurred
+    if int(ev_y) > int(ref_y) or int(ref_y) - int(ev_y) > 2:
+        return occurred
+
+    print(f"日期校正：occurred_at {occurred} → 参考发布日期年份 {ref_y}（模型补错年份）")
+    # 只换年份，日期粒度保持原样：只知年月就仍返回 "YYYY-MM"，不要替模型编出具体号数
+    return "-".join([x for x in (ref_y, ev_m, ev_d) if x])
+
+
+def _normalize_risk_event(ai_data: dict, reference_date: str = None) -> dict:
+    """把 LLM 的 risk_event 字段规整成稳定 schema，并写回 ai_data。
+
+    ``reference_date`` 为文章发布日期，用于校正模型猜错的年份：
+    中文新闻惯用「11月5日」省略年份，实测模型会把 2026 的事件写成 2024。
+    """
+    risk = _empty_risk_event()
+    raw = ai_data.get("risk_event") if isinstance(ai_data, dict) else None
+
+    if isinstance(raw, list) and raw:
+        raw = raw[0]
+    if not isinstance(raw, dict):
+        ai_data["risk_event"] = risk
+        return risk
+
+    flag = raw.get("is_risk_event")
+    if isinstance(flag, str):
+        flag = flag.strip().lower() in {"true", "yes", "y", "1", "是"}
+    risk["is_risk_event"] = bool(flag)
+
+    risk["event_type"] = _normalize_enum(
+        raw.get("event_type"), _RISK_EVENT_TYPES, _RISK_EVENT_ALIASES)
+    risk["hazard_class"] = _normalize_enum(
+        raw.get("hazard_class"), _HAZARD_CLASSES, _HAZARD_ALIASES)
+
+    risk["entity"] = _clean_str(raw.get("entity"))
+    risk["site"] = _clean_str(raw.get("site"))
+    risk["country_region"] = _clean_str(raw.get("country_region"))
+
+    # severity：兼容 0-100 打分和 "0.7" 字符串；无法解析时给 0.0
+    sev = raw.get("severity")
+    try:
+        if isinstance(sev, str):
+            sev = sev.strip().rstrip("%")
+        sev = float(sev)
+        if sev > 1.0:
+            sev = sev / 100.0 if sev <= 100.0 else 1.0
+        sev = max(0.0, min(1.0, sev))
+    except (TypeError, ValueError):
+        sev = 0.0
+    risk["severity"] = round(sev, 2)
+
+    products = raw.get("affected_products")
+    if isinstance(products, str):
+        products = [p for p in products.replace("、", ",").split(",")]
+    if not isinstance(products, list):
+        products = []
+    seen, cleaned = set(), []
+    for p in products:
+        p = _clean_str(p)
+        if p and p not in seen:
+            seen.add(p)
+            cleaned.append(p[:40])
+    risk["affected_products"] = cleaned[:6]
+
+    occurred = _clean_str(raw.get("occurred_at"))
+    if occurred:
+        # 只保留规范形态，避免下游解析爆炸
+        m = re.match(r"^(\d{4})-(\d{2})(?:-(\d{2}))?", occurred)
+        occurred = "-".join([g for g in m.groups() if g]) if m else None
+    risk["occurred_at"] = _fix_event_year(occurred, reference_date)
+
+    ai_data["risk_event"] = risk
+    return risk
+
+
+def format_risk_event(risk: dict) -> str:
+    """把风险事件压成一行日志，方便直接看抽取对不对。"""
+    if not risk or not risk.get("is_risk_event"):
+        return "风险事件：无"
+    parts = [
+        f"type={risk.get('event_type')}",
+        f"hazard={risk.get('hazard_class')}",
+        f"entity={risk.get('entity')}",
+        f"site={risk.get('site')}",
+        f"region={risk.get('country_region')}",
+        f"severity={risk.get('severity')}",
+    ]
+    if risk.get("affected_products"):
+        parts.append("products=" + "/".join(risk["affected_products"]))
+    if risk.get("occurred_at"):
+        parts.append(f"at={risk['occurred_at']}")
+    return "风险事件：" + " ".join(parts)
+
+
+def append_risk_events(records: list, path: str = None) -> int:
+    """把风险事件追加进 JSONL，供下游平台（SEISMIQ）按天拉取。
+
+    只落 is_risk_event 为真的记录，文件按天分片：risk_events-YYYY-MM-DD.jsonl。
+    返回实际写入条数。
+    """
+    if not records:
+        return 0
+    base = path or os.environ.get("RISK_EVENTS_DIR") or "risk_events"
+    try:
+        os.makedirs(base, exist_ok=True)
+        today = datetime.now().strftime("%Y-%m-%d")
+        fp = os.path.join(base, f"risk_events-{today}.jsonl")
+        with open(fp, "a", encoding="utf-8") as f:
+            for rec in records:
+                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        print(f"风险事件已写入：{fp}（{len(records)} 条）")
+        return len(records)
+    except Exception as e:
+        print(f"风险事件写入失败：{e}")
+        return 0
 
 
 def get_website_name(feed_url: str) -> str:
@@ -1562,7 +1829,10 @@ def _process_items(
         time.sleep(float(os.environ.get("LLM_REQUEST_INTERVAL", "1")))
 
         try:
-            data = summarize_with_ai(title, summary, content, model=model)
+            data = summarize_with_ai(
+                title, summary, content, model=model,
+                published_date=item.get("published_date"),
+            )
             used_model = data.pop("_llm_model", model)
             print(f"使用模型：{used_model}")
             _ai_fail_streak = 0
@@ -1578,6 +1848,22 @@ def _process_items(
         print("AI 结果 JSON：")
         # 使用 ensure_ascii=True 避免编码问题
         print(json.dumps(data, ensure_ascii=True, indent=2))
+
+        # 风险事件落盘：下游（SEISMIQ）按天拉 JSONL 即可，不依赖 Notion 结构
+        risk = data.get("risk_event") or {}
+        print(format_risk_event(risk))
+        if risk.get("is_risk_event"):
+            append_risk_events([{
+                "post_id": post_id,
+                "source": source,
+                "url": link,
+                "title": title,
+                "title_cn": data.get("title_cn"),
+                "published_at": item.get("published_date"),
+                "llm": used_model,
+                "ingested_at": datetime.now().isoformat(timespec="seconds"),
+                **risk,
+            }])
 
         if notion_api_key and notion_db_id:
             print("正在写入 Notion 数据库...")

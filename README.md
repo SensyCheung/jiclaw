@@ -288,6 +288,44 @@ python jiclaw_telegram.py
 python jiclaw_discord.py
 ```
 
+## 风险事件抽取（供下游风险平台消费）
+
+摘要 prompt 在原有 `category / tags / title_cn / summary_*` 之外，额外抽取一个 `risk_event` 对象，
+用于对接半导体风险监控类平台（如 SEISMIQ）。**同一次模型调用产出，不额外消耗额度。**
+
+字段与枚举定义在 `jiclaw_core.py` 的 `_RISK_EVENT_TYPES` / `_HAZARD_CLASSES`：
+
+| 字段 | 说明 |
+|------|------|
+| `is_risk_event` | 是否是「影响供应链/产能/经营连续性」的具体事件；纯技术、评测、观点类为 `false` |
+| `event_type` | `labor_dispute` `natural_disaster` `power_outage` `fire_explosion` `water_shortage` `material_shortage` `export_control` `litigation` `capacity_disruption` `mna` `earnings` `technology_release` `supply_shortage` `geopolitical` `other` |
+| `hazard_class` | `operational` `natural` `regulatory` `financial` `technology` `market` `other` |
+| `entity` | 主体公司，统一中文通用名（首次附英文原名），如 `美光科技(Micron)` |
+| `site` | 厂区/地点，中文，如 `桃园厂`、`Fab 18` |
+| `country_region` | 国家/地区中文名 |
+| `severity` | `0.0-1.0`；≥0.8 全线停产/重大灾害，0.4-0.7 部分产线受影响，≤0.3 局部摩擦 |
+| `affected_products` | 受影响品类数组，如 `["HBM","DRAM"]` |
+| `occurred_at` | 事件发生日期，`YYYY-MM-DD` 或 `YYYY-MM`，不确定为 `null` |
+
+**模型输出的容错**：`_normalize_risk_event()` 会把中文枚举（「劳资纠纷」「停电」）、大小写/连字符变体、
+0-100 分的 severity、`"0.65"` 字符串、数组包装等统一收敛成固定 schema；不认识的枚举降级为 `other`，
+保证下游入库不会因脏值报错。
+
+**日期校正**：中文新闻常用「11月5日」省略年份，实测模型会把 2026 的事件写成 2024。
+`published_date` 会作为锚点传给模型；`_fix_event_year()` 再兜一层（仅同月、年份偏早且差距 ≤2 年时改），
+避免把真旧闻改坏。
+
+**落地方式**：命中风险事件的文章追加写入 `risk_events/risk_events-YYYY-MM-DD.jsonl`
+（路径可用 `RISK_EVENTS_DIR` 覆盖），一行一条，字段与上表一致并附加 `post_id / url / title / title_cn /
+source / published_at / llm / ingested_at`。GitHub Actions 每次运行都会把它作为产物上传
+（`risk-events-<run_id>`，保留 30 天），下游按天拉取即可。
+
+本地验证：
+
+```bash
+python -c "from jiclaw_core import check_llm_generation; check_llm_generation()"
+```
+
 ## 功能特点
 
 | 功能 | 说明 |
@@ -296,6 +334,7 @@ python jiclaw_discord.py
 | 网页爬虫 | 支持无 RSS 网站（如 semi-insights.com） |
 | Twitter 抓取 | 通过 twstalker.com 抓取，自动过滤转推 |
 | AI 摘要 | 使用智谱 AI 生成中英文摘要、标签，并判断是否为半导体行业文章 |
+| 风险事件抽取 | 同一次调用顺带抽取 event_type / severity / entity / site 等结构化字段，落 JSONL 供下游平台消费 |
 | Notion 集成 | 自动写入 Notion 数据库 |
 | Telegram 推送 | 按行业分类推送到不同群组：半导体文章推到主群组，其他文章推到其他群组（未配置则剔除） |
 | Discord 推送 | Notion 上传成功后自动推送到 Discord |
