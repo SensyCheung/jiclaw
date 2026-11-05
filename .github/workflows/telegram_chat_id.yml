@@ -1,0 +1,45 @@
+name: Telegram Chat ID
+
+# 用途：在 GitHub Actions 的境外 runner 上查询 Bot 能看到哪些群组，拿到 chat_id。
+# 国内直连 api.telegram.org 基本不通，所以放在 runner 上跑最省事。
+# 注意：本仓库是 public，运行日志公开可读。拿到 ID 后可执行
+#   gh run delete <run_id>
+# 删除该次运行，日志会一并消失。
+
+on:
+  workflow_dispatch:
+    inputs:
+      chat_id:
+        description: '可选：填入某个 chat_id 做验证（会真发一条测试消息），留空则列出全部会话'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  query:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: 当前配置格式
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID_OTHER: ${{ secrets.TELEGRAM_CHAT_ID_OTHER }}
+        run: python get_chat_id.py --config
+
+      - name: 查询会话
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          if [ -n "${{ inputs.chat_id }}" ]; then
+            python get_chat_id.py --check "${{ inputs.chat_id }}"
+          else
+            python get_chat_id.py
+          fi
