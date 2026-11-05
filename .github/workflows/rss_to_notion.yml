@@ -20,9 +20,18 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    # 同一分支串行执行：提交风险事件回仓库时避免两个 run 同时 push 造成冲突
+    concurrency:
+      group: rss-to-notion-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          # 必须落在分支上（默认 detached HEAD 会导致后面 git push 失败）
+          ref: ${{ github.ref_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -77,4 +86,36 @@ jobs:
           path: risk_events/
           if-no-files-found: ignore
           retention-days: 30
+
+      # 汇总成单个 latest.json，SEISMIQ 只需 GET 一个固定 raw URL
+      - name: Build risk feed
+        if: always()
+        run: python export_risk_feed.py
+
+      # 把事件流提交回仓库，避免依赖会过期的 artifact。
+      # latest.json 是幂等的：没有新事件时 git diff 为空，不会产生空提交。
+      # 用 [skip ci] 且本工作流没有 push trigger，不会自我递归触发。
+      - name: Commit risk events
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add risk_events/
+          if git diff --cached --quiet; then
+            echo "风险事件无新增，跳过提交"
+            exit 0
+          fi
+          git commit -m "chore: 更新风险事件流 [skip ci]"
+          for i in 1 2 3 4 5; do
+            git rebase --abort 2>/dev/null || true
+            if git pull --rebase --autostash origin "${{ github.ref_name }}" && \
+               git push origin "HEAD:${{ github.ref_name }}"; then
+              echo "风险事件已推送到仓库"
+              exit 0
+            fi
+            echo "push 冲突，第 $i 次重试"
+            sleep 5
+          done
+          echo "推送失败；本次事件仍可从 artifact 下载"
+          exit 1
 

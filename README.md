@@ -333,7 +333,47 @@ source / published_at / llm / ingested_at`。GitHub Actions 每次运行都会�
 
 ```bash
 python -c "from jiclaw_core import check_llm_generation; check_llm_generation()"
+python export_risk_feed.py --dir risk_events   # 重新汇总 latest.json
 ```
+
+### 稳定数据端点（下游直接拉取，无需密钥）
+
+工作流会把分片和汇总结果 commit 回仓库，所以下游只要 GET 一个固定地址即可，
+不用碰会过期、且下载需鉴权的 Actions artifact：
+
+```
+https://raw.githubusercontent.com/SensyCheung/jiclaw/main/risk_events/latest.json
+```
+
+备用（CDN 加速，但有缓存延迟，实时性要求高时别用）：
+
+```
+https://cdn.jsdelivr.net/gh/SensyCheung/jiclaw@main/risk_events/latest.json
+```
+
+`latest.json` 结构：`schema_version / generated_at / count / events[]`。
+`export_risk_feed.py` 会做三件事：
+
+1. **多源同题归并**：同一事件被多家媒体报道时合成一条，原始 URL 全留在 `sources[]`，
+   `source_count` 是报道源数。实测美光停建的两篇报道判成了不同 `event_type`
+   （`labor_dispute` 因 / `capacity_disruption` 果），现在合为一簇，
+   `primary_event_type` 取优先级更高的「结果」类，两种类型都保留在 `event_types[]`。
+2. **实体名容错**：`美光` / `美光科技(Micron)` 归一后同簇；旧数据里的泛称「存储巨头」
+   与真名对不上时，用厂区 `site` 兜底合并，并让真名覆盖泛称。
+3. **幂等 + 裁剪**：事件内容没变就不重写 `latest.json`（否则每小时一次空提交）；
+   只保留最近 90 天、最多 500 条，按发生日期与严重度倒序。
+
+前端接入示例（raw.githubusercontent.com 允许跨域）：
+
+```js
+const FEED = "https://raw.githubusercontent.com/SensyCheung/jiclaw/main/risk_events/latest.json";
+const { events } = await (await fetch(FEED)).json();
+// 入库前用 dedup_key 或 post_id 判重；severity >= 0.6 可视为需告警的高影响事件
+const alerts = events.filter(e => e.severity >= 0.6);
+```
+
+> 归并是**保守的**：必须有相同的发生日期与灾种，且主体名互相包含（或泛称+同厂区）才合并。
+> 泛称已在 prompt 层禁掉，所以新数据主要走实体名匹配这条路径。
 
 ## 功能特点
 

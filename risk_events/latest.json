@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-05T23:56:45+00:00",
+  "count": 8,
+  "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
+  "events": [
+    {
+      "post_id": "ae10941dbb",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261105496782/en/CVD-Equipment-Provides-Strategic-Update-and-Reports-Third-Quarter-2026-Results/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "CVD Equipment Provides Strategic Update and Reports Third Quarter 2026 Results",
+      "title_cn": "CVD Equipment公司提供战略更新并发布2026年第三季度财报",
+      "published_at": "2026-11-05T21:59:57.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:18:19",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "CVD Equipment Corporation",
+      "site": "美国纽约州中央伊斯利普",
+      "country_region": "美国",
+      "severity": 0.6,
+      "affected_products": [
+        "CVD设备"
+      ],
+      "occurred_at": "2026-11-05",
+      "sources": [
+        {
+          "post_id": "ae10941dbb",
+          "url": "http://www.businesswire.com/news/home/20261105496782/en/CVD-Equipment-Provides-Strategic-Update-and-Reports-Third-Quarter-2026-Results/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "CVD Equipment Provides Strategic Update and Reports Third Quarter 2026 Results",
+          "title_cn": "CVD Equipment公司提供战略更新并发布2026年第三季度财报",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-05T21:59:57.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "bb53de48f4",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/briefings/lyft-growth-slows-8-q3",
+      "title": "Lyft Growth Slows to 8% in Q3",
+      "title_cn": "Lyft 第三季度增长放缓至 8%",
+      "published_at": "2026-11-05T22:00:02.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-05T23:20:12",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "financial",
+      "entity": "Lyft",
+      "site": null,
+      "country_region": "美国",
+      "severity": 0.1,
+      "affected_products": [],
+      "occurred_at": "2026-11-05",
+      "sources": [
+        {
+          "post_id": "bb53de48f4",
+          "url": "https://www.theinformation.com/briefings/lyft-growth-slows-8-q3",
+          "title": "Lyft Growth Slows to 8% in Q3",
+          "title_cn": "Lyft 第三季度增长放缓至 8%",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-05T22:00:02.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
+    },
+    {
+      "post_id": "84dc3c6e7e",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261103390952/en/Alpha-and-Omega-Semiconductor-Reports-Financial-Results-for-the-Fiscal-First-Quarter-of-2027-Ended-September-30-2026/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "Alpha and Omega Semiconductor Reports Financial Results for the Fiscal First Quarter of 2027 Ended September 30, 2026",
+      "title_cn": "万代半导体(Alpha and Omega Semiconductor)公布截至2026年9月30日的2027财年第一季度财务业绩",
+      "published_at": "2026-11-05T21:00:57.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:18:50",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "financial",
+      "entity": "万代半导体(Alpha and Omega Semiconductor)",
+      "site": null,
+      "country_region": "美国",
+      "severity": 0.0,
+      "affected_products": [],
+      "occurred_at": "2026-11-05",
+      "sources": [
+        {
+          "post_id": "84dc3c6e7e",
+          "url": "http://www.businesswire.com/news/home/20261103390952/en/Alpha-and-Omega-Semiconductor-Reports-Financial-Results-for-the-Fiscal-First-Quarter-of-2027-Ended-September-30-2026/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "Alpha and Omega Semiconductor Reports Financial Results for the Fiscal First Quarter of 2027 Ended September 30, 2026",
+          "title_cn": "万代半导体(Alpha and Omega Semiconductor)公布截至2026年9月30日的2027财年第一季度财务业绩",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-05T21:00:57.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
+    },
+    {
+      "post_id": "08b4dbfd3a",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1136326",
+      "title": "【IC】松下湖口厂爆炸重创高端CCL供给，AI服务器材料供应链拉响警报",
+      "title_cn": "松下湖口厂爆炸重创高端CCL供给，AI服务器材料供应链拉响警报",
+      "published_at": "2026-11-05T23:12:59.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:28:03",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "中国台湾松下多层材料公司(Taiwan Panasonic Multi-Material)",
+      "site": "湖口厂",
+      "country_region": "中国台湾",
+      "severity": 0.7,
+      "affected_products": [
+        "CCL"
+      ],
+      "occurred_at": "2026-11-04",
+      "sources": [
+        {
+          "post_id": "08b4dbfd3a",
+          "url": "https://laoyaoba.com/n/1136326",
+          "title": "【IC】松下湖口厂爆炸重创高端CCL供给，AI服务器材料供应链拉响警报",
+          "title_cn": "松下湖口厂爆炸重创高端CCL供给，AI服务器材料供应链拉响警报",
+          "source": "aijiwei",
+          "published_at": "2026-11-05T23:12:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "584558bd47",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1136496",
+      "title": "存储巨头桃园新厂传停工，最高45亿美元投资遇变数，公司回应",
+      "title_cn": "存储巨头桃园新厂传停工，最高45亿美元投资遇变数，公司回应",
+      "published_at": "2026-11-05T23:12:59.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:25:34",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "存储巨头",
+      "site": "桃园厂 (Fab 11E)",
+      "country_region": "中国台湾",
+      "severity": 0.6,
+      "affected_products": [
+        "HBM",
+        "DRAM"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "584558bd47",
+          "url": "https://laoyaoba.com/n/1136496",
+          "title": "存储巨头桃园新厂传停工，最高45亿美元投资遇变数，公司回应",
+          "title_cn": "存储巨头桃园新厂传停工，最高45亿美元投资遇变数，公司回应",
+          "source": "aijiwei",
+          "published_at": "2026-11-05T23:12:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "cadd764f85",
+          "url": "https://laoyaoba.com/n/1136323",
+          "title": "【头条】沁恒微向深交所递交招股书 二度冲击A股IPO",
+          "title_cn": "存储巨头桃园新厂传停工，最高45亿美元投资遇变数，公司回应",
+          "source": "aijiwei",
+          "published_at": "2026-11-05T23:12:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption",
+        "labor_dispute"
+      ],
+      "source_count": 2,
+      "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "c2f537a55d",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1136325",
+      "title": "【概念股】【产业资本快讯】普冉股份拟收购诺亚长天剩余49%股权并配套募资，强化存储芯片业务布局",
+      "title_cn": "普冉股份拟收购诺亚长天剩余49%股权并配套募资，强化存储芯片业务布局",
+      "published_at": "2026-11-05T23:12:59.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:28:11",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "financial",
+      "entity": "普冉股份(Puya Semiconductor), 珠海诺亚长天(Zhuhai Noah SkyHigh)",
+      "site": "中国珠海",
+      "country_region": "中国",
+      "severity": 0.4,
+      "affected_products": [
+        "NAND",
+        "eMMC",
+        "MCP"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "c2f537a55d",
+          "url": "https://laoyaoba.com/n/1136325",
+          "title": "【概念股】【产业资本快讯】普冉股份拟收购诺亚长天剩余49%股权并配套募资，强化存储芯片业务布局",
+          "title_cn": "普冉股份拟收购诺亚长天剩余49%股权并配套募资，强化存储芯片业务布局",
+          "source": "aijiwei",
+          "published_at": "2026-11-05T23:12:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
+      "post_id": "5e885617cc",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261105578044/en/indie-Reports-Third-Quarter-2026-Results-Delivering-31-Year-over-Year-Revenue-Growth/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "indie Reports Third Quarter 2026 Results, Delivering 31% Year-over-Year Revenue Growth",
+      "title_cn": "indie Semiconductor 公布 2026 年第三季度业绩，营收同比增长 31%",
+      "published_at": "2026-11-05T21:04:57.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:18:31",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "financial",
+      "entity": "indie Semiconductor",
+      "site": "加利福尼亚州",
+      "country_region": "美国",
+      "severity": 0.1,
+      "affected_products": [],
+      "occurred_at": "2026-09-30",
+      "sources": [
+        {
+          "post_id": "5e885617cc",
+          "url": "http://www.businesswire.com/news/home/20261105578044/en/indie-Reports-Third-Quarter-2026-Results-Delivering-31-Year-over-Year-Revenue-Growth/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "indie Reports Third Quarter 2026 Results, Delivering 31% Year-over-Year Revenue Growth",
+          "title_cn": "indie Semiconductor 公布 2026 年第三季度业绩，营收同比增长 31%",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-05T21:04:57.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
+    },
+    {
+      "post_id": "8a464230e5",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261105674613/en/Diodes-Incorporated-Reports-Third-Quarter-2026-Financial-Results/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "Diodes Incorporated Reports Third Quarter 2026 Financial Results",
+      "title_cn": "达尔科技 (Diodes Incorporated) 公布 2026 年第三季度财务业绩",
+      "published_at": "2026-11-05T21:04:57.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-05T23:18:37",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "financial",
+      "entity": "达尔科技(Diodes Incorporated)",
+      "site": "美国",
+      "country_region": "美国",
+      "severity": 0.0,
+      "affected_products": [],
+      "occurred_at": "2026-09-30",
+      "sources": [
+        {
+          "post_id": "8a464230e5",
+          "url": "http://www.businesswire.com/news/home/20261105674613/en/Diodes-Incorporated-Reports-Third-Quarter-2026-Financial-Results/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "Diodes Incorporated Reports Third Quarter 2026 Financial Results",
+          "title_cn": "达尔科技 (Diodes Incorporated) 公布 2026 年第三季度财务业绩",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-05T21:04:57.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
+    }
+  ]
+}
