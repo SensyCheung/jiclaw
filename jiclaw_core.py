@@ -763,12 +763,16 @@ def summarize_with_ai(
      而没有发生一个具体事件时，必须为 false。
    - event_type（枚举）：labor_dispute 劳资纠纷/罢工、natural_disaster 地震台风洪水等、power_outage 停电限电、
      fire_explosion 火灾爆炸、water_shortage 缺水、material_shortage 原材料短缺、export_control 出口管制/制裁、
-     litigation 诉讼调查、capacity_disruption 停产减产/扩产延期、mna 并购、earnings 财报指引、
+     litigation 诉讼调查、capacity_disruption 停产减产/扩产延期、mna 并购、earnings 财报预警、
      technology_release 技术制程或产品发布、supply_shortage 缺货涨价、geopolitical 地缘政治、other 其他。
+     注意 earnings 只用于**坏消息**（下调指引、业绩不及预期、亏损扩大、裁员重组）；
+     营收增长、利润创新高、符合预期这类好消息不算风险事件，is_risk_event 给 false，event_type 给 null。
    - hazard_class（枚举）：operational 运营、natural 自然、regulatory 监管合规、financial 财务、
      technology 技术、market 市场、other。
    - entity：事件主体公司或机构的标准名称；多个用英文逗号分隔。统一用中文通用名，首次出现时附英文原名，
      例如 "美光科技(Micron)"、"台积电(TSMC)"、"SK海力士(SK Hynix)"。不要只写英文，也不要写成 "Micron Technology Inc."。
+     必须是正文里能对应到具体公司的主体；禁止写 "存储巨头"、"某晶圆厂"、"业内人士"、"三星与SK海力士" 这类泛称或泛指集合，
+     遇到泛称请回正文找出对应的真实公司名；确实找不出具体主体时填 null。
    - site：具体厂区或地点描述，统一用中文，例如 "桃园厂"、"Fab 18"、"熊本二厂"；没有明确厂区时填国家或城市。
      不要写 "Taoyuan Factory" 这类英文。
    - country_region：国家/地区中文名，例如 "中国台湾"、"美国"、"日本"、"韩国"。
@@ -1853,8 +1857,13 @@ def _process_items(
         risk = data.get("risk_event") or {}
         print(format_risk_event(risk))
         if risk.get("is_risk_event"):
+            # 同一事件常被多家媒体同时报道（如美光停建被两个源各抽一条），
+            # 给下游一个软去重键：同主体+同类型+同日期视为同一事件簇。
+            # 注意它不是权威 id，实体名写法不同（"美光"/"美光科技(Micron)"）会算出不同的键。
+            dedup_src = f"{risk.get('entity')}|{risk.get('event_type')}|{risk.get('occurred_at')}"
             append_risk_events([{
                 "post_id": post_id,
+                "dedup_key": hashlib.sha1(dedup_src.encode("utf-8")).hexdigest()[:12],
                 "source": source,
                 "url": link,
                 "title": title,
