@@ -42,7 +42,8 @@ def _call(token: str, method: str, **params):
 
 def cmd_list(token: str) -> int:
     me = _call(token, "getMe")
-    print(f"Bot：@{me.get('username')}（{me.get('first_name')}）\n")
+    print(f"Bot：@{me.get('username')}（{me.get('first_name')}）")
+    print(f"  可加入群组：{me.get('can_join_groups')} | 能读取群内全部消息：{me.get('can_read_all_group_messages')}\n")
 
     try:
         updates = _call(token, "getUpdates", limit=100, timeout=0)
@@ -74,7 +75,11 @@ def cmd_list(token: str) -> int:
         print("没有查到任何会话。请确认：")
         print("  1. Bot 已被拉进目标群（不是只加了链接）")
         print("  2. 在群里发过至少一条消息（Bot 只能看到自己收到过的会话）")
-        print("  3. 消息发送时间在 Bot 入群之后")
+        print("  3. 消息发送时间在 Bot 入群之后，且在最近 24 小时内")
+        if not me.get("can_read_all_group_messages"):
+            print("\n⚠️  该 Bot 的 Privacy Mode 是开启的，群里普通消息它收不到。")
+            print("   解决办法：进群后 @ 一下它，例如发「@bot 你好」，然后再查一次。")
+            print("   或者到 @BotFather → /setprivacy → 选该 Bot → Disable，再把它移出重拉进群。")
         return 1
 
     print(f"共找到 {len(chats)} 个会话：\n")
@@ -115,6 +120,49 @@ def cmd_check(token: str, chat_id: str) -> int:
     return 0
 
 
+def cmd_probe_config(token: str) -> int:
+    """拿现有的 TELEGRAM_CHAT_ID_OTHER 去试探，找出正确写法（不打印原始 ID）。"""
+    raw = (os.environ.get("TELEGRAM_CHAT_ID_OTHER") or "").strip()
+    if not raw:
+        print("TELEGRAM_CHAT_ID_OTHER 未配置，无需试探。")
+        return 0
+
+    print(f"当前值长度 {len(raw)}，以 {'-' if raw.startswith('-') else '数字'} 开头\n")
+
+    digits = raw.lstrip("-")
+    candidates = []
+    for c in (raw, "-100" + digits, "-" + digits, digits):
+        if c and c not in candidates:
+            candidates.append(c)
+
+    ok_any = False
+    for c in candidates:
+        label = "当前值原样" if c == raw else f"加前缀 → {c[:4]}***{c[-2:]}(长度{len(c)})"
+        try:
+            chat = _call(token, "getChat", chat_id=c)
+        except RuntimeError as e:
+            print(f"  [FAIL] {label}: {str(e)[:110]}")
+            continue
+        title = chat.get("title") or chat.get("username") or chat.get("first_name") or "-"
+        print(f"  [OK]   {label}: {title}（type={chat.get('type')}）")
+        if c != raw:
+            print("\n👉 正确写法是在你填的那个数字前面加 -100：")
+            print("   原值：3824...（你填的 10 位数）")
+            print("   改为：-100 加上同一串数字，共 14 位")
+            ok_any = True
+        else:
+            print("\n👉 当前值本身是对的就说明问题在别处（Bot 权限）")
+            ok_any = True
+
+    if not ok_any:
+        print("\n❌ 所有写法都失败，说明该 ID 确实不存在或 Bot 不在群里。")
+        print("   请把 Bot 拉进「其他群」并设为管理员，然后在群里发一条：")
+        print("   @SemiVoiceCLaw002_Bot test")
+        print("   再运行不带参数的查询（列出会话）即可拿到真实 ID。")
+        return 1
+    return 0
+
+
 def cmd_config() -> int:
     """以掩码形式显示当前环境里的 chat id 配置，便于核对格式。"""
     names = ["TELEGRAM_CHAT_ID", "TELEGRAM_CHAT_ID_OTHER"]
@@ -134,6 +182,7 @@ def main() -> int:
     parser.add_argument("-t", "--token", help="Bot Token（默认读 TELEGRAM_BOT_TOKEN）")
     parser.add_argument("--check", metavar="CHAT_ID", help="验证指定 chat_id 并发送测试消息")
     parser.add_argument("--config", action="store_true", help="以掩码形式显示当前配置的 chat id")
+    parser.add_argument("--probe-config", action="store_true", help="试探 CURRENT TELEGRAM_CHAT_ID_OTHER 的正确前缀")
     args = parser.parse_args()
 
     if args.config:
@@ -149,6 +198,8 @@ def main() -> int:
     try:
         if args.check:
             return cmd_check(token, args.check)
+        if args.probe_config:
+            return cmd_probe_config(token)
         return cmd_list(token)
     except RuntimeError as e:
         print(f"❌ 请求失败：{e}")

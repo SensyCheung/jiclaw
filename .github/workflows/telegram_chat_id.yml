@@ -34,7 +34,14 @@ jobs:
           TELEGRAM_CHAT_ID_OTHER: ${{ secrets.TELEGRAM_CHAT_ID_OTHER }}
         run: python get_chat_id.py --config
 
+      - name: 试探现有 TELEGRAM_CHAT_ID_OTHER
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID_OTHER: ${{ secrets.TELEGRAM_CHAT_ID_OTHER }}
+        run: python get_chat_id.py --probe-config
+
       - name: 查询会话
+        if: always()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
