@@ -28,6 +28,9 @@ from jiclaw_discord import send_to_discord
 # 不在名单中的 feed 都会抓取网页正文
 USE_RSS_SUMMARY_FEEDS = [
     "semiwiki.com",
+    # The Information：文章页被 Cloudflare 拦截（403 "Just a moment"）
+    # 且正文在付费墙后，feed 的 content 就是官方导语（平均 700+ 字符），直接用它
+    "theinformation.com",
     # 可以添加更多直接使用 RSS 摘要的 feed 域名
 ]
 
@@ -47,6 +50,25 @@ def _should_fetch_content(feed_url: str) -> bool:
     return True
 
 
+def _entry_summary(entry) -> str:
+    """取条目摘要：优先 <summary>，没有则退回 Atom <content>。
+
+    The Information 这类站点的 Atom feed 只提供 <content>（官方导语），
+    没有 <summary>，不做兜底拿到的就是空字符串，摘要只能靠标题瞎编。
+    """
+    summary = entry.get("summary") or ""
+    if summary:
+        return summary
+
+    for block in entry.get("content") or []:
+        value = block.get("value") if isinstance(block, dict) else None
+        if value:
+            return value
+
+    detail = entry.get("summary_detail") or {}
+    return detail.get("value", "") if isinstance(detail, dict) else ""
+
+
 def get_latest_item(feed_url: str):
     """从 RSS 源中获取最新一篇文章的标题、链接和摘要。"""
     feed = feedparser.parse(feed_url)
@@ -59,7 +81,7 @@ def get_latest_item(feed_url: str):
 
     title = latest.get("title", "无标题")
     link = latest.get("link", "无链接")
-    summary = latest.get("summary", "")
+    summary = _entry_summary(latest)
 
     published = latest.get("published") or latest.get("updated") or ""
     published_parsed = latest.get("published_parsed") or latest.get("updated_parsed")
@@ -96,7 +118,7 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
     for entry in feed.entries[:limit]:
         title = entry.get("title", "无标题")
         link = entry.get("link", "无链接")
-        summary = entry.get("summary", "")
+        summary = _entry_summary(entry)
 
         published = entry.get("published") or entry.get("updated") or ""
         published_parsed = entry.get("published_parsed") or entry.get(
@@ -1190,6 +1212,7 @@ def get_website_name(feed_url: str) -> str:
         "seekingalpha.com": "Seeking Alpha",
         "imec-int.com": "imec",
         "qualcomm.com": "Qualcomm",
+        "theinformation.com": "The Information",
     }
 
     # Broadcom 特殊处理：根据路径区分 News 和 Blog
@@ -1505,11 +1528,15 @@ def _process_items(
         else:
             print("未配置 NOTION_API_KEY 或 NOTION_DATABASE_ID，仅在终端输出结果。")
 
-        print("正在抓取正文...")
-        try:
-            content = fetch_article_content(link)
-        except Exception as e:
-            print("抓取正文失败，将仅基于 RSS 摘要进行总结：", e)
+        if fetch_content:
+            print("正在抓取正文...")
+            try:
+                content = fetch_article_content(link)
+            except Exception as e:
+                print("抓取正文失败，将仅基于 RSS 摘要进行总结：", e)
+                content = summary
+        else:
+            print("该源使用 RSS 摘要，跳过正文抓取。")
             content = summary
 
         if not content:
