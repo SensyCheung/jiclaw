@@ -41,7 +41,9 @@ jobs:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-flash-lite-latest' }}
-        run: python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
+        run: |
+          python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
+          python -c "from jiclaw_core import check_llm_generation; check_llm_generation()" || true
 
       - name: Run Script
         if: github.event.inputs.probe_only != 'true'

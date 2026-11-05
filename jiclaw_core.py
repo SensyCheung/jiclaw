@@ -978,6 +978,32 @@ def check_llm_providers() -> dict:
     return report
 
 
+def check_llm_generation() -> dict:
+    """用一篇样例文章完整跑一次摘要，验证模型能否按 prompt 输出严格 JSON。
+
+    连通性自检只证明「能回 OK」，但分类/摘要依赖模型听懂中文长 prompt 并输出
+    五个字段；轻量模型很容易在这一步掉链子，所以单独测一次。
+    """
+    print("LLM 生成自检：用样例文章跑一次完整摘要 ...")
+    data = summarize_with_ai(
+        "TSMC starts volume production of 2nm chips at Fab 20",
+        "TSMC said its 2nm process has entered mass production in Kaohsiung.",
+        "TSMC announced today that its 2nm (N2) process has entered volume "
+        "production at Fab 20 in Kaohsiung, Taiwan. The node uses gate-all-around "
+        "nanosheet transistors and delivers roughly 15 percent higher performance "
+        "at the same power, or 30 percent lower power at the same speed, compared "
+        "with N3E. Initial customers are expected to tape out mobile and HPC chips. "
+        "The company plans to ramp monthly capacity to 80,000 wafers by late 2027.",
+    )
+    used = data.pop("_llm_model", "?")
+    print(f"  使用模型：{used}")
+    print("  返回 JSON：" + json.dumps(data, ensure_ascii=False)[:400])
+    required = ("category", "tags", "title_cn", "summary_en", "summary_cn")
+    missing = [k for k in required if k not in data]
+    print("  字段校验：" + ("通过" if not missing else "缺失 " + ",".join(missing)))
+    return data
+
+
 def _chat_with_failover(messages: list, zhipu_model: str = None):
     """轮询分摊 + 故障转移，返回 (response, provider_name, model_name)。"""
     providers = _get_llm_providers(zhipu_model)
