@@ -34,6 +34,8 @@ playwright install chromium
 
 # 设置环境变量
 export ZHIPU_API_KEY="your_zhipu_api_key"
+# 可选：再配一个免费模型分担限流（不配则只用智谱）
+export GEMINI_API_KEY="your_gemini_api_key"
 export NOTION_API_KEY="your_notion_api_key"
 export NOTION_DATABASE_ID="your_notion_database_id"
 
@@ -52,6 +54,7 @@ python jiclaw_local.py twitter:paurooteri
 
 1. 在 GitHub 仓库设置中配置 Secrets：
    - `ZHIPU_API_KEY` - 智谱 AI API 密钥
+   - `GEMINI_API_KEY` - Google AI Studio API 密钥（可选，免费；不填则只用智谱）
    - `NOTION_API_KEY` - Notion API 密钥
    - `NOTION_DATABASE_ID` - Notion 数据库 ID
    - `TELEGRAM_BOT_TOKEN` - Telegram Bot Token（可选）
@@ -62,6 +65,9 @@ python jiclaw_local.py twitter:paurooteri
 
 2. （可选）配置 Variables：
    - `RSS_INTERVAL_SECONDS` - 抓取间隔（秒），默认 3600
+   - `GEMINI_MODEL` - Gemini 模型名，默认 `gemini-2.5-flash`
+   - `LLM_MODE` - `fallback`（智谱优先、限流才切 Gemini，默认）/ `balance`（两家轮询分摊）
+   - `LLM_REQUEST_INTERVAL` - 每篇之间的主动限速秒数，默认 `1`
 
 3. 推送代码后会自动运行，或手动触发
 
@@ -117,7 +123,13 @@ TWITTER_ACCOUNTS = {
 
 | 变量名 | 说明 | 必需 | 默认值 |
 |--------|------|------|--------|
-| `ZHIPU_API_KEY` | 智谱 AI API 密钥 | 是 | - |
+| `ZHIPU_API_KEY` / `GEMINI_API_KEY` | 至少配一个模型密钥 | 是（二选一） | - |
+| `GEMINI_MODEL` | Gemini 模型名 | 否 | `gemini-2.5-flash` |
+| `ZHIPU_MODEL` | 智谱模型名 | 否 | `GLM-4.7-Flash` |
+| `LLM_MODE` | `fallback` 主备 / `balance` 轮询分摊 | 否 | `fallback` |
+| `LLM_PROVIDER_ORDER` | provider 顺序，如 `gemini,zhipu` | 否 | `zhipu,gemini,compat` |
+| `LLM_REQUEST_INTERVAL` | 每篇之间主动限速（秒） | 否 | `1` |
+| `OPENAI_COMPAT_API_KEY` / `OPENAI_COMPAT_BASE_URL` / `OPENAI_COMPAT_MODEL` | 接任意 OpenAI 兼容服务（Groq、硅基流动、OpenRouter 等） | 否 | - |
 | `NOTION_API_KEY` | Notion API 密钥 | 是 | - |
 | `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 | - |
 | `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | 否 | - |
@@ -127,6 +139,37 @@ TWITTER_ACCOUNTS = {
 | `DISCORD_CHANNEL_ID` | Discord 频道 ID | 否 | - |
 | `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
 | `TIMEZONE_OFFSET` | 时区偏移（小时数） | 否 | 0 |
+
+### 3.1 多模型配置（免费额度扩容）
+
+免费档模型都有 RPM / RPD 限制，站点数量上来后单靠智谱很容易撞 `429 您的账户已达到速率限制`。
+现在支持同时配置多个模型，一家报错就自动切到另一家：
+
+| 模式 | 行为 |
+|---|---|
+| `LLM_MODE=fallback`（默认） | 始终先用智谱，只有它失败才动用 Gemini（省每日额度、风险低）。智谱进入 60 秒冷却期间，文章全部由 Gemini 接手 |
+| `LLM_MODE=balance` | 每篇选「最久没用过」的模型，主动把请求摊到两家，吞吐最高；想最大化容量时改成这个 |
+
+某个 provider 返回 429 / 5xx 会进入 60 秒冷却，Key 无效则冷却 10 分钟；
+Gemini 模型名 404 时会自动降级到 `gemini-flash-latest` 等候选。
+每篇日志会打印 `使用模型：gemini:gemini-2.5-flash`，Notion 的 `LLM` 字段也记录实际使用的模型。
+
+**申请 Gemini 免费 Key**
+
+1. 打开 <https://aistudio.google.com/>，用 Google 账号登录
+2. 左侧 **Get API key** → **Create API key**（免费，不需要信用卡）
+3. 在 GitHub 仓库 **Settings → Secrets and variables → Actions** 新增 Secret `GEMINI_API_KEY`
+4. 下一次运行即生效，无需改代码；不填这个 Secret 时行为和以前一样（只用智谱）
+
+Gemini 走官方 OpenAI 兼容端点 `https://generativelanguage.googleapis.com/v1beta/openai/`，
+复用现有 `openai` SDK，没有新增依赖。免费层大致 **10–15 RPM / 250–1500 RPD**（不同模型不同，
+以 AI Studio 的 Rate limit 页面为准）。
+
+> **两点注意**
+> - Google 端点在中国大陆**直连不通**。GitHub Actions 的 runner 在境外不受影响；
+>   本地运行需要代理，或直接 `LLM_PROVIDER_ORDER=zhipu` 只用智谱。
+> - Google 免费层的 prompt 可能被用于产品改进；如果内容敏感，别把正文发给它。
+> - 也可以不配 Gemini，改用 `OPENAI_COMPAT_*` 接 Groq / 硅基流动 / OpenRouter 的免费模型，机制完全相同。
 
 **时区配置说明：**
 

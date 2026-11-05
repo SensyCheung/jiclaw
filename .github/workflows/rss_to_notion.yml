@@ -27,6 +27,12 @@ jobs:
       - name: Run Script
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          # 备用免费模型：在 Google AI Studio 申请后填入 Secret；不填则只用智谱
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          # fallback=智谱优先、限流才切 Gemini（默认）；balance=两家轮询分摊
+          LLM_MODE: ${{ vars.LLM_MODE || 'fallback' }}
+          LLM_REQUEST_INTERVAL: ${{ vars.LLM_REQUEST_INTERVAL || '1' }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

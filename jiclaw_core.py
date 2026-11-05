@@ -668,16 +668,13 @@ def fetch_qualcomm_content(url: str) -> str:
 def summarize_with_ai(
     title: str, summary: str, content: str, model: str = "GLM-4.7-Flash"
 ) -> dict:
-    """调用大模型，对文章做中英文摘要与标签提取，返回 JSON 字典。"""
-    api_key = os.environ.get("ZHIPU_API_KEY")
-    if not api_key:
-        raise RuntimeError("环境变量 ZHIPU_API_KEY 未设置")
+    """调用大模型，对文章做中英文摘要与标签提取，返回 JSON 字典。
 
-    client = OpenAI(
-        api_key=api_key,
-        base_url="https://open.bigmodel.cn/api/paas/v4/",
-    )
-
+    实际使用的模型由环境变量决定（见下方「多模型 Provider」），
+    ``model`` 参数作为智谱模型的默认值保留，兼容原有调用方式。
+    返回值中会额外带一个 ``_llm_model`` 字段记录本次真正用的模型，
+    调用方 pop 出来写日志 / Notion，不入库。
+    """
     user_content = (
         f"Title: {title}\n\n"
         f"RSS Summary: {summary}\n\n"
@@ -747,39 +744,192 @@ def summarize_with_ai(
             },
     ]
 
-    response = _chat_with_retry(client, model, messages)
+    response, provider, used_model = _chat_with_failover(messages, zhipu_model=model)
 
     result = response.choices[0].message.content
     data = _extract_json_object(result)
+    if not isinstance(data, dict):
+        raise ValueError("模型返回的 JSON 不是对象")
+    data["_llm_model"] = f"{provider}:{used_model}"
     return data
 
 
-def _chat_with_retry(client, model: str, messages: list, max_attempts: int = 3):
-    """调用大模型，遇到 429 限流 / 5xx 时按退避策略重试。
+# ---------------------------------------------------------------------------
+# 多模型 Provider
+#
+# 免费档模型都有 RPM / RPD 限制，单靠一家很容易在批量抓取时撞 429。
+# 这里把所有可用模型抽象成 provider：
+#   - fallback 模式（默认）：智谱优先，只有它失败才动用 Gemini（省额度、风险低）
+#   - balance 模式：每篇选最久没用过的 provider，主动把请求摊到两家
+# 某个 provider 报错即进入冷却，期间不再打扰它；冷却期内其他 provider 顶上。
+# ---------------------------------------------------------------------------
 
-    智谱免费档在批量抓取时很容易触发 429（"该模型当前访问量过大"），
-    原来一次失败就抛异常，会把整个站点的剩余文章全部丢掉。
-    """
-    import time
+_LLM_PROVIDERS = None
+_PROVIDER_STATE = {}
 
-    for attempt in range(1, max_attempts + 1):
+# Gemini 免费层模型名换代较快：默认模型 404 时按序自动降级
+_GEMINI_MODEL_CANDIDATES = [
+    "gemini-2.5-flash",
+    "gemini-flash-latest",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-flash-lite-latest",
+]
+
+_RETRYABLE_MARKERS = (
+    "429", "rate limit", "ratelimit", "rate_limit", "quota",
+    "resource_exhausted", "访问量过大", "500", "502", "503", "504",
+    "timeout", "timed out", "超时", "connection", "连接",
+)
+_MODEL_MISSING_MARKERS = (
+    "404", "not found", "not_found", "does not exist",
+    "unsupported model", "model_not_found", "unknown model",
+)
+
+
+def _build_llm_providers(zhipu_default: str):
+    """按环境变量构建 provider 列表，未配置 Key 的 provider 自动跳过。"""
+    providers = []
+
+    zhipu_key = os.environ.get("ZHIPU_API_KEY")
+    if zhipu_key:
+        providers.append({
+            "name": "zhipu",
+            "model": os.environ.get("ZHIPU_MODEL") or zhipu_default,
+            "candidates": [],
+            "client": OpenAI(
+                api_key=zhipu_key,
+                base_url="https://open.bigmodel.cn/api/paas/v4/",
+                timeout=90,
+                max_retries=0,
+            ),
+        })
+
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if gemini_key:
+        model = os.environ.get("GEMINI_MODEL") or _GEMINI_MODEL_CANDIDATES[0]
+        providers.append({
+            "name": "gemini",
+            "model": model,
+            # Gemini 提供 OpenAI 兼容端点，无需引入新 SDK
+            "candidates": [model] + [m for m in _GEMINI_MODEL_CANDIDATES if m != model],
+            "client": OpenAI(
+                api_key=gemini_key,
+                base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                timeout=90,
+                max_retries=0,
+            ),
+        })
+
+    # 预留：Groq / 硅基流动 / OpenRouter / Cerebras 等任意 OpenAI 兼容服务
+    compat_key = os.environ.get("OPENAI_COMPAT_API_KEY")
+    compat_url = os.environ.get("OPENAI_COMPAT_BASE_URL")
+    if compat_key and compat_url:
+        providers.append({
+            "name": "compat",
+            "model": os.environ.get("OPENAI_COMPAT_MODEL") or "gpt-4o-mini",
+            "candidates": [],
+            "client": OpenAI(api_key=compat_key, base_url=compat_url, timeout=90, max_retries=0),
+        })
+
+    order = os.environ.get("LLM_PROVIDER_ORDER", "zhipu,gemini,compat")
+    rank = {n.strip(): i for i, n in enumerate(order.split(",")) if n.strip()}
+    providers.sort(key=lambda p: rank.get(p["name"], 99))
+    return providers
+
+
+def _get_llm_providers(zhipu_model: str = None):
+    global _LLM_PROVIDERS
+    if _LLM_PROVIDERS is None:
+        _LLM_PROVIDERS = _build_llm_providers(zhipu_model or "GLM-4.7-Flash")
+        if _LLM_PROVIDERS:
+            print("可用模型：" + " / ".join(
+                f"{p['name']}={p['model']}" for p in _LLM_PROVIDERS
+            ) + f" | 模式={os.environ.get('LLM_MODE', 'fallback')}")
+        else:
+            print("警告：未配置任何模型 API Key（ZHIPU_API_KEY / GEMINI_API_KEY）")
+    return _LLM_PROVIDERS
+
+
+def _call_provider(p: dict, messages: list):
+    """调用单个 provider；模型名失效时自动换用候选列表里的下一个模型。"""
+    for _ in range(max(1, len(p["candidates"]))):
+        model = p["model"]
         try:
-            return client.chat.completions.create(
-                model=model,
-                messages=messages,
-                stream=False,
+            resp = p["client"].chat.completions.create(
+                model=model, messages=messages, stream=False,
             )
+            text = (resp.choices[0].message.content or "") if resp.choices else ""
+            if not text.strip():
+                raise RuntimeError("模型返回空内容（可能被安全策略拦截）")
+            return resp, model
         except Exception as e:
-            msg = str(e)
-            retryable = any(
-                k in msg
-                for k in ("429", "Rate limit", "rate_limit", "访问量过大", "500", "502", "503", "504", "timeout", "超时")
-            )
-            if attempt == max_attempts or not retryable:
-                raise
-            wait = 30 if attempt == 1 else 60  # 429 多是分钟级窗口，等够一分钟更有效
-            print(f"  模型调用失败（第 {attempt}/{max_attempts} 次），{wait}s 后重试：{msg[:100]}")
+            msg = str(e).lower()
+            if any(k in msg for k in _MODEL_MISSING_MARKERS) and p["candidates"]:
+                if model in p["candidates"]:
+                    nxt = p["candidates"].index(model) + 1
+                    if nxt < len(p["candidates"]):
+                        p["model"] = p["candidates"][nxt]
+                        print(f"  {p['name']} 模型 {model} 不可用，改用 {p['model']}")
+                        continue
+            raise
+
+
+def _chat_with_failover(messages: list, zhipu_model: str = None):
+    """轮询分摊 + 故障转移，返回 (response, provider_name, model_name)。"""
+    providers = _get_llm_providers(zhipu_model)
+    if not providers:
+        raise RuntimeError("未配置任何模型 API Key：请设置 ZHIPU_API_KEY 或 GEMINI_API_KEY")
+
+    mode = os.environ.get("LLM_MODE", "fallback").strip().lower()
+    errors = []
+    attempted_any = False
+
+    for _ in range(2):
+        now = time.time()
+        available = [
+            p for p in providers
+            if _PROVIDER_STATE.get(p["name"], {}).get("until", 0) <= now
+        ]
+        if not available:
+            # 本轮刚把所有 provider 试挂了就不再空等，交给上层跳过/熔断
+            # （未写进 Notion 的文章下一轮会重新抓，等待太久反而拖垮整轮任务）
+            if attempted_any:
+                break
+            wait = max(1, min(15, min(
+                _PROVIDER_STATE[p["name"]]["until"] for p in providers
+            ) - now))
+            print(f"  所有模型均在限流冷却中，等待 {wait:.0f}s 后强制重试一次...")
             time.sleep(wait)
+            available = list(providers)
+
+        if mode == "balance":
+            # 最久没用过的优先，形成天然轮询
+            available.sort(key=lambda p: _PROVIDER_STATE.get(p["name"], {}).get("last", 0))
+
+        for p in available:
+            name = p["name"]
+            attempted_any = True
+            st = _PROVIDER_STATE.setdefault(name, {"until": 0.0, "last": 0.0})
+            st["last"] = time.time()
+            try:
+                resp, model = _call_provider(p, messages)
+                st["until"] = 0.0
+                return resp, name, model
+            except Exception as e:
+                msg = str(e)
+                low = msg.lower()
+                if any(k in low for k in ("401", "403", "unauthorized", "invalid api key", "api key not valid", "permission")):
+                    cooldown = 600  # Key 无效，别反复试
+                elif any(k in low for k in _RETRYABLE_MARKERS):
+                    cooldown = 60   # 限流 / 服务端错误，等过一个分钟窗口
+                else:
+                    cooldown = 20
+                st["until"] = time.time() + cooldown
+                errors.append(f"{name}: {msg[:110]}")
+                print(f"  模型 {name} 调用失败，冷却 {cooldown}s，尝试下一个：{msg[:100]}")
+
+    raise RuntimeError("所有模型均调用失败 -> " + " | ".join(errors[-4:]))
 
 
 def _extract_json_object(text: str) -> dict:
@@ -1247,11 +1397,13 @@ def _process_items(
 
         print("正在调用大模型生成摘要...")
 
-        # 主动限速：智谱账号有 RPM/TPM 限制，连续请求很容易 429
-        time.sleep(2)
+        # 主动限速：免费档模型都有 RPM 限制，多 provider 分摊后可略微加快
+        time.sleep(float(os.environ.get("LLM_REQUEST_INTERVAL", "1")))
 
         try:
             data = summarize_with_ai(title, summary, content, model=model)
+            used_model = data.pop("_llm_model", model)
+            print(f"使用模型：{used_model}")
             _ai_fail_streak = 0
         except Exception as e:
             # 单篇失败不拖垮整个源，继续处理后面的文章
@@ -1285,7 +1437,7 @@ def _process_items(
                 item,
                 data,
                 post_id,
-                model,
+                used_model,
                 source_url,
             )
 
