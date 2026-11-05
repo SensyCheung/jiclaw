@@ -316,9 +316,18 @@ python jiclaw_discord.py
 避免把真旧闻改坏。
 
 **落地方式**：命中风险事件的文章追加写入 `risk_events/risk_events-YYYY-MM-DD.jsonl`
-（路径可用 `RISK_EVENTS_DIR` 覆盖），一行一条，字段与上表一致并附加 `post_id / url / title / title_cn /
+（路径可用 `RISK_EVENTS_DIR` 覆盖），一行一条，字段与上表一致并附加 `post_id / dedup_key / url / title / title_cn /
 source / published_at / llm / ingested_at`。GitHub Actions 每次运行都会把它作为产物上传
 （`risk-events-<run_id>`，保留 30 天），下游按天拉取即可。
+
+`dedup_key` 是 `entity + event_type + occurred_at` 的哈希，给下游做**软去重**：同一事件常被多家媒体同时报道
+（实测美光停建被两个源各抽一条），同键可归为一簇。它不是权威 id——实体名写法不同（"美光" / "美光科技(Micron)"）会算出不同的键。
+
+**判定口径（会持续按实测噪声调整）**：
+
+- `earnings` 只认坏消息（下调指引、不及预期、亏损、裁员），营收增长 / 符合预期不算风险事件
+- 常规制程量产、新品发布属于日常经营，没有明确产能或供应链冲击时 `is_risk_event` 为 `false`
+- `entity` 禁止泛称（"存储巨头"、"某晶圆厂"、"业内人士"），定位不到具体主体时给 `null`
 
 本地验证：
 
