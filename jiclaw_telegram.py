@@ -14,6 +14,40 @@ from telegram_config import (
 )
 
 
+def normalize_chat_id(chat_id):
+    """补全被省略的 -100 前缀。
+
+    频道/超级群的 ID 形如 ``-1003824126934``（-100 + 10 位数字）。
+    手工填 secret 时很容易只填了后面那 10 位，或者漏了负号
+    （``3824126934`` / ``-3824126934``），Telegram 会当成用户 ID 去找，
+    于是报 ``Bad Request: chat not found``。这里统一补成 14 位。
+
+    已是 -100 开头、或不是纯数字的值原样返回，不做猜测。
+    """
+    if chat_id is None:
+        return chat_id
+
+    s = str(chat_id).strip().strip('"').strip("'")
+    if not s or s.startswith("-100"):
+        return s
+
+    digits = s[1:] if s.startswith("-") else s
+    # 超级群/频道的裸 ID 固定 10 位；带不带负号都补成 -100xxxxxxxxxx
+    if digits.isdigit() and len(digits) == 10:
+        return "-100" + digits
+
+    return s
+
+
+def _chat_id_candidates(chat_id):
+    """返回尝试顺序：补全后的值优先，原始值兜底（兼容私聊 10 位用户 ID）。"""
+    if chat_id is None:
+        return []
+    fixed = normalize_chat_id(chat_id)
+    raw = str(chat_id).strip().strip('"').strip("'")
+    return [c for c in dict.fromkeys([fixed, raw]) if c]
+
+
 def resolve_telegram_chat_id(is_semiconductor: bool):
     """根据文章行业分类，返回 (chat_id, 说明)。
 
@@ -22,9 +56,9 @@ def resolve_telegram_chat_id(is_semiconductor: bool):
       （未配置该群组时返回 chat_id=None，表示剔除、不推送）
     """
     if is_semiconductor:
-        return TELEGRAM_CHAT_ID, "半导体 → 主群组"
+        return normalize_chat_id(TELEGRAM_CHAT_ID), "半导体 → 主群组"
     if TELEGRAM_CHAT_ID_OTHER:
-        return TELEGRAM_CHAT_ID_OTHER, "非半导体 → 其他群组"
+        return normalize_chat_id(TELEGRAM_CHAT_ID_OTHER), "非半导体 → 其他群组"
     return None, "非半导体（未配置 TELEGRAM_CHAT_ID_OTHER，已剔除）"
 
 
@@ -147,40 +181,58 @@ def send_to_telegram(
     
     # Telegram Bot API
     url = f"https://api.telegram.org/bot{token}/sendMessage"
-    
-    payload = {
-        "chat_id": cid,
-        "text": message,
-        "parse_mode": "HTML",  # 使用 HTML 格式
-        "disable_web_page_preview": False,  # 显示链接预览
-    }
-    
-    try:
-        resp = requests.post(url, json=payload, timeout=15)
 
-        if not resp.ok:
-            # 400 常见原因：chat_id 写错/缺 -100 前缀、Bot 未加入该群或被踢出
-            try:
-                detail = resp.json().get("description", "")
-            except ValueError:
-                detail = resp.text[:200]
-            print(
-                f"Telegram 发送失败：HTTP {resp.status_code} | chat_id={cid} | {detail}"
-            )
+    # 依次尝试补全后的 ID 与原始 ID；一旦某个写法成功就记住，后续文章不再重试
+    tried = []
+    for candidate in _chat_id_candidates(cid):
+        tried.append(candidate)
+        payload = {
+            "chat_id": candidate,
+            "text": message,
+            "parse_mode": "HTML",  # 使用 HTML 格式
+            "disable_web_page_preview": False,  # 显示链接预览
+        }
+
+        try:
+            resp = requests.post(url, json=payload, timeout=15)
+        except requests.exceptions.RequestException as e:
+            print(f"Telegram 发送异常：chat_id={candidate} | {e}")
             return False
 
-        result = resp.json()
-        if result.get("ok"):
-            message_id = result.get("result", {}).get("message_id")
-            print(f"已发送到 Telegram：Message ID {message_id}")
-            return True
+        if resp.ok:
+            result = resp.json()
+            if result.get("ok"):
+                message_id = result.get("result", {}).get("message_id")
+                if candidate != str(cid).strip():
+                    print(
+                        f"chat_id 已自动补全：{cid} → {candidate}"
+                        "（请修正 Secret，免得每次都走兜底）"
+                    )
+                print(f"已发送到 Telegram：Message ID {message_id}")
+                return True
 
-        print(f"Telegram 发送失败：chat_id={cid} | {result}")
+            print(f"Telegram 发送失败：chat_id={candidate} | {result}")
+            return False
+
+        # 400 常见原因：chat_id 写错/缺 -100 前缀、Bot 未加入该群或被踢出
+        try:
+            detail = resp.json().get("description", "")
+        except ValueError:
+            detail = resp.text[:200]
+
+        # 只有「找不到该会话」才值得换一种写法再试；
+        # 403（没权限）、429（限流）换写法也没用，直接报错退出
+        if "chat not found" in detail.lower() and len(tried) < len(_chat_id_candidates(cid)):
+            print(
+                f"chat_id={candidate} 找不到会话（{detail}），"
+                f"换 {_chat_id_candidates(cid)[len(tried)]} 重试..."
+            )
+            continue
+
+        print(f"Telegram 发送失败：HTTP {resp.status_code} | chat_id={candidate} | {detail}")
         return False
 
-    except requests.exceptions.RequestException as e:
-        print(f"Telegram 发送异常：chat_id={cid} | {e}")
-        return False
+    return False
 
 
 def test_telegram_bot() -> bool:
@@ -202,7 +254,7 @@ def test_telegram_bot() -> bool:
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     
     payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
+        "chat_id": normalize_chat_id(TELEGRAM_CHAT_ID),
         "text": message,
         "parse_mode": "HTML",
     }
