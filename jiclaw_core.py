@@ -875,6 +875,52 @@ def _call_provider(p: dict, messages: list):
             raise
 
 
+def _diagnose_gemini(p: dict) -> None:
+    """Gemini 自检失败时展开诊断：列出该 Key 可见的模型，并逐个试调。
+
+    Google 换代很快且新项目不一定开放旧模型（旧名字直接 404），
+    光看异常是 404 还是 503 猜不出该用哪个，直接问 models.list 最准。
+    """
+    print("  --- Gemini 诊断 ---")
+    key = os.environ.get("GEMINI_API_KEY", "")
+    try:
+        r = requests.get(
+            "https://generativelanguage.googleapis.com/v1beta/models",
+            headers={"x-goog-api-key": key},
+            params={"pageSize": 100},
+            timeout=25,
+        )
+        print(f"  models.list: HTTP {r.status_code}")
+        if r.ok:
+            usable = [
+                m.get("name", "").replace("models/", "")
+                for m in r.json().get("models", [])
+                if "generateContent" in (m.get("supportedGenerationMethods") or [])
+            ]
+            flash = [n for n in usable if "flash" in n.lower() or "gemma" in n.lower()]
+            print("  可见 flash 类模型：" + (", ".join(flash[:25]) or "无"))
+            candidates = list(dict.fromkeys(flash[:6] + _GEMINI_MODEL_CANDIDATES))
+        else:
+            print("  models.list 响应：" + r.text[:200])
+            candidates = list(_GEMINI_MODEL_CANDIDATES)
+    except Exception as e:
+        print(f"  models.list 失败：{str(e)[:150]}")
+        candidates = list(_GEMINI_MODEL_CANDIDATES)
+
+    print("  逐个试调候选模型：")
+    for m in candidates:
+        try:
+            resp = p["client"].chat.completions.create(
+                model=m,
+                messages=[{"role": "user", "content": "Reply with exactly: OK"}],
+                stream=False,
+            )
+            txt = (resp.choices[0].message.content or "").strip()[:30] if resp.choices else ""
+            print(f"    [OK]   {m} | 回复={txt!r}")
+        except Exception as e:
+            print(f"    [FAIL] {m} | {str(e)[:160]}")
+
+
 def check_llm_providers() -> dict:
     """启动时逐个探测已配置模型：端点是否可达、Key 是否有效、模型名是否存在。
 
@@ -905,8 +951,13 @@ def check_llm_providers() -> dict:
             report[name] = {"ok": True, "model": used, "latency": round(cost, 1)}
             print(f"  [OK]   {name}:{used} | {cost:.1f}s | 回复={text!r}")
         except Exception as e:
-            report[name] = {"ok": False, "model": model, "error": str(e)[:180]}
-            print(f"  [FAIL] {name}:{model} | {str(e)[:180]}")
+            report[name] = {"ok": False, "model": model, "error": str(e)[:220]}
+            print(f"  [FAIL] {name}:{model} | {str(e)[:220]}")
+            if name == "gemini":
+                try:
+                    _diagnose_gemini(p)
+                except Exception as de:
+                    print(f"  Gemini 诊断异常：{str(de)[:150]}")
     return report
 
 
