@@ -11,6 +11,11 @@ on:
         required: false
         type: string
         default: ''
+      probe_only:
+        description: '只做模型连通性自检、不抓取文章（填 true）'
+        required: false
+        type: string
+        default: 'false'
 
 jobs:
   run-script:
@@ -39,6 +44,7 @@ jobs:
         run: python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
 
       - name: Run Script
+        if: github.event.inputs.probe_only != 'true'
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           # 备用免费模型：在 Google AI Studio 申请后填入 Secret；不填则只用智谱
