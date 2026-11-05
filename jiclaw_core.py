@@ -768,12 +768,14 @@ _LLM_PROVIDERS = None
 _PROVIDER_STATE = {}
 
 # Gemini 免费层模型名换代快，且「新项目」不开放部分旧模型（gemini-2.5-flash 实测 404）。
-# 2026-11 在 AI Studio 新项目上实测：gemini-flash-lite-latest 可正常调用，
-# gemma-4-* 也可用但会输出 <thought> 思考标签，不适合直接产 JSON，故排最后。
+# 2026-11 在 AI Studio 新项目上实测：
+#   - gemini-flash-lite-latest 是滚动别名，延迟 0.6s / 65s / 超时都出现过，不适合当首选
+#   - gemini-3.1-flash-lite 固定版本，实测完整跑通中文长 prompt 并输出严格 JSON，作为默认
+#   - gemma-4-* 也可用但会输出 <thought> 思考标签，不适合直接产 JSON，故排最后
 # 模型 404 / 503 / 超时时按序自动降级。
 _GEMINI_MODEL_CANDIDATES = [
-    "gemini-flash-lite-latest",
     "gemini-3.1-flash-lite",
+    "gemini-flash-lite-latest",
     "gemini-3.5-flash-lite",
     "gemini-flash-latest",
     "gemini-3.5-flash",

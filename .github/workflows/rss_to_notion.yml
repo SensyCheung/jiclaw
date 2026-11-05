@@ -40,7 +40,7 @@ jobs:
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-flash-lite-latest' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-flash-lite' }}
         run: |
           python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
           python -c "from jiclaw_core import check_llm_generation; check_llm_generation()" || true
@@ -51,7 +51,7 @@ jobs:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
           # 备用免费模型：在 Google AI Studio 申请后填入 Secret；不填则只用智谱
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-flash-lite-latest' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-flash-lite' }}
           # fallback=智谱优先、限流才切 Gemini（默认）；balance=两家轮询分摊
           LLM_MODE: ${{ github.event.inputs.llm_mode || vars.LLM_MODE || 'fallback' }}
           LLM_REQUEST_INTERVAL: ${{ vars.LLM_REQUEST_INTERVAL || '1' }}
