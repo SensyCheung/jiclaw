@@ -767,6 +767,8 @@ def summarize_with_ai(
      technology_release 技术制程或产品发布、supply_shortage 缺货涨价、geopolitical 地缘政治、other 其他。
      注意 earnings 只用于**坏消息**（下调指引、业绩不及预期、亏损扩大、裁员重组）；
      营收增长、利润创新高、符合预期这类好消息不算风险事件，is_risk_event 给 false，event_type 给 null。
+     technology_release 同理：常规的制程量产、新品发布属于日常经营，只要没有明确造成产能中断、订单流失、
+     客户转单或供应链冲击，is_risk_event 一律给 false。
    - hazard_class（枚举）：operational 运营、natural 自然、regulatory 监管合规、financial 财务、
      technology 技术、market 市场、other。
    - entity：事件主体公司或机构的标准名称；多个用英文逗号分隔。统一用中文通用名，首次出现时附英文原名，
