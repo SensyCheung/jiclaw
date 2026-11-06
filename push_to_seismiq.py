@@ -4,13 +4,19 @@
 分流依据 SEISMIQ 的 GET /api/webhook/schema：
 
 * ``events[]`` 是「有地理影响的物理/社会事件」，``type`` 必须是封闭枚举
-  (earthquake/wildfire/volcano/flood/storm/drought/epidemic/strike/conflict)，
+  (earthquake/wildfire/volcano/flood/storm/drought/epidemic/strike/conflict/power)，
   写入后会立即重算「事件 × 晶圆厂」影响。只有能真实映射灾种的事件才放进来。
-* ``news[]`` 是资讯。产业经营类事件（财报、并购、扩产延期、出口管制…）走这里，
-  硬塞进 events 会因灾种不匹配写不进去，或误触发影响计算。
+* **默认完全不写 ``news[]``**。要求「只写风险相关的，正常新闻不要往里面写入」：
+  财报、并购、长协、扩产、技术发布等经营资讯一律跳过，不进 SEISMIQ。
+  确实需要资讯通道时显式加 --include-news。
+* 另有 severity 门槛（默认 0.4），把「被 LLM 标成风险但严重度极低」的噪声挡掉。
 
 没有经纬度时**不编坐标**：不传 lat/lon，让 SEISMIQ 走 region 模式（按 country 匹配）。
 需要 distance 模式时，用 --coords-file 提供一份显式、准确的厂区坐标表。
+
+凭证（环境变量）：
+    SEISMIQ_WEBHOOK_TOKEN  主 token（Bearer），必填，绝不打印
+    SEISMIQ_HMAC_SECRET    可选；仅当 SEISMIQ 侧真的开了 HMAC 签名校验时才设
 
 用法：
     python push_to_seismiq.py --dry-run          # 只打印 payload，不发送
@@ -32,15 +38,34 @@ import requests
 WEBHOOK_URL = "https://seismiq-api.jijibot.workers.dev/api/webhook"
 SOURCE_ID = "jiclaw"
 MAX_ITEMS_PER_REQUEST = 100   # schema: maxItems 200 / maxBodyBytes 1,000,000，留足余量
+DEFAULT_MIN_SEVERITY = 0.4
 
 # 直接映射：jiclaw event_type -> SEISMIQ 灾种
+# 注意：fire_explosion（工厂爆炸）、capacity_disruption、mna、earnings 在
+# SEISMIQ 的 typeEnum 里没有对应灾种；硬塞 wildfire 之类会误触发距离衰减计算，
+# 所以一律不写入，只在日志里列为「跳过」。
 _TYPE_MAP = {
     "labor_dispute": "strike",       # 劳资纠纷/罢工
     "geopolitical": "conflict",      # 地缘政治/冲突
     "water_shortage": "drought",     # 供水短缺，最接近干旱
+    "power_outage": "power",         # 停电/限电，SEISMIQ 走 grid 分区模式
 }
 
-# natural_disaster 是粗类，按标题关键词细分；猜不出就返回 None 走 news，不硬猜
+# type=power 专用：grid_zone 是判定依据，缺失时服务端 fail-closed 不推算任何设施。
+# 只认能明确定位到园区的写法；认不出就宁可不填（宁可漏算，不可错算）。
+_GRID_ZONES = (
+    ("南科", "南科 STSP"), ("台南科学园区", "南科 STSP"), ("STSP", "南科 STSP"),
+    ("竹科", "竹科 HSP"), ("新竹科学园区", "竹科 HSP"), ("HSP", "竹科 HSP"),
+    ("高雄", "高雄 KHH"), ("KHH", "高雄 KHH"),
+    ("东北", "东北 TOHOKU"), ("TOHOKU", "东北 TOHOKU"),
+)
+_OUTAGE_KINDS = (
+    ("全停", "blackout"), ("blackout", "blackout"),
+    ("晃电", "sag"), ("压降", "sag"), ("电压骤降", "sag"), ("sag", "sag"),
+    ("限电", "rationing"), ("rationing", "rationing"),
+)
+
+# natural_disaster 是粗类，按标题关键词细分；猜不出就返回 None，不硬猜
 _NATURAL_KEYWORDS = (
     ("地震", "earthquake"), ("earthquake", "earthquake"), ("quake", "earthquake"),
     ("火山", "volcano"), ("volcano", "volcano"), ("eruption", "volcano"),
@@ -53,7 +78,7 @@ _NATURAL_KEYWORDS = (
     ("罢工", "strike"), ("strike", "strike"),
 )
 
-# news 标题前缀，便于在 SEISMIQ 里一眼区分类型（news kind 没有 type 字段）
+# 仅 --include-news 开启时使用（news kind 没有 type 字段，用标题前缀区分）
 _LABELS = {
     "capacity_disruption": "产能中断", "mna": "并购", "earnings": "财报",
     "export_control": "出口管制", "litigation": "诉讼", "supply_shortage": "缺货涨价",
@@ -69,7 +94,7 @@ def _text(event):
 
 
 def resolve_hazard_type(event):
-    """返回 SEISMIQ 灾种；映射不了返回 None（改走 news）。"""
+    """返回 SEISMIQ 灾种；映射不了返回 None（不写 events）。"""
     primary = event.get("primary_event_type") or event.get("event_type")
     types = list(event.get("event_types") or []) + [primary]
     haystack = _text(event).lower()
@@ -142,6 +167,38 @@ def _coords_for(event, coords):
     return None, None
 
 
+def _power_fields(event):
+    """type=power 的专有字段；识别不出就少填，让服务端 fail-closed。"""
+    haystack = _text(event).lower()
+    fields = {}
+    for kw, zone in _GRID_ZONES:
+        if kw.lower() in haystack:
+            fields["grid_zone"] = zone
+            break
+    for kw, kind in _OUTAGE_KINDS:
+        if kw.lower() in haystack:
+            fields["outage_kind"] = kind
+            break
+    return fields
+
+
+def is_actionable_risk(event, min_severity):
+    """风险门槛：只让真正的风险事件进入后续映射，返回 (bool, 跳过原因)。
+
+    latest.json 里混着财报、并购、长协等被上游标成 risk_event 的「正常新闻」，
+    这里用 severity 做第二道闸；灾种枚举映射在 build_batches 里再判一次。
+    """
+    if event.get("is_risk_event") is False:
+        return False, "非风险事件"
+    try:
+        sev = float(event.get("severity") or 0)
+    except (TypeError, ValueError):
+        sev = 0.0
+    if sev < min_severity:
+        return False, f"严重度 {sev} < 门槛 {min_severity}"
+    return True, None
+
+
 def build_event_payload(event, coords, confidence):
     hazard = resolve_hazard_type(event)
     if not hazard:
@@ -174,6 +231,9 @@ def build_event_payload(event, coords, confidence):
         payload["lat"] = lat
         payload["lon"] = lon
 
+    if hazard == "power":
+        payload.update(_power_fields(event))
+
     return {k: v for k, v in payload.items() if v is not None and v != ""}
 
 
@@ -195,26 +255,39 @@ def build_news_payload(event, confidence):
     return {k: v for k, v in payload.items() if v is not None and v != "" and v != []}
 
 
-def build_batches(events, coords, confidence, batch_size):
-    """返回若干 {'events': [...], 'news': [...]} 请求体。
+def build_batches(events, coords, confidence, batch_size,
+                  include_news=False, min_severity=DEFAULT_MIN_SEVERITY):
+    """返回 (请求体列表, 跳过原因统计, 入选条数)。
 
     kv 分组在 schema 里形态有歧义，且 event.raw 已存了完整结构化快照，
     所以不往 SEISMIQ 的 kv 表写东西，避免污染对方数据。
     """
     items = []
+    skipped = {}
     for event in events:
+        ok, reason = is_actionable_risk(event, min_severity)
+        if not ok:
+            skipped[reason] = skipped.get(reason, 0) + 1
+            continue
         ev = build_event_payload(event, coords, confidence)
         if ev:
             items.append(("events", ev))
-        else:
+        elif include_news:
             items.append(("news", build_news_payload(event, confidence)))
+        else:
+            key = "无对应 SEISMIQ 灾种（正常新闻不写入）"
+            skipped[key] = skipped.get(key, 0) + 1
 
+    bodies = []
     for start in range(0, len(items), batch_size):
         body = {"events": [], "news": []}
         for kind, payload in items[start:start + batch_size]:
             body[kind].append(payload)
         # 空数组不发，避免服务端把它当成有效分组
-        yield {k: v for k, v in body.items() if v}
+        body = {k: v for k, v in body.items() if v}
+        if body:
+            bodies.append(body)
+    return bodies, skipped, len(items)
 
 
 def load_feed(path):
@@ -231,13 +304,17 @@ def main():
     ap.add_argument("--feed", default="risk_events/latest.json")
     ap.add_argument("--url", default=os.environ.get("SEISMIQ_WEBHOOK_URL", WEBHOOK_URL))
     ap.add_argument("--token", default=os.environ.get("SEISMIQ_WEBHOOK_TOKEN"))
-    ap.add_argument("--signing-secret", default=os.environ.get("SEISMIQ_WEBHOOK_SECRET"),
-                    help="仅当 SEISMIQ 配置了 WEBHOOK_SECRET 时需要；对每批 raw body 做 HMAC-SHA256")
+    ap.add_argument("--signing-secret", default=os.environ.get("SEISMIQ_HMAC_SECRET"),
+                    help="仅当 SEISMIQ 侧开启 HMAC 校验时需要；对每批 raw body 做 HMAC-SHA256")
     ap.add_argument("--coords-file", help="厂区坐标表 JSON：{\"桃园厂\": [24.99, 121.22]}；缺省不传坐标")
     ap.add_argument("--confidence", choices=("fact", "assessed"), default="assessed",
                     help="LLM 抽取属于评估，默认 assessed（SEISMIQ 会把影响等级封顶为「关注」）")
     ap.add_argument("--batch-size", type=int, default=MAX_ITEMS_PER_REQUEST)
     ap.add_argument("--limit", type=int, default=0, help="只推前 N 条，用于小批试推")
+    ap.add_argument("--min-severity", type=float, default=DEFAULT_MIN_SEVERITY,
+                    help="风险门槛，低于此值视为正常新闻不写入（默认 0.4）")
+    ap.add_argument("--include-news", action="store_true",
+                    help="显式开启才写 news[]；默认关闭，正常新闻一律不进 SEISMIQ")
     ap.add_argument("--dry-run", action="store_true", help="只打印请求体，不发送")
     args = ap.parse_args()
 
@@ -252,9 +329,16 @@ def main():
             coords = json.load(f)
         print(f"载入厂区坐标表：{len(coords)} 条")
 
-    batches = list(build_batches(events, coords, args.confidence, args.batch_size))
+    batches, skipped, kept = build_batches(
+        events, coords, args.confidence, args.batch_size,
+        include_news=args.include_news, min_severity=args.min_severity)
     n_ev = sum(len(b.get("events", [])) for b in batches)
     n_news = sum(len(b.get("news", [])) for b in batches)
+    print(f"风险过滤：保留 {kept} 条 / 跳过 {len(events) - kept} 条"
+          f"（门槛 severity >= {args.min_severity}，news 通道"
+          f"{'已开启' if args.include_news else '默认关闭'}）")
+    for reason, n in sorted(skipped.items(), key=lambda x: -x[1]):
+        print(f"  跳过 {n} 条：{reason}")
     print(f"映射结果：event {n_ev} 条 / news {n_news} 条，分 {len(batches)} 批")
 
     if args.dry_run:
@@ -264,9 +348,13 @@ def main():
         print("\n[dry-run] 未发送任何请求")
         return 0
 
+    if not batches:
+        print("没有符合风险门槛且能映射灾种的事件，跳过写入")
+        return 0
+
     if not args.token:
-        print("错误：未提供 token。请设置环境变量 SEISMIQ_WEBHOOK_TOKEN 或 GitHub Secret。",
-              file=sys.stderr)
+        print("错误：未提供主 token。请设置环境变量 SEISMIQ_WEBHOOK_TOKEN "
+              "（本仓库 GitHub Secret 名为 SEISMIQ_WEBHOOK_SECRET）。", file=sys.stderr)
         return 2
 
     headers = {
@@ -289,7 +377,7 @@ def main():
             print(f"第 {i} 批请求异常：{type(e).__name__}: {str(e)[:200]}")
             failed += 1
             continue
-        print(f"第 {i} 批 HTTP {resp.status_code}：{resp.text[:500]}")
+        print(f"第 {i} 批 HTTP {resp.status_code}：{resp.text[:800]}")
         if resp.status_code >= 300:
             failed += 1
             continue

@@ -21,6 +21,11 @@ on:
         required: false
         type: string
         default: 'false'
+      test_seismiq_write:
+        description: '只测试 SEISMIQ 真实写入（配合 probe_only=true 跳过抓取，约 1 分钟）'
+        required: false
+        type: string
+        default: 'false'
 
 jobs:
   run-script:
@@ -64,12 +69,13 @@ jobs:
       - name: Probe SEISMIQ webhook
         if: github.event.inputs.probe_seismiq == 'true'
         env:
-          SEISMIQ_WEBHOOK_TOKEN: ${{ secrets.SEISMIQ_WEBHOOK_TOKEN }}
+          # 本仓库主 token 存在名为 SEISMIQ_WEBHOOK_SECRET 的 Secret 里（值是 Bearer token）
+          SEISMIQ_WEBHOOK_TOKEN: ${{ secrets.SEISMIQ_WEBHOOK_SECRET }}
         run: |
           if [ -n "$SEISMIQ_WEBHOOK_TOKEN" ]; then
-            echo "token 状态：已在 GitHub Secrets 配置"
+            echo "主 token 状态：已注入（值不打印）"
           else
-            echo "token 状态：未配置（SEISMIQ_WEBHOOK_TOKEN 缺失）"
+            echo "主 token 状态：缺失（检查 Secret SEISMIQ_WEBHOOK_SECRET）"
           fi
           echo "=== GET /api/webhook/schema ==="
           curl -sS --max-time 30 -w "\n[HTTP %{http_code}]\n" \
@@ -117,19 +123,26 @@ jobs:
         run: python export_risk_feed.py
 
       - name: Push to SEISMIQ
-        # 汇总完成后推；推送失败不影响抓取与 JSONL 落盘，靠 continue-on-error 兜底
-        if: ${{ always() && github.event.inputs.probe_only != 'true' }}
+        # 汇总完成后推；推送失败不影响抓取与 JSONL 落盘，靠 continue-on-error 兜底。
+        # probe_only + test_seismiq_write 可跳过 9 分钟抓取，只验证真实写入。
+        if: ${{ always() && (github.event.inputs.probe_only != 'true' || github.event.inputs.test_seismiq_write == 'true') }}
         continue-on-error: true
         env:
-          SEISMIQ_WEBHOOK_TOKEN: ${{ secrets.SEISMIQ_WEBHOOK_TOKEN }}
-          # 仅当 SEISMIQ 侧配置了 WEBHOOK_SECRET 时才需要设置（请求会带 HMAC 签名）
-          SEISMIQ_WEBHOOK_SECRET: ${{ secrets.SEISMIQ_WEBHOOK_SECRET }}
+          # 注意：Secret 名叫 SEISMIQ_WEBHOOK_SECRET，但里面存的是**主 token（Bearer）**，
+          # 不是 HMAC 签名密钥。之前误接到签名参数导致一直「未配置 token，跳过」。
+          SEISMIQ_WEBHOOK_TOKEN: ${{ secrets.SEISMIQ_WEBHOOK_SECRET }}
+          # 仅当 SEISMIQ 侧确实开启签名校验时才另配此 Secret；默认不设、不发签名头
+          SEISMIQ_HMAC_SECRET: ${{ secrets.SEISMIQ_HMAC_SECRET }}
         run: |
           if [ -z "$SEISMIQ_WEBHOOK_TOKEN" ]; then
-            echo "跳过推送：GitHub Secret SEISMIQ_WEBHOOK_TOKEN 未配置"
+            echo "跳过推送：Secret SEISMIQ_WEBHOOK_SECRET 未配置"
             exit 0
           fi
+          echo "主 token 已注入（值不打印），开始写入"
           python push_to_seismiq.py
+          echo "=== 写入后审计：GET /api/webhook/runs?limit=3 ==="
+          curl -sS --max-time 30 -w "\n[HTTP %{http_code}]\n" \
+            "https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=3" || true
 
       # 把事件流提交回仓库，避免依赖会过期的 artifact。
       # latest.json 是幂等的：没有新事件时 git diff 为空，不会产生空提交。

@@ -380,15 +380,25 @@ const alerts = events.filter(e => e.severity >= 0.6);
 `push_to_seismiq.py` 把 `latest.json` 推到 `POST https://seismiq-api.jijibot.workers.dev/api/webhook`。
 在工作流里位于汇总之后、commit 之前，失败不阻断抓取。
 
-**鉴权**：GitHub 仓库 Secret `SEISMIQ_WEBHOOK_TOKEN`（未配置时自动跳过，不报错）。
-本地运行用环境变量传入，或放在已 gitignore 的 `.env` 里；脚本不读取、不打印 token 值。
-如果 SEISMIQ 侧配了 `WEBHOOK_SECRET`，再设一个 `SEISMIQ_WEBHOOK_SECRET` Secret，
-脚本会自动对每批 raw body 计算 `X-Webhook-Signature: sha256=<HMAC-SHA256>`。
+**鉴权**：主 token 存于 GitHub 仓库 Secret **`SEISMIQ_WEBHOOK_SECRET`**——名字容易误解，
+里面存的其实是 `Authorization: Bearer <主token>` 的值，**不是** HMAC 签名密钥。
+工作流把它注入到脚本的 `SEISMIQ_WEBHOOK_TOKEN` 环境变量；未配置时自动跳过，不报错。
+本地运行用 `SEISMIQ_WEBHOOK_TOKEN` 环境变量传入，或放在已 gitignore 的 `.env` 里；
+脚本不读取、不打印 token 值。只有 SEISMIQ 侧**确实开启了** HMAC 校验时，才另设
+`SEISMIQ_HMAC_SECRET`，脚本会对每批 raw body 计算 `X-Webhook-Signature: sha256=<HMAC-SHA256>`；
+不设就不发签名头。
 
 ```bash
 python push_to_seismiq.py --dry-run          # 只打印 payload，核对映射
 python push_to_seismiq.py --limit 2          # 小批试推
 python push_to_seismiq.py                   # 全量（靠 dedupe_key 幂等）
+python push_to_seismiq.py --include-news     # 显式开启资讯通道（默认关闭）
+```
+
+只验证真实写入、跳过 9 分钟抓取：
+
+```bash
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f test_seismiq_write=true
 ```
 
 核对「推了没推、收了几条」：
@@ -397,17 +407,31 @@ python push_to_seismiq.py                   # 全量（靠 dedupe_key 幂等）
 GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 ```
 
-### 为什么分两条通道
+### 只写风险事件，正常新闻不写入
 
-`/api/webhook/schema` 里 `event` 的 `type` 是**封闭枚举**
-`earthquake / wildfire / volcano / flood / storm / drought / epidemic / strike / conflict`，
-且写入后会立即重算「事件 × 晶圆厂」影响。jiclaw 有很多产业经营类事件没有对应灾种，
-硬塞进 `events` 会写不进去或误触发地理影响计算，所以按真实语义分流：
+按接入要求，`push_to_seismiq.py` 默认**只写 `events[]`，完全不写 `news[]`**。
+财报、并购、长协、扩产、技术发布等经营资讯一律不进 SEISMIQ。两道闸：
 
-| 通道 | 放什么 | 映射 |
+1. **风险门槛**：跳过 `is_risk_event=false` 和 `severity < 0.4` 的记录（`--min-severity` 可调）。
+   `latest.json` 里混着被上游误标成风险的低严重度财报，靠这道闸挡住。
+2. **灾种映射**：`/api/webhook/schema` 的 `event.type` 是**封闭枚举**
+   `earthquake / wildfire / volcano / flood / storm / drought / epidemic / strike / conflict / power`，
+   且写入后会立即重算「事件 × 晶圆厂」影响。没有对应灾种的事件硬塞进 `events`
+   会写不进去或误触发地理影响计算，所以直接跳过。
+
+以当前真实数据为例：9 条 → 保留 1 条（美光桃园厂停工 → `strike`），其余 8 条跳过，
+日志按原因计数（`严重度不足` / `无对应灾种`）。确实需要资讯通道时显式加 `--include-news`。
+
+| jiclaw 类型 | SEISMIQ 灾种 | 说明 |
 |------|--------|------|
-| `events[]` | 有地理影响的物理/社会事件 | `labor_dispute`→`strike`、`geopolitical`→`conflict`、`water_shortage`→`drought`；`natural_disaster` 按标题关键词细分为地震/洪水/台风等，猜不出则不进 event |
-| `news[]` | 财报、并购、扩产延期、出口管制、诉讼、缺货、技术发布、工厂爆炸/停电 | 标题加 `[产能中断]` 等前缀，`entities` 带主体与厂区，`rel` = severity×100 |
+| `labor_dispute` | `strike` | 劳资纠纷/罢工 |
+| `geopolitical` | `conflict` | 地缘政治/冲突 |
+| `water_shortage` | `drought` | 供水短缺 |
+| `power_outage` | `power` | grid 模式；只从 `site` 明确识别园区时填 `grid_zone`，认不出就留空让服务端 fail-closed |
+| `natural_disaster` | 按标题关键词细分 | 地震/火山/洪水/台风/干旱/山火/疫情；猜不出则不写入 |
+| 其余（含 `fire_explosion`、`capacity_disruption`、`mna`、`earnings`） | 无 | 枚举里没有对应灾种，跳过 |
+
+> 工厂火灾/爆炸在 SEISMIQ 的枚举里没有位置，`wildfire` 指山火、语义不同，不硬塞。
 
 `event` 字段：`dedupe_key = jiclaw:<dedup_key 或 post_id>`（稳定幂等）、`ext_id = post_id`、
 `source_id = jiclaw`、`country` 用 `country_region`（如 `中国台湾`，与 SEISMIQ 的 `fabs.region` 对齐）、
