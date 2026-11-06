@@ -16,6 +16,11 @@ on:
         required: false
         type: string
         default: 'false'
+      probe_seismiq:
+        description: '打印 SEISMIQ webhook 的 schema 与最近写入审计（填 true，用于排查对接）'
+        required: false
+        type: string
+        default: 'false'
 
 jobs:
   run-script:
@@ -53,6 +58,25 @@ jobs:
         run: |
           python -c "from jiclaw_core import check_llm_providers; check_llm_providers()"
           python -c "from jiclaw_core import check_llm_generation; check_llm_generation()" || true
+
+      # 本地网络到 *.workers.dev 不通（代理 502 / 直连超时），借境外 runner 探测对接信息。
+      # 只打印无需鉴权的 schema 与审计，不回显任何 token。
+      - name: Probe SEISMIQ webhook
+        if: github.event.inputs.probe_seismiq == 'true'
+        env:
+          SEISMIQ_WEBHOOK_TOKEN: ${{ secrets.SEISMIQ_WEBHOOK_TOKEN }}
+        run: |
+          if [ -n "$SEISMIQ_WEBHOOK_TOKEN" ]; then
+            echo "token 状态：已在 GitHub Secrets 配置"
+          else
+            echo "token 状态：未配置（SEISMIQ_WEBHOOK_TOKEN 缺失）"
+          fi
+          echo "=== GET /api/webhook/schema ==="
+          curl -sS --max-time 30 -w "\n[HTTP %{http_code}]\n" \
+            "https://seismiq-api.jijibot.workers.dev/api/webhook/schema" || true
+          echo "=== GET /api/webhook/runs?limit=3 ==="
+          curl -sS --max-time 30 -w "\n[HTTP %{http_code}]\n" \
+            "https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=3" || true
 
       - name: Run Script
         if: github.event.inputs.probe_only != 'true'
