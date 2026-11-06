@@ -28,10 +28,24 @@ OUTPUT_NAME = "latest.json"
 
 _GENERIC_MARKERS = ("巨头", "大厂", "厂商", "业者", "龙头", "某", "制造商", "供应商")
 
+# 火灾/爆炸是「事故类型」，上游 LLM 常按后果标成 capacity_disruption。
+# 合簇后统一把这类事件的主类型归一为 fire_explosion，原始类型仍留在 event_types。
+_FIRE_TITLE_MARKERS = ("爆炸", "起火", "火灾", "火警", "焚毁",
+                       "blast", "explosion", "factory fire")
+_FIRE_FIGURES_OF_SPEECH = ("爆炸式", "爆炸性", "引爆", "爆款")
+
 
 def _is_generic_entity(value):
     """识别「存储巨头」「某晶圆厂」这类泛称（旧版 prompt 会抽出来）。"""
     return bool(value) and any(m in str(value) for m in _GENERIC_MARKERS)
+
+
+def _is_fire_title(rec):
+    """标题命中火灾/爆炸事故；用于把被误标成经营类的事件归一回火灾口径。"""
+    text = " ".join(str(rec.get(k) or "") for k in ("title_cn", "title", "site")).lower()
+    for phrase in _FIRE_FIGURES_OF_SPEECH:
+        text = text.replace(phrase, "")
+    return any(m in text for m in _FIRE_TITLE_MARKERS)
 
 
 def _norm_site(value):
@@ -188,6 +202,13 @@ def merge_events(rows):
     for cl in clusters:
         cl["source_count"] = len(cl["sources"])
         cl.setdefault("primary_event_type", cl.get("event_type"))
+        if _is_fire_title(cl):
+            # 灾种口径优先于经营后果口径：即使模型判成「产能中断」，下游也应当作
+            # 火灾事故处理；原始类型完整保留在 event_types / sources 里可追溯。
+            ets = cl.setdefault("event_types", [])
+            if "fire_explosion" not in ets:
+                ets.append("fire_explosion")
+            cl["primary_event_type"] = "fire_explosion"
         cl["event_types"] = sorted(
             cl.get("event_types") or [],
             key=lambda t: -_EVENT_PRIORITY.get(t, 0),

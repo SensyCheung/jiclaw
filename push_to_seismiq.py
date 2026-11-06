@@ -6,6 +6,8 @@
 * ``events[]`` 是「有地理影响的物理/社会事件」，``type`` 必须是封闭枚举
   (earthquake/wildfire/volcano/flood/storm/drought/epidemic/strike/conflict/power)，
   写入后会立即重算「事件 × 晶圆厂」影响。只有能真实映射灾种的事件才放进来。
+  枚举里没有独立的「火灾」灾种，wildfire 是唯一的火灾类；工厂火灾/爆炸按 wildfire
+  写入，标题加 [火灾] 前缀、metric 注明事故类型，避免被当成山火。
 * **默认完全不写 ``news[]``**。要求「只写风险相关的，正常新闻不要往里面写入」：
   财报、并购、长协、扩产、技术发布等经营资讯一律跳过，不进 SEISMIQ。
   确实需要资讯通道时显式加 --include-news。
@@ -41,14 +43,15 @@ MAX_ITEMS_PER_REQUEST = 100   # schema: maxItems 200 / maxBodyBytes 1,000,000，
 DEFAULT_MIN_SEVERITY = 0.4
 
 # 直接映射：jiclaw event_type -> SEISMIQ 灾种
-# 注意：fire_explosion（工厂爆炸）、capacity_disruption、mna、earnings 在
-# SEISMIQ 的 typeEnum 里没有对应灾种；硬塞 wildfire 之类会误触发距离衰减计算，
-# 所以一律不写入，只在日志里列为「跳过」。
+# SEISMIQ 的 typeEnum 是封闭的，没有 fire/fire_explosion；wildfire 是唯一的火灾类，
+# 工厂火灾/爆炸按它写入（标题加 [火灾] 前缀、metric 注明事故类型以消歧）。
+# capacity_disruption、mna、earnings 等经营类事件仍无对应灾种，一律不写入。
 _TYPE_MAP = {
     "labor_dispute": "strike",       # 劳资纠纷/罢工
     "geopolitical": "conflict",      # 地缘政治/冲突
     "water_shortage": "drought",     # 供水短缺，最接近干旱
     "power_outage": "power",         # 停电/限电，SEISMIQ 走 grid 分区模式
+    "fire_explosion": "wildfire",    # 工厂火灾/爆炸 → 唯一的火灾类灾种
 }
 
 # type=power 专用：grid_zone 是判定依据，缺失时服务端 fail-closed 不推算任何设施。
@@ -78,6 +81,15 @@ _NATURAL_KEYWORDS = (
     ("罢工", "strike"), ("strike", "strike"),
 )
 
+# 上游 LLM 会把「工厂爆炸」按后果判成 capacity_disruption（松下湖口厂 CCL 爆炸即一例）。
+# 这类事故按标题关键词兜底识别，保证不会被漏推；山火/野火本就是 wildfire，无需额外标注。
+_FIRE_MARKERS = (
+    "爆炸", "起火", "火灾", "火警", "焚毁", "blast", "explosion", "factory fire",
+)
+# 「需求爆炸式增长」「引爆市场」是比喻，不是事故；先把这些短语剔除再判火灾
+_FIRE_FIGURES_OF_SPEECH = ("爆炸式", "爆炸性", "引爆", "爆款")
+_WILDFIRE_MARKERS = ("山火", "野火", "森林火灾", "wildfire")
+
 # 仅 --include-news 开启时使用（news kind 没有 type 字段，用标题前缀区分）
 _LABELS = {
     "capacity_disruption": "产能中断", "mna": "并购", "earnings": "财报",
@@ -93,10 +105,19 @@ def _text(event):
     return " ".join(str(event.get(k) or "") for k in ("title_cn", "title", "site"))
 
 
+def _is_fire_incident(event):
+    """标题明确是火灾/爆炸事故（含被上游误标成产能中断的旧数据）。"""
+    haystack = _text(event).lower()
+    for phrase in _FIRE_FIGURES_OF_SPEECH:
+        haystack = haystack.replace(phrase, "")
+    return any(m in haystack for m in _FIRE_MARKERS)
+
+
 def resolve_hazard_type(event):
     """返回 SEISMIQ 灾种；映射不了返回 None（不写 events）。"""
     primary = event.get("primary_event_type") or event.get("event_type")
-    types = list(event.get("event_types") or []) + [primary]
+    # 主类型优先：合簇后 primary 是「灾种」口径，先判它避免被原因类标签带偏
+    types = [primary] + [t for t in (event.get("event_types") or []) if t != primary]
     haystack = _text(event).lower()
 
     for t in types:
@@ -106,6 +127,10 @@ def resolve_hazard_type(event):
             for kw, hazard in _NATURAL_KEYWORDS:
                 if kw.lower() in haystack:
                     return hazard
+    # 兜底：标题明确是工厂火灾/爆炸，但上游按「停产/供应链冲击」标成了经营类事件。
+    # 只在前面没映射出任何灾种时启用，不会覆盖地震、罢工等明确分类。
+    if _is_fire_incident(event):
+        return "wildfire"
     return None
 
 
@@ -204,9 +229,17 @@ def build_event_payload(event, coords, confidence):
     if not hazard:
         return None
 
+    title = _event_title(event)
+    metric_note = ""
+    if hazard == "wildfire" and _is_fire_incident(event):
+        # 山火/野火本来就是 wildfire；厂内事故要显式标注，避免被读成山林火灾
+        if not any(m in _text(event).lower() for m in _WILDFIRE_MARKERS):
+            title = _clip(f"[火灾] {title}")
+            metric_note = " | 事故: 工厂火灾/爆炸→wildfire"
+
     payload = {
         "type": hazard,
-        "title": _event_title(event),
+        "title": title,
         "dedupe_key": _stable_key(event),
         "ext_id": event.get("post_id"),
         "source_id": SOURCE_ID,
@@ -222,9 +255,13 @@ def build_event_payload(event, coords, confidence):
     if started_at:
         payload["started_at"] = started_at
     products = event.get("affected_products") or []
+    metric = ""
     if products:
-        payload["metric"] = _clip(
-            f"影响品类: {', '.join(map(str, products))} | 严重度 {event.get('severity')}", 100)
+        metric = f"影响品类: {', '.join(map(str, products))} | 严重度 {event.get('severity')}"
+    elif metric_note:
+        metric = f"严重度 {event.get('severity')}"
+    if metric:
+        payload["metric"] = _clip(metric + metric_note, 100)
 
     lat, lon = _coords_for(event, coords)
     if lat is not None and lon is not None:

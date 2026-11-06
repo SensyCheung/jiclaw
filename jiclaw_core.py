@@ -769,6 +769,9 @@ def summarize_with_ai(
      营收增长、利润创新高、符合预期这类好消息不算风险事件，is_risk_event 给 false，event_type 给 null。
      technology_release 同理：常规的制程量产、新品发布属于日常经营，只要没有明确造成产能中断、订单流失、
      客户转单或供应链冲击，is_risk_event 一律给 false。
+     厂区发生火灾、爆炸、起火等安全事故时一律判 fire_explosion；即使报道重点在停产、缺货或
+     供应链冲击，也把后果写进 affected_products / severity，不要改判 capacity_disruption 或
+     supply_shortage。
    - hazard_class（枚举）：operational 运营、natural 自然、regulatory 监管合规、financial 财务、
      technology 技术、market 市场、other。
    - entity：事件主体公司或机构的标准名称；多个用英文逗号分隔。统一用中文通用名，首次出现时附英文原名，

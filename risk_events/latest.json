@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T21:27:00+00:00",
+  "generated_at": "2026-11-06T23:53:51+00:00",
   "count": 14,
   "feed": {
     "max_age_days": 90,
@@ -257,10 +257,11 @@
         }
       ],
       "event_types": [
-        "capacity_disruption"
+        "capacity_disruption",
+        "fire_explosion"
       ],
       "source_count": 1,
-      "primary_event_type": "capacity_disruption"
+      "primary_event_type": "fire_explosion"
     },
     {
       "post_id": "584558bd47",

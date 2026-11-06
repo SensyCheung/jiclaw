@@ -328,6 +328,7 @@ source / published_at / llm / ingested_at`。GitHub Actions 每次运行都会�
 - `earnings` 只认坏消息（下调指引、不及预期、亏损、裁员），营收增长 / 符合预期不算风险事件
 - 常规制程量产、新品发布属于日常经营，没有明确产能或供应链冲击时 `is_risk_event` 为 `false`
 - `entity` 禁止泛称（"存储巨头"、"某晶圆厂"、"业内人士"），定位不到具体主体时给 `null`
+- 厂区火灾、爆炸、起火等安全事故一律判 `fire_explosion`，即使报道重点在停产、缺货或供应链冲击（后果写进 `affected_products` / `severity`，不要改判 `capacity_disruption`）。汇总层还会按标题把历史误标的同类事件归一回火灾口径
 
 本地验证：
 
@@ -419,8 +420,9 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
    且写入后会立即重算「事件 × 晶圆厂」影响。没有对应灾种的事件硬塞进 `events`
    会写不进去或误触发地理影响计算，所以直接跳过。
 
-以当前真实数据为例：9 条 → 保留 1 条（美光桃园厂停工 → `strike`），其余 8 条跳过，
-日志按原因计数（`严重度不足` / `无对应灾种`）。确实需要资讯通道时显式加 `--include-news`。
+以当前真实数据为例：14 条 → 保留 2 条（松下湖口厂 CCL 爆炸 → `wildfire`、
+美光桃园厂停工 → `strike`），其余 12 条跳过，日志按原因计数（`严重度不足` / `无对应灾种`）。
+确实需要资讯通道时显式加 `--include-news`。
 
 | jiclaw 类型 | SEISMIQ 灾种 | 说明 |
 |------|--------|------|
@@ -428,10 +430,18 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 | `geopolitical` | `conflict` | 地缘政治/冲突 |
 | `water_shortage` | `drought` | 供水短缺 |
 | `power_outage` | `power` | grid 模式；只从 `site` 明确识别园区时填 `grid_zone`，认不出就留空让服务端 fail-closed |
+| `fire_explosion` | `wildfire` | 工厂火灾/爆炸；SEISMIQ 唯一的火灾类灾种 |
 | `natural_disaster` | 按标题关键词细分 | 地震/火山/洪水/台风/干旱/山火/疫情；猜不出则不写入 |
-| 其余（含 `fire_explosion`、`capacity_disruption`、`mna`、`earnings`） | 无 | 枚举里没有对应灾种，跳过 |
+| 其余（含 `capacity_disruption`、`mna`、`earnings`） | 无 | 枚举里没有对应灾种，跳过 |
 
-> 工厂火灾/爆炸在 SEISMIQ 的枚举里没有位置，`wildfire` 指山火、语义不同，不硬塞。
+> SEISMIQ 的 `typeEnum` 是封闭的，没有独立的 `fire` 灾种，`wildfire` 是唯一的火灾类，
+> 工厂火灾/爆炸按它写入。为避免被读成山林火灾，`title` 会加 `[火灾]` 前缀、
+> `metric` 注明「事故: 工厂火灾/爆炸→wildfire」，原始 `event_type` 仍完整保存在 `raw` 里；
+> 若平台后续新增 `fire` 灾种，只改 `_TYPE_MAP["fire_explosion"]` 即可。
+>
+> 上游 LLM 曾把「松下湖口厂爆炸」按后果判成 `capacity_disruption`。现在两层兜底：
+> 汇总时按标题把这类事件的主类型归一为 `fire_explosion`（原始类型留在 `event_types`），
+> 推送时再按标题关键词识别一次，保证旧数据也不会漏推；「需求爆炸式增长」等比喻用法会先剔除。
 
 `event` 字段：`dedupe_key = jiclaw:<dedup_key 或 post_id>`（稳定幂等）、`ext_id = post_id`、
 `source_id = jiclaw`、`country` 用 `country_region`（如 `中国台湾`，与 SEISMIQ 的 `fabs.region` 对齐）、
