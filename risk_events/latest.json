@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T00:09:47+00:00",
-  "count": 8,
+  "generated_at": "2026-11-06T00:34:34+00:00",
+  "count": 9,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,42 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "41ac66b487",
+      "dedup_key": "af17d0c0b658",
+      "source": "iccsz",
+      "url": "http://www.iccsz.com/site/cn/CheckRead.aspx?Type=Article&ID=e11ff7e4da2c41a88b6e6905a0e49496",
+      "title": "AOI：获$10亿1.6T长协 电力与DSP制约短期交付",
+      "title_cn": "AOI：获100亿1.6T长协 电力与DSP制约短期交付",
+      "published_at": "2026-11-06T00:32:12.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-06T00:33:12",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "AOI",
+      "site": null,
+      "country_region": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": "2026-11-06",
+      "sources": [
+        {
+          "post_id": "41ac66b487",
+          "url": "http://www.iccsz.com/site/cn/CheckRead.aspx?Type=Article&ID=e11ff7e4da2c41a88b6e6905a0e49496",
+          "title": "AOI：获$10亿1.6T长协 电力与DSP制约短期交付",
+          "title_cn": "AOI：获100亿1.6T长协 电力与DSP制约短期交付",
+          "source": "iccsz",
+          "published_at": "2026-11-06T00:32:12.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
+    },
     {
       "post_id": "ae10941dbb",
       "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
