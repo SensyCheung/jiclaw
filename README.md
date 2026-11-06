@@ -345,13 +345,13 @@ python export_risk_feed.py --dir risk_events   # 重新汇总 latest.json
 https://raw.githubusercontent.com/SensyCheung/jiclaw/main/risk_events/latest.json
 ```
 
-备用（CDN 加速，但有缓存延迟，实时性要求高时别用）：
+已实测 `HTTP 200` 且响应头为 `Access-Control-Allow-Origin: *`，浏览器端可直接跨域 fetch，无需密钥。
+若后续 raw 请求被限流，可自行套一层 CDN（例如 `cdn.jsdelivr.net/gh/...`），
+但该路径**本项目未验证可达性**，且 CDN 有缓存延迟，实时告警场景请优先用 raw。
 
-```
-https://cdn.jsdelivr.net/gh/SensyCheung/jiclaw@main/risk_events/latest.json
-```
-
-`latest.json` 结构：`schema_version / generated_at / count / events[]`。
+`latest.json` 结构：`schema_version / generated_at / count / feed / events[]`。
+`feed` 里写明裁剪策略（`max_age_days` / `max_events` / `dedup` / `sorted_by`），
+下游不必猜数据口径；目前 `schema_version = 2`。
 `export_risk_feed.py` 会做三件事：
 
 1. **多源同题归并**：同一事件被多家媒体报道时合成一条，原始 URL 全留在 `sources[]`，

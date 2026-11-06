@@ -227,30 +227,41 @@ def main():
 
     feed = build_feed(base)
 
-    # 幂等：只在 events 真的变了时重写，避免工作流每小时产生空提交
-    old_events = None
+    # 幂等：比较除 generated_at 外的整个输出（包括 schema 元数据），
+    # 只比 events 会导致以后升级 schema / 改裁剪策略时 latest.json 永远不刷新。
+    def comparable(obj):
+        return {k: v for k, v in obj.items() if k != "generated_at"}
+
+    old_payload = None
     if os.path.exists(out_path):
         try:
             with open(out_path, encoding="utf-8") as f:
-                old_events = json.load(f).get("events")
-        except (OSError, json.JSONDecodeError, AttributeError):
-            old_events = None
-
-    if old_events == feed["events"]:
-        print("事件内容无变化，保留原 latest.json（不产生提交）")
-        return 0
+                old_payload = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            old_payload = None
 
     payload = {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "count": len(feed["events"]),
+        "feed": {
+            "max_age_days": MAX_AGE_DAYS,
+            "max_events": MAX_EVENTS,
+            "dedup": "entity_norm + occurred_at + hazard_class, site fallback for generic entity",
+            "sorted_by": "occurred_at desc, severity desc",
+        },
         "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
         "events": feed["events"],
     }
+
+    if isinstance(old_payload, dict) and comparable(old_payload) == comparable(payload):
+        print("事件内容无变化，保留原 latest.json（不产生提交）")
+        return 0
+
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"已写出 {out_path}（{payload['count']} 条）")
+    print(f"已写出 {out_path}（{payload['count']} 条，schema v{payload['schema_version']}）")
     return 0
 
 
