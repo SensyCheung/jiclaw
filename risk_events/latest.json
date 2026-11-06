@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T15:50:37+00:00",
-  "count": 13,
+  "generated_at": "2026-11-06T21:27:00+00:00",
+  "count": 14,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -81,6 +81,42 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "7914b9d1a8",
+      "dedup_key": "a5fc425f044a",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261106885719/en/GH-Acquires-IntraAction-to-Scale-Acousto-Optics-for-Semiconductor-Growth/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "G&amp;H Acquires IntraAction to Scale Acousto-Optics for Semiconductor Growth",
+      "title_cn": "G&H 收购 IntraAction 以扩大声光技术在半导体领域的增长",
+      "published_at": "2026-11-06T20:54:56.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-06T21:19:38",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "other",
+      "entity": "G&H (Gooch & Housego), IntraAction Corp.",
+      "site": null,
+      "country_region": "美国",
+      "severity": 0.0,
+      "affected_products": [],
+      "occurred_at": "2026-11-06",
+      "sources": [
+        {
+          "post_id": "7914b9d1a8",
+          "url": "http://www.businesswire.com/news/home/20261106885719/en/GH-Acquires-IntraAction-to-Scale-Acousto-Optics-for-Semiconductor-Growth/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "G&amp;H Acquires IntraAction to Scale Acousto-Optics for Semiconductor Growth",
+          "title_cn": "G&H 收购 IntraAction 以扩大声光技术在半导体领域的增长",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-06T20:54:56.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
     },
     {
       "post_id": "ae10941dbb",
