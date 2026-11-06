@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T07:55:47+00:00",
-  "count": 10,
+  "generated_at": "2026-11-06T15:50:37+00:00",
+  "count": 13,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,42 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "224f059be5",
+      "dedup_key": "753330f10d51",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/data-centers/protesters-storm-microsoft-ai-data-center-construction-site-amsterdam-reportedly-first-of-85-targeted-actions-across-europe",
+      "title": "Protesters storm Microsoft AI data center construction site",
+      "title_cn": "抗议者冲击微软AI数据中心建设工地",
+      "published_at": "2026-11-06T13:59:05.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-06T15:45:37",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "operational",
+      "entity": "微软(Microsoft)",
+      "site": "阿姆斯特丹厂",
+      "country_region": "荷兰",
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-06",
+      "sources": [
+        {
+          "post_id": "224f059be5",
+          "url": "https://www.tomshardware.com/tech-industry/data-centers/protesters-storm-microsoft-ai-data-center-construction-site-amsterdam-reportedly-first-of-85-targeted-actions-across-europe",
+          "title": "Protesters storm Microsoft AI data center construction site",
+          "title_cn": "抗议者冲击微软AI数据中心建设工地",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-06T13:59:05.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
+    },
     {
       "post_id": "41ac66b487",
       "dedup_key": "af17d0c0b658",
@@ -382,6 +418,83 @@
       ],
       "source_count": 1,
       "primary_event_type": "earnings"
+    },
+    {
+      "post_id": "d148be8030",
+      "dedup_key": "d1f3ad99a468",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/pc-components/gpus/six-pallets-of-nvidia-gpus-worth-usd11-4-million-stolen-in-california-cargo-heist-authorities-investigate-after-truck-posing-as-a-food-transport-company-disappears",
+      "title": "Six pallets of Nvidia GPUs worth $11.4 million stolen in California cargo heist",
+      "title_cn": "价值1140万美元的六托盘英伟达GPU在加州货运劫案中被盗",
+      "published_at": "2026-11-06T13:35:12.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-06T15:45:47",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "market",
+      "entity": "英伟达(Nvidia)",
+      "site": "奥克兰",
+      "country_region": "美国",
+      "severity": 0.4,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2025-08-29",
+      "sources": [
+        {
+          "post_id": "d148be8030",
+          "url": "https://www.tomshardware.com/pc-components/gpus/six-pallets-of-nvidia-gpus-worth-usd11-4-million-stolen-in-california-cargo-heist-authorities-investigate-after-truck-posing-as-a-food-transport-company-disappears",
+          "title": "Six pallets of Nvidia GPUs worth $11.4 million stolen in California cargo heist",
+          "title_cn": "价值1140万美元的六托盘英伟达GPU在加州货运劫案中被盗",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-06T13:35:12.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
+    },
+    {
+      "post_id": "dd9ac9e304",
+      "dedup_key": "99353f992a6a",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/big-tech/nvidia-tightens-tracking-of-ai-gpus-in-southeast-asia-as-chinese-chip-smuggling-draws-scrutiny-report-claims-cloud-providers-must-join-monitoring-program-to-qualify-for-official-partner-status",
+      "title": "Nvidia tightens tracking of AI GPUs in Southeast Asia as Chinese chip smuggling draws scrutiny, report claims",
+      "title_cn": "报道称，随着中国芯片走私引发审查，英伟达在东南亚收紧对AI GPU的追踪",
+      "published_at": "2026-11-06T13:49:29.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-06T15:45:43",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "NVIDIA",
+      "site": "东南亚",
+      "country_region": "中国",
+      "severity": 0.4,
+      "affected_products": [
+        "AI chip",
+        "GPU"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "dd9ac9e304",
+          "url": "https://www.tomshardware.com/tech-industry/big-tech/nvidia-tightens-tracking-of-ai-gpus-in-southeast-asia-as-chinese-chip-smuggling-draws-scrutiny-report-claims-cloud-providers-must-join-monitoring-program-to-qualify-for-official-partner-status",
+          "title": "Nvidia tightens tracking of AI GPUs in Southeast Asia as Chinese chip smuggling draws scrutiny, report claims",
+          "title_cn": "报道称，随着中国芯片走私引发审查，英伟达在东南亚收紧对AI GPU的追踪",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-06T13:49:29.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     }
   ]
 }
