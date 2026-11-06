@@ -1,7 +1,13 @@
 {
-  "schema_version": 1,
-  "generated_at": "2026-11-05T23:56:45+00:00",
+  "schema_version": 2,
+  "generated_at": "2026-11-06T00:09:47+00:00",
   "count": 8,
+  "feed": {
+    "max_age_days": 90,
+    "max_events": 500,
+    "dedup": "entity_norm + occurred_at + hazard_class, site fallback for generic entity",
+    "sorted_by": "occurred_at desc, severity desc"
+  },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
     {
