@@ -116,6 +116,21 @@ jobs:
         if: always()
         run: python export_risk_feed.py
 
+      - name: Push to SEISMIQ
+        # 汇总完成后推；推送失败不影响抓取与 JSONL 落盘，靠 continue-on-error 兜底
+        if: ${{ always() && github.event.inputs.probe_only != 'true' }}
+        continue-on-error: true
+        env:
+          SEISMIQ_WEBHOOK_TOKEN: ${{ secrets.SEISMIQ_WEBHOOK_TOKEN }}
+          # 仅当 SEISMIQ 侧配置了 WEBHOOK_SECRET 时才需要设置（请求会带 HMAC 签名）
+          SEISMIQ_WEBHOOK_SECRET: ${{ secrets.SEISMIQ_WEBHOOK_SECRET }}
+        run: |
+          if [ -z "$SEISMIQ_WEBHOOK_TOKEN" ]; then
+            echo "跳过推送：GitHub Secret SEISMIQ_WEBHOOK_TOKEN 未配置"
+            exit 0
+          fi
+          python push_to_seismiq.py
+
       # 把事件流提交回仓库，避免依赖会过期的 artifact。
       # latest.json 是幂等的：没有新事件时 git diff 为空，不会产生空提交。
       # 用 [skip ci] 且本工作流没有 push trigger，不会自我递归触发。

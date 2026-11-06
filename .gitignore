@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .workbuddy/
 debug_content.txt
+
+# 密钥绝不能进仓库：WEBHOOK_TOKEN / 各类 API Key 都存在本地 .env
+.env
+.env.*
+!.env.example

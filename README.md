@@ -375,6 +375,59 @@ const alerts = events.filter(e => e.severity >= 0.6);
 > 归并是**保守的**：必须有相同的发生日期与灾种，且主体名互相包含（或泛称+同厂区）才合并。
 > 泛称已在 prompt 层禁掉，所以新数据主要走实体名匹配这条路径。
 
+## 推送到 SEISMIQ
+
+`push_to_seismiq.py` 把 `latest.json` 推到 `POST https://seismiq-api.jijibot.workers.dev/api/webhook`。
+在工作流里位于汇总之后、commit 之前，失败不阻断抓取。
+
+**鉴权**：GitHub 仓库 Secret `SEISMIQ_WEBHOOK_TOKEN`（未配置时自动跳过，不报错）。
+本地运行用环境变量传入，或放在已 gitignore 的 `.env` 里；脚本不读取、不打印 token 值。
+如果 SEISMIQ 侧配了 `WEBHOOK_SECRET`，再设一个 `SEISMIQ_WEBHOOK_SECRET` Secret，
+脚本会自动对每批 raw body 计算 `X-Webhook-Signature: sha256=<HMAC-SHA256>`。
+
+```bash
+python push_to_seismiq.py --dry-run          # 只打印 payload，核对映射
+python push_to_seismiq.py --limit 2          # 小批试推
+python push_to_seismiq.py                   # 全量（靠 dedupe_key 幂等）
+```
+
+核对「推了没推、收了几条」：
+
+```
+GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
+```
+
+### 为什么分两条通道
+
+`/api/webhook/schema` 里 `event` 的 `type` 是**封闭枚举**
+`earthquake / wildfire / volcano / flood / storm / drought / epidemic / strike / conflict`，
+且写入后会立即重算「事件 × 晶圆厂」影响。jiclaw 有很多产业经营类事件没有对应灾种，
+硬塞进 `events` 会写不进去或误触发地理影响计算，所以按真实语义分流：
+
+| 通道 | 放什么 | 映射 |
+|------|--------|------|
+| `events[]` | 有地理影响的物理/社会事件 | `labor_dispute`→`strike`、`geopolitical`→`conflict`、`water_shortage`→`drought`；`natural_disaster` 按标题关键词细分为地震/洪水/台风等，猜不出则不进 event |
+| `news[]` | 财报、并购、扩产延期、出口管制、诉讼、缺货、技术发布、工厂爆炸/停电 | 标题加 `[产能中断]` 等前缀，`entities` 带主体与厂区，`rel` = severity×100 |
+
+`event` 字段：`dedupe_key = jiclaw:<dedup_key 或 post_id>`（稳定幂等）、`ext_id = post_id`、
+`source_id = jiclaw`、`country` 用 `country_region`（如 `中国台湾`，与 SEISMIQ 的 `fabs.region` 对齐）、
+`place` 用 `site`、`severity` 由 0–1 映射为 `Red(≥0.7) / Orange(≥0.4) / Green`、
+`started_at` **只传完整的 `YYYY-MM-DD`**（`2026-11` 这类年月不是合法 ISO 日期，宁可不传），
+`raw` 存一份完整结构化快照（含 `event_types` / `sources` / `affected_products`）。
+
+三点刻意保守的设计：
+
+1. **不编造经纬度**。jiclaw 没有坐标，而 SEISMIQ 用 `lat/lon` 算 distance 模式的影响半径，
+   错坐标会直接导致错误告警。默认不传，走 `country` 的 region 模式；
+   需要精确影响计算时用 `--coords-file` 提供一份显式、准确的厂区坐标表。
+2. **`confidence` 默认 `assessed`**。事件是 LLM 从新闻里抽取的评估而非官方确证；
+   SEISMIQ 会把 assessed 事件的影响等级封顶为「关注」，避免模型推断被当成确证事实放大告警。
+   确有权威来源时可改 `--confidence fact`。
+3. **不写 `kv`**。schema 里 kv 分组形态有歧义，且 `event.raw` 已保留完整数据，
+   不往对方的 KV 表塞未经要求的内容。
+
+`kv` 之外还有 `X-Webhook-Source: jiclaw` 头；每批最多 100 条（schema 上限 200 条 / 1 MB）。
+
 ## 功能特点
 
 | 功能 | 说明 |
