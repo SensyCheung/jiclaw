@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T00:34:34+00:00",
-  "count": 9,
+  "generated_at": "2026-11-06T07:55:47+00:00",
+  "count": 10,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -276,6 +276,42 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
+    },
+    {
+      "post_id": "d34e7df2b7",
+      "dedup_key": "bd932e8d7fab",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1136696",
+      "title": "金宏气体利润骤降86%的背后：商誉减值压顶，氦气与Q4项目储备\"接棒\"有望",
+      "title_cn": "金宏气体利润骤降86%的背后：商誉减值压顶，氦气与Q4项目储备\"接棒\"有望",
+      "published_at": "2026-11-06T06:47:30.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-06T07:55:44",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "financial",
+      "entity": "金宏气体",
+      "site": "湖南, 苏州",
+      "country_region": "中国",
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-10",
+      "sources": [
+        {
+          "post_id": "d34e7df2b7",
+          "url": "https://laoyaoba.com/n/1136696",
+          "title": "金宏气体利润骤降86%的背后：商誉减值压顶，氦气与Q4项目储备\"接棒\"有望",
+          "title_cn": "金宏气体利润骤降86%的背后：商誉减值压顶，氦气与Q4项目储备\"接棒\"有望",
+          "source": "aijiwei",
+          "published_at": "2026-11-06T06:47:30.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
     },
     {
       "post_id": "5e885617cc",
