@@ -1532,7 +1532,10 @@ def create_notion_page(
     summary_en = ai_data.get("summary_en", "")
     summary_cn = ai_data.get("summary_cn", "")
     tags = ai_data.get("tags") or []
-    tags = []
+    # 清洗 LLM 标签：Notion multi_select 只接受非空字符串，且选项名有长度
+    # 上限。旧版本这里有一行 tags = [] 把选好的标签全清空了，导致站点标签页、
+    # 相关文章与标签云持续退化，不要再加回来。
+    tags = [str(tag).strip()[:100] for tag in tags if str(tag).strip()]
     website_name = get_website_name(feed_url)
 
     def truncate(text: str, max_len: int = 1800) -> str:
