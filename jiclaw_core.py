@@ -1784,6 +1784,10 @@ def _process_items(
     if source.startswith("http"):
         # RSS feed，根据名单决定是否抓取
         fetch_content = _should_fetch_content(source)
+    elif SCRAPER_CONFIG.get(source, {}).get("summary_only"):
+        # 该爬虫源本身的条目没有独立正文页（如 usbdev 的更新日志表格），
+        # 抓 link 只会把列表页整页当正文塞给模型，直接跳过
+        fetch_content = False
 
     _ai_fail_streak = 0  # 连续调用模型失败计数（用于限流时提前收手）
 

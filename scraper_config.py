@@ -146,6 +146,17 @@ SCRAPER_CONFIG = {
         "api_host": "https://drupal.imec-int.com",
         "date_format": "iso",  # 日期格式：2026-10-30 13:00:00
     },
+    "usbdev": {
+        "name": "USBDev.ru 更新日志",
+        "url": "https://www.usbdev.ru/news/",
+        # 该站没有文章流：WordPress 文章停更在 2020，/feed/ 只有一个 2020 年的 item，
+        # 唯一持续更新的内容是 /news/ 页的「文件更新日志」表格（日期 + [+]/[U] + 对象名，无链接、无正文）
+        "date_format": "%d.%m.%Y",  # 日期格式：31.10.2026
+        "mode": "digest",  # digest=按天聚合成一条；item=表格每一行一条
+        "summary_only": True,  # 没有正文页，跳过 fetch_article_content
+        # 站点按 IP 归属放行，境外直连 403；出口代理从该环境变量读（GitHub Secrets/Variables 注入）
+        "proxy_env": "USBDEV_PROXY",
+    },
     "qualcomm": {
         "name": "Qualcomm News",
         "url": "https://www.qualcomm.com/news/releases",

@@ -5,6 +5,8 @@ jiclaw_scraper.py - 无 RSS 网站的爬虫模块
 
 import re
 import os
+import time
+import hashlib
 from datetime import datetime
 from urllib.parse import urljoin
 
@@ -2138,6 +2140,168 @@ def scrape_qualcomm(url: str, limit: int = 10) -> list[dict]:
     return results
 
 
+# ---------------------------------------------------------------- usbdev.ru
+
+# 更新日志表格里的动作标记：[+] 新增、[U] 更新、[F] 修正、[-] 删除、[!] 事件
+_UPDATE_MARKERS = {"+": "新增", "U": "更新", "F": "修正", "-": "删除", "!": "事件"}
+
+_USBDEV_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/122.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "ru-RU,ru;q=0.9,en;q=0.8",
+}
+
+
+def _usbdev_proxies() -> dict:
+    """取 usbdev.ru 的出口代理。
+
+    站点只对俄罗斯 IP 放行：中国大陆直连、真实 Chromium、Cloudflare 类代理出口
+    实测全是 403（连 robots.txt 都 403），只有俄区住宅 IP 能拿到 200。
+    所以 GitHub Actions（Azure 机房 IP）必须走代理。
+    优先读 USBDEV_PROXY，其次沿用通用 HTTP(S)_PROXY。
+    """
+    for env in ("USBDEV_PROXY", "HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy"):
+        val = os.environ.get(env)
+        if val and "://" in val:
+            return {"http": val, "https": val}
+    return None
+
+
+def _parse_usbdev_entries(soup) -> list[tuple]:
+    """从 /news/ 页解析「日期 + 动作 + 对象」三列表格。
+
+    返回 [(ISO 日期, 动作标记, 对象名), ...]，保持页面顺序。
+    页面本身存在插入乱序（如 10-01 之后又是 10-31），排序交给调用方。
+    """
+    rows = soup.select("article table tr") or soup.select("table tr")
+    entries = []
+    for tr in rows:
+        tds = [td.get_text(" ", strip=True) for td in tr.find_all("td")]
+        if len(tds) < 3:
+            continue
+        m = re.match(r"(\d{1,2})\.(\d{1,2})\.(\d{4})", tds[0])
+        if not m:
+            continue  # 表头行
+        day, month, year = m.groups()
+        name = tds[2].strip()
+        marker = tds[1].strip().strip("[]").strip()
+        if not name:
+            continue
+        entries.append((f"{year}-{int(month):02d}-{int(day):02d}", marker, name))
+    return entries
+
+
+def scrape_usbdev(url: str, limit: int = 10) -> list[dict]:
+    """爬取 USBDev.ru 的「文件更新日志」(usbdev.ru/news/)。
+
+    这个站不是新闻站：WordPress 文章停在 2020 年，/feed/ 里只有一个 2020 年的 item，
+    唯一在更新的是 /news/ 页的更新日志表格，格式为
+    `05.10.2026 | [+] | SanDisk SSD Dashboard v5.3.2.4`，没有链接、没有正文。
+
+    所以默认按天聚合成一条（mode="digest"）：
+    - title:   "USBDev.ru update log — 2026-10-31 (2 items)"
+    - summary: 当天全部条目，带 新增/更新 标记
+    - link:    .../news/#2026-10-31（供 Notion 去重）
+    limit 表示取最近多少天。
+
+    mode="item" 时改为表格每一行一条（limit 表示条数），便于单独过滤某个工具。
+    站点只放行俄罗斯 IP，出口代理见 _usbdev_proxies()。
+    """
+    proxies = _usbdev_proxies()
+
+    print(f"  出口：{'代理 ' + list(proxies.values())[0] if proxies else '直连（境外 IP 会被 403）'}")
+
+    try:
+        resp = None
+        # 免费/共享代理常出现连接被掐断，重试几次再放弃
+        for attempt in range(3):
+            try:
+                resp = requests.get(
+                    url,
+                    headers=_USBDEV_HEADERS,
+                    timeout=40,
+                    proxies=proxies if proxies else {"http": None, "https": None},
+                    verify=os.environ.get("USBDEV_INSECURE") != "1",
+                )
+                break
+            except Exception as e:
+                if attempt == 2:
+                    raise
+                print(f"  第 {attempt + 1} 次请求失败（{type(e).__name__}），重试...")
+                time.sleep(3)
+    except Exception as e:
+        print(f"  请求失败：{e}")
+        return []
+
+    if resp.status_code == 403:
+        if proxies:
+            print("  HTTP 403：代理出口 IP 仍被拒绝，换一个俄罗斯出口再试")
+        else:
+            print("  HTTP 403：该站只允许俄罗斯 IP 访问，请设置 USBDEV_PROXY 后重试")
+        return []
+
+    if resp.status_code != 200:
+        print(f"请求失败，状态码：{resp.status_code}")
+        return []
+
+    resp.encoding = resp.apparent_encoding or "utf-8"
+    soup = BeautifulSoup(resp.text, "html.parser")
+
+    entries = _parse_usbdev_entries(soup)
+    print(f"  表格解析到 {len(entries)} 条记录")
+    if not entries:
+        print("  未解析到记录，页面结构可能已变")
+        return []
+
+    mode = SCRAPER_CONFIG.get("usbdev", {}).get("mode", "digest")
+    results = []
+
+    if mode == "item":
+        for iso, marker, name in sorted(entries, key=lambda e: e[0], reverse=True)[:limit]:
+            slug = hashlib.md5(f"{iso}-{name}".encode("utf-8")).hexdigest()[:8]
+            results.append(
+                {
+                    "title": f"[USBDev] {name}",
+                    "link": f"{url}#{iso}-{slug}",
+                    "summary": f"{iso} {_UPDATE_MARKERS.get(marker, marker)}：{name}",
+                    "published": iso,
+                    "published_date": normalize_date(iso),
+                }
+            )
+        print(f"  成功获取 {len(results)} 条记录")
+        return results
+
+    # digest：按天聚合，一天一条
+    grouped = {}
+    for iso, marker, name in entries:
+        grouped.setdefault(iso, []).append((marker, name))
+
+    for iso in sorted(grouped, reverse=True)[:limit]:
+        day_items = grouped[iso]
+        lines = []
+        for marker, name in day_items:
+            lines.append(f"- [{_UPDATE_MARKERS.get(marker, marker)}] {name}")
+        results.append(
+            {
+                "title": (
+                    f"USBDev.ru update log — {iso} "
+                    f"({len(day_items)} item{'s' if len(day_items) > 1 else ''})"
+                ),
+                "link": f"{url}#{iso}",
+                "summary": "\n".join(lines),
+                "published": iso,
+                "published_date": normalize_date(iso),
+            }
+        )
+
+    print(f"  成功获取 {len(results)} 天 / 共 {sum(len(v) for v in grouped.values())} 条记录")
+    return results
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -2157,6 +2321,7 @@ SCRAPER_FUNCTIONS = {
     "bits-chips": scrape_bits_chips,
     "imec": scrape_imec,
     "qualcomm": scrape_qualcomm,
+    "usbdev": scrape_usbdev,
 }
 
 

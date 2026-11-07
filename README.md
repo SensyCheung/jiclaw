@@ -102,6 +102,35 @@ SCRAPER_CONFIG = {
 }
 ```
 
+### 1.1 USBDev.ru（更新日志源，需俄罗斯出口）
+
+`scraper:usbdev` 抓的是 <https://www.usbdev.ru/news/>，**这个站没有新闻流**：
+
+- WordPress 文章停更在 2020-07，`/feed/` 里只有一个 2020 年的 item（等于死链）
+- `/articles/`、`/reviews/` 都是静态索引页
+- 唯一持续更新的是 `/news/` 页的**文件更新日志表格**：`31.10.2026 | [+] | Maxio MAS0902 Utility v2.12`，
+  无链接、无正文，实测 2232 条 / 534 天
+
+所以按天聚合成一条，而不是一条记录一条：
+
+```
+title:   USBDev.ru update log — 2026-10-31 (1 item)
+summary: - [新增] Maxio MAS0902/MAS0901 MP/Sorting Tool A.0.08.014 [B0KB-T190103]
+link:    https://www.usbdev.ru/news/#2026-10-31   ← 按天去重
+```
+
+- `limit` = 取最近多少天；`summary_only: True` 让它跳过正文抓取（否则会把整张表当正文喂给模型）
+- 想改成每条一行，把 `scraper_config.py` 里 `usbdev` 的 `"mode"` 改为 `"item"` 即可
+- **代价**：同一天后续新增的条目不会再补写（当天那条已按日期去重）。该站现实节奏约 1–2 条/天，可接受
+
+**反爬**：站点按 IP 归属放行，中国大陆直连、真实 Chromium、Cloudflare 类代理出口实测**全部 403**
+（连 `/robots.txt` 都 403），只有俄罗斯住宅 IP 能拿到 200。因此：
+
+- GitHub Actions（Azure 机房 IP）必须走代理，在仓库 **Variables** 里配 `USBDEV_PROXY`
+  （形如 `http://user:pass@host:port`）
+- 未配置时代码会打印 `HTTP 403：该站只允许俄罗斯 IP 访问` 后返回空列表，不影响其他源
+- 代理是 MITM 证书时可用 `USBDEV_INSECURE=1` 关闭校验（默认校验）
+
 ### 2. Twitter 账号配置
 
 编辑 `twitter_config.py` 添加新账号：
@@ -138,6 +167,8 @@ TWITTER_ACCOUNTS = {
 | `DISCORD_BOT_TOKEN` | Discord Bot Token | 否 | - |
 | `DISCORD_CHANNEL_ID` | Discord 频道 ID | 否 | - |
 | `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
+| `USBDEV_PROXY` | usbdev.ru 的俄罗斯出口代理（该站只放行俄区 IP） | 否 | - |
+| `USBDEV_INSECURE` | 设为 `1` 时不校验 usbdev.ru 的 TLS 证书（代理做 MITM 时用） | 否 | - |
 | `TIMEZONE_OFFSET` | 时区偏移（小时数） | 否 | 0 |
 
 ### 3.1 多模型配置（免费额度扩容）
