@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T23:53:51+00:00",
-  "count": 14,
+  "generated_at": "2026-11-07T00:42:40+00:00",
+  "count": 15,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -45,6 +45,54 @@
       ],
       "source_count": 1,
       "primary_event_type": "other"
+    },
+    {
+      "post_id": "539a061fc6",
+      "dedup_key": "8f7b19dcb6be",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1137240",
+      "title": "美光桃园厂劳资争议第三次协商未果 双方说法出炉",
+      "title_cn": "美光桃园厂劳资争议第三次协商未果 双方说法出炉",
+      "published_at": "2026-11-06T23:38:54.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-07T00:42:07",
+      "is_risk_event": true,
+      "event_type": "labor_dispute",
+      "hazard_class": "operational",
+      "entity": "美光科技(Micron)",
+      "site": "桃园厂",
+      "country_region": "中国台湾",
+      "severity": 0.3,
+      "affected_products": [
+        "DRAM",
+        "memory"
+      ],
+      "occurred_at": "2026-11-06",
+      "sources": [
+        {
+          "post_id": "539a061fc6",
+          "url": "https://laoyaoba.com/n/1137240",
+          "title": "美光桃园厂劳资争议第三次协商未果 双方说法出炉",
+          "title_cn": "美光桃园厂劳资争议第三次协商未果 双方说法出炉",
+          "source": "aijiwei",
+          "published_at": "2026-11-06T23:38:54.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        },
+        {
+          "post_id": "8f7b0a56e5",
+          "url": "https://laoyaoba.com/n/1137158",
+          "title": "【头条】36.98亿！思瑞浦参股企业重磅收购！",
+          "title_cn": "【头条】36.98亿！思瑞浦参股企业重磅收购！",
+          "source": "aijiwei",
+          "published_at": "2026-11-06T23:38:54.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "labor_dispute"
+      ],
+      "source_count": 2,
+      "primary_event_type": "labor_dispute"
     },
     {
       "post_id": "41ac66b487",
