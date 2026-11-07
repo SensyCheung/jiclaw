@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-07T00:42:40+00:00",
-  "count": 15,
+  "generated_at": "2026-11-07T15:36:00+00:00",
+  "count": 18,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,84 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "7cbbe09784",
+      "dedup_key": "3f3d803f4db7",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/articles/blue-wave-may-stop-musks-texas-data-center-ambitions",
+      "title": "The Blue Wave May Not Stop Musk’s Texas Data Center Ambitions",
+      "title_cn": "蓝色浪潮可能无法阻止马斯克在德克萨斯州的数据中心雄心",
+      "published_at": "2026-11-07T15:01:20.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-07T15:32:18",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "regulatory",
+      "entity": "SpaceX",
+      "site": "Starbase",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-07",
+      "sources": [
+        {
+          "post_id": "7cbbe09784",
+          "url": "https://www.theinformation.com/articles/blue-wave-may-stop-musks-texas-data-center-ambitions",
+          "title": "The Blue Wave May Not Stop Musk’s Texas Data Center Ambitions",
+          "title_cn": "蓝色浪潮可能无法阻止马斯克在德克萨斯州的数据中心雄心",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-07T15:01:20.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "093f2892ed",
+      "dedup_key": "b4a6b23b4c13",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1137466",
+      "title": "安森美取消20亿美元碳化硅扩厂计划",
+      "title_cn": "安森美取消20亿美元碳化硅扩厂计划",
+      "published_at": "2026-11-07T13:34:38.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-07T15:35:20",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "安森美(onsemi)",
+      "site": "罗兹诺夫厂",
+      "country_region": "捷克",
+      "lat": 49.4589,
+      "lon": 18.1478,
+      "severity": 0.6,
+      "affected_products": [
+        "碳化硅"
+      ],
+      "occurred_at": "2026-11-06",
+      "sources": [
+        {
+          "post_id": "093f2892ed",
+          "url": "https://laoyaoba.com/n/1137466",
+          "title": "安森美取消20亿美元碳化硅扩厂计划",
+          "title_cn": "安森美取消20亿美元碳化硅扩厂计划",
+          "source": "aijiwei",
+          "published_at": "2026-11-07T13:34:38.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
+    },
     {
       "post_id": "224f059be5",
       "dedup_key": "753330f10d51",
@@ -93,6 +171,44 @@
       ],
       "source_count": 2,
       "primary_event_type": "labor_dispute"
+    },
+    {
+      "post_id": "d1e6a37e4f",
+      "dedup_key": "c7529d214a4e",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1137368",
+      "title": "天域半导体收购部分ST东尼股权",
+      "title_cn": "天域半导体收购部分ST东尼股权",
+      "published_at": "2026-11-07T09:34:38.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-07T15:35:40",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "operational",
+      "entity": "天域半导体,ST东尼",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-06",
+      "sources": [
+        {
+          "post_id": "d1e6a37e4f",
+          "url": "https://laoyaoba.com/n/1137368",
+          "title": "天域半导体收购部分ST东尼股权",
+          "title_cn": "天域半导体收购部分ST东尼股权",
+          "source": "aijiwei",
+          "published_at": "2026-11-07T09:34:38.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
     },
     {
       "post_id": "41ac66b487",
