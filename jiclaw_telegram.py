@@ -48,13 +48,64 @@ def _chat_id_candidates(chat_id):
     return [c for c in dict.fromkeys([fixed, raw]) if c]
 
 
-def resolve_telegram_chat_id(is_semiconductor: bool):
-    """根据文章行业分类，返回 (chat_id, 说明)。
+# ---------------------------------------------------------------------------
+# 原文语言判定
+#
+# 主群组只保留「外文原文、由模型译成中文」的文章；原文就是中文的
+# （国内媒体、中文站点稿件）统一归到 others 群。
+# 判定只能用抓到的原始标题 / 正文 / RSS 摘要，**绝不能**用 title_cn /
+# summary_cn —— 那两个字段是模型生成的，恒为中文。
+# ---------------------------------------------------------------------------
+_HAN_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+_LATIN_RE = re.compile(r"[A-Za-z]")
 
-    - 半导体行业文章：推送到 TELEGRAM_CHAT_ID
-    - 非半导体文章：推送到 TELEGRAM_CHAT_ID_OTHER
+
+def _han_ratio(text: str):
+    """返回 (汉字在有意义字符中的占比, 汉字数)。数字、标点不计入分母。"""
+    if not text:
+        return 0.0, 0
+    # 先剥掉 HTML 标签再截断：RSS 摘要常带 <p>/<a href=...> 之类的英文标记，
+    # 不剥会把中文占比稀释，也会白占 600 字的采样预算。
+    sample = re.sub(r"<[^>]+>", " ", text)[:600]
+    han = len(_HAN_RE.findall(sample))
+    latin = len(_LATIN_RE.findall(sample))
+    total = han + latin
+    return (han / total if total else 0.0), han
+
+
+def is_chinese_original_text(title: str, content: str = "", summary: str = "") -> bool:
+    """判断原文是否为中文内容。
+
+    标题是最可靠的信号：中文站标题以汉字为主（允许夹品牌名/型号），
+    英文站标题偶尔出现一两个中文专名，靠「汉字数 >= 4 且占比 >= 0.3」挡掉。
+    少数转载稿标题是英文、正文却是中文（或标题为空、只有中文 RSS 摘要），
+    再用正文前 600 字兜底：既要有一定汉字量，也要汉字占绝对方，
+    这样英文文章里几处中文引文不会被误判。
+    """
+    ratio, han = _han_ratio(title or "")
+    if han >= 4 and ratio >= 0.3:
+        return True
+
+    body_ratio, body_han = _han_ratio(content or summary or "")
+    return body_han >= 12 and body_ratio >= 0.5
+
+
+def resolve_telegram_chat_id(is_semiconductor: bool, is_chinese_original: bool = False):
+    """根据原文语言与行业分类，返回 (chat_id, 说明)。
+
+    优先级：**原文语言 > 行业分类**。
+
+    - 原文为中文：一律推送到 TELEGRAM_CHAT_ID_OTHER（others 群），
+      即使模型判定它是半导体文章；主群组只保留外文原文文章。
+    - 原文非中文 + 半导体：推送到 TELEGRAM_CHAT_ID（主群组）
+    - 原文非中文 + 非半导体：推送到 TELEGRAM_CHAT_ID_OTHER
       （未配置该群组时返回 chat_id=None，表示剔除、不推送）
     """
+    if is_chinese_original:
+        if TELEGRAM_CHAT_ID_OTHER:
+            return normalize_chat_id(TELEGRAM_CHAT_ID_OTHER), "中文原文 → others 群组"
+        return None, "中文原文（未配置 TELEGRAM_CHAT_ID_OTHER，已剔除）"
+
     if is_semiconductor:
         return normalize_chat_id(TELEGRAM_CHAT_ID), "半导体 → 主群组"
     if TELEGRAM_CHAT_ID_OTHER:

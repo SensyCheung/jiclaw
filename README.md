@@ -58,8 +58,8 @@ python jiclaw_local.py twitter:paurooteri
    - `NOTION_API_KEY` - Notion API 密钥
    - `NOTION_DATABASE_ID` - Notion 数据库 ID
    - `TELEGRAM_BOT_TOKEN` - Telegram Bot Token（可选）
-   - `TELEGRAM_CHAT_ID` - Telegram 频道/群组 ID（半导体文章，可选）
-   - `TELEGRAM_CHAT_ID_OTHER` - Telegram 频道/群组 ID（非半导体文章，可选）
+   - `TELEGRAM_CHAT_ID` - Telegram 频道/群组 ID（主群组，可选）
+   - `TELEGRAM_CHAT_ID_OTHER` - Telegram 频道/群组 ID（others 群：中文原文 + 非半导体文章，可选）
    - `DISCORD_BOT_TOKEN` - Discord Bot Token（可选）
    - `DISCORD_CHANNEL_ID` - Discord 频道 ID（可选）
 
@@ -162,8 +162,8 @@ TWITTER_ACCOUNTS = {
 | `NOTION_API_KEY` | Notion API 密钥 | 是 | - |
 | `NOTION_DATABASE_ID` | Notion 数据库 ID | 是 | - |
 | `TELEGRAM_BOT_TOKEN` | Telegram Bot Token | 否 | - |
-| `TELEGRAM_CHAT_ID` | Telegram 频道/群组 ID（半导体文章） | 否 | - |
-| `TELEGRAM_CHAT_ID_OTHER` | Telegram 频道/群组 ID（非半导体文章） | 否 | - |
+| `TELEGRAM_CHAT_ID` | Telegram 频道/群组 ID（主群组：外文原文的半导体文章） | 否 | - |
+| `TELEGRAM_CHAT_ID_OTHER` | Telegram 频道/群组 ID（others 群：中文原文 + 非半导体文章） | 否 | - |
 | `DISCORD_BOT_TOKEN` | Discord Bot Token | 否 | - |
 | `DISCORD_CHANNEL_ID` | Discord 频道 ID | 否 | - |
 | `RSS_INTERVAL_SECONDS` | 抓取间隔（秒） | 否 | 900 |
@@ -230,14 +230,18 @@ python jiclaw.py scraper:aijiwei
 
 **Telegram 配置说明：**
 
-系统会用 AI 对每篇文章做行业分类，并按分类推送到不同群组：
+推送目标按「原文语言 → 行业分类」两级判定，**原文语言优先**：
 
-- **半导体行业文章**（芯片/IC、晶圆制造、设备材料、存储、封装、EDA、光刻等）→ `TELEGRAM_CHAT_ID`
-- **非半导体文章**（家电、消费电子整机、泛科技/软件、游戏、汽车整车等）→ `TELEGRAM_CHAT_ID_OTHER`
+1. **原文为中文的文章**：无条件推送到 `TELEGRAM_CHAT_ID_OTHER`（others 群），即使模型判定它是半导体文章。主群组只保留外文原文（由模型译成中文）的稿件。
+2. 原文非中文时，再用 AI 行业分类结果分流：
+   - **半导体行业文章**（芯片/IC、晶圆制造、设备材料、存储、封装、EDA、光刻等）→ `TELEGRAM_CHAT_ID`
+   - **非半导体文章**（家电、消费电子整机、泛科技/软件、游戏、汽车整车等）→ `TELEGRAM_CHAT_ID_OTHER`
 
-> 若未配置 `TELEGRAM_CHAT_ID_OTHER`，非半导体文章会被**剔除**（不推送），只保留半导体文章推送到主群组。
+中文判定由 `jiclaw_telegram.py` 的 `is_chinese_original_text()` 完成，**只依据抓取到的原始标题 / 正文 / RSS 摘要**，绝不使用模型生成的 `title_cn` / `summary_cn`（它们恒为中文）。规则：标题汉字 ≥ 4 且占「汉字+拉丁字母」≥ 30% 即判中文；标题是英文但正文以中文为主时，用正文前 600 字兜底（先剥 HTML 标签，≥ 12 汉字且占比 ≥ 50%），避免英文文章里几处中文引文被误判。线上日志会打印实际路由，便于核对：`[Telegram] 路由：中文原文 → others 群组`。
+
+> 若未配置 `TELEGRAM_CHAT_ID_OTHER`，非半导体文章**以及中文原文文章**都会被**剔除**（不推送），只保留外文原文的半导体文章推送到主群组。
 > 若希望所有文章都推送到同一个群组，将 `TELEGRAM_CHAT_ID_OTHER` 设为与 `TELEGRAM_CHAT_ID` 相同即可。
-> 分类采用「拿不准就归其他群组」的保守策略：模型返回缺失、无法识别的取值，一律走 `TELEGRAM_CHAT_ID_OTHER`，主群组只保留判定明确的半导体文章。
+> 分类采用「拿不准就归其他群组」的保守策略：模型返回缺失、无法识别的取值，一律走 `TELEGRAM_CHAT_ID_OTHER`；叠加语言规则后，主群组只保留「原文非中文 + 判定明确的半导体文章」。
 > **ID 写错不会被静默吞掉**：只填了后 10 位（如 `3824126934`）或漏了负号时，代码会自动补成 `-1003824126934` 并在日志里提示；若补全后仍 `chat not found`，会回落用原值再试一次（兼容私聊用户 ID）。`403 Forbidden` 不会重试，那是 Bot 没进群/没发帖权限。
 
 **GitHub Actions 配置：**
@@ -245,8 +249,8 @@ python jiclaw.py scraper:aijiwei
 1. 在 GitHub 仓库页面，进入 **Settings** → **Secrets and variables** → **Actions**
 2. 点击 **New repository secret**，添加以下 Secrets：
    - `TELEGRAM_BOT_TOKEN` - 从 @BotFather 获取的 Bot Token
-   - `TELEGRAM_CHAT_ID` - 半导体文章的频道/群组 ID（频道 ID 通常以 `-100` 开头）
-   - `TELEGRAM_CHAT_ID_OTHER` - 非半导体文章的频道/群组 ID（可选）
+   - `TELEGRAM_CHAT_ID` - 主群组的频道/群组 ID（外文原文的半导体文章，通常以 `-100` 开头）
+   - `TELEGRAM_CHAT_ID_OTHER` - others 群的频道/群组 ID（中文原文 + 非半导体文章，可选）
 3. 推送代码后会自动运行，或手动触发 workflow
 
 **本地运行配置：**
@@ -503,7 +507,7 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 | AI 摘要 | 使用智谱 AI 生成中英文摘要、标签，并判断是否为半导体行业文章 |
 | 风险事件抽取 | 同一次调用顺带抽取 event_type / severity / entity / site 等结构化字段，落 JSONL 供下游平台消费 |
 | Notion 集成 | 自动写入 Notion 数据库 |
-| Telegram 推送 | 按行业分类推送到不同群组：半导体文章推到主群组，其他文章推到其他群组（未配置则剔除） |
+| Telegram 推送 | 中文原文一律推到 others 群；外文原文再按行业分类：半导体→主群组，非半导体→others 群（未配置则剔除） |
 | Discord 推送 | Notion 上传成功后自动推送到 Discord |
 | 去重 | 基于 URL 哈希值去重 |
 | 循环运行 | 可配置间隔时间持续抓取 |

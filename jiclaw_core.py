@@ -19,7 +19,11 @@ from openai import OpenAI
 from jiclaw_scraper import scrape_site
 from scraper_config import SCRAPER_CONFIG
 from jiclaw_twitter import fetch_twitter_tweets
-from jiclaw_telegram import send_to_telegram, resolve_telegram_chat_id
+from jiclaw_telegram import (
+    send_to_telegram,
+    resolve_telegram_chat_id,
+    is_chinese_original_text,
+)
 from jiclaw_discord import send_to_discord
 
 
@@ -1677,12 +1681,14 @@ def send_to_telegram_after_notion(
     tags: list,
     website_name: str,
     is_semiconductor: bool = False,
+    is_chinese_original: bool = False,
 ) -> None:
     """在 Notion 上传成功后发送到 Telegram 和 Discord"""
-    # Telegram 发送（按行业分类路由到不同群组）
-    chat_id, route_desc = resolve_telegram_chat_id(is_semiconductor)
+    # Telegram 发送（先看原文语言，再看行业分类，路由到不同群组）
+    chat_id, route_desc = resolve_telegram_chat_id(is_semiconductor, is_chinese_original)
+    print(f"[Telegram] 路由：{route_desc}")
     if not chat_id:
-        print(f"[Telegram] {route_desc}")
+        print("[Telegram] 跳过发送。")
     else:
         try:
             send_to_telegram(
@@ -1922,4 +1928,6 @@ def _process_items(
                 tags=data.get("tags", []),
                 website_name=get_website_name(source_url),
                 is_semiconductor=semiconductor,
+                # 原文语言只认抓取到的原始标题/正文/RSS 摘要，不能用模型生成的中文标题
+                is_chinese_original=is_chinese_original_text(title, content, summary),
             )
