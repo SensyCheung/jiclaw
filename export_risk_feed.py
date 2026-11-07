@@ -33,6 +33,8 @@ _GENERIC_MARKERS = ("巨头", "大厂", "厂商", "业者", "龙头", "某", "�
 _FIRE_TITLE_MARKERS = ("爆炸", "起火", "火灾", "火警", "焚毁",
                        "blast", "explosion", "factory fire")
 _FIRE_FIGURES_OF_SPEECH = ("爆炸式", "爆炸性", "引爆", "爆款")
+# 山火/野火不是厂区火灾，保持 natural_disaster 口径，不要归一成 fire_explosion
+_WILDFIRE_TITLE_MARKERS = ("山火", "野火", "森林火灾", "wildfire")
 
 
 def _is_generic_entity(value):
@@ -41,10 +43,12 @@ def _is_generic_entity(value):
 
 
 def _is_fire_title(rec):
-    """标题命中火灾/爆炸事故；用于把被误标成经营类的事件归一回火灾口径。"""
+    """标题命中厂区火灾/爆炸；用于把被误标成经营类的事件归一回火灾口径。"""
     text = " ".join(str(rec.get(k) or "") for k in ("title_cn", "title", "site")).lower()
     for phrase in _FIRE_FIGURES_OF_SPEECH:
         text = text.replace(phrase, "")
+    if any(m in text for m in _WILDFIRE_TITLE_MARKERS):
+        return False
     return any(m in text for m in _FIRE_TITLE_MARKERS)
 
 
@@ -195,7 +199,7 @@ def merge_events(rows):
             target["entity"] = new
             target["title_cn"] = rec.get("title_cn") or target.get("title_cn")
             target["url"] = rec.get("url") or target.get("url")
-        for key in ("site", "country_region", "occurred_at", "affected_products"):
+        for key in ("site", "country_region", "lat", "lon", "occurred_at", "affected_products"):
             if not target.get(key) and rec.get(key):
                 target[key] = rec[key]
 

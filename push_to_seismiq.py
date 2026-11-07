@@ -4,10 +4,10 @@
 分流依据 SEISMIQ 的 GET /api/webhook/schema：
 
 * ``events[]`` 是「有地理影响的物理/社会事件」，``type`` 必须是封闭枚举
-  (earthquake/wildfire/volcano/flood/storm/drought/epidemic/strike/conflict/power)，
+  (earthquake/wildfire/volcano/flood/storm/drought/epidemic/strike/conflict/power/plantfire)，
   写入后会立即重算「事件 × 晶圆厂」影响。只有能真实映射灾种的事件才放进来。
-  枚举里没有独立的「火灾」灾种，wildfire 是唯一的火灾类；工厂火灾/爆炸按 wildfire
-  写入，标题加 [火灾] 前缀、metric 注明事故类型，避免被当成山火。
+  工厂火灾/爆炸走 ``plantfire``（厂区火灾模式），不再借 ``wildfire``（山火语义）。
+  坐标优先级：人工核准的厂区坐标表 > 抽取时由 LLM 写入的 lat/lon > 不传。
 * **默认完全不写 ``news[]``**。要求「只写风险相关的，正常新闻不要往里面写入」：
   财报、并购、长协、扩产、技术发布等经营资讯一律跳过，不进 SEISMIQ。
   确实需要资讯通道时显式加 --include-news。
@@ -43,15 +43,14 @@ MAX_ITEMS_PER_REQUEST = 100   # schema: maxItems 200 / maxBodyBytes 1,000,000，
 DEFAULT_MIN_SEVERITY = 0.4
 
 # 直接映射：jiclaw event_type -> SEISMIQ 灾种
-# SEISMIQ 的 typeEnum 是封闭的，没有 fire/fire_explosion；wildfire 是唯一的火灾类，
-# 工厂火灾/爆炸按它写入（标题加 [火灾] 前缀、metric 注明事故类型以消歧）。
+# fire_explosion 走 plantfire（厂区火灾专用模式）；wildfire 只留给真正的山火/野火。
 # capacity_disruption、mna、earnings 等经营类事件仍无对应灾种，一律不写入。
 _TYPE_MAP = {
     "labor_dispute": "strike",       # 劳资纠纷/罢工
     "geopolitical": "conflict",      # 地缘政治/冲突
     "water_shortage": "drought",     # 供水短缺，最接近干旱
     "power_outage": "power",         # 停电/限电，SEISMIQ 走 grid 分区模式
-    "fire_explosion": "wildfire",    # 工厂火灾/爆炸 → 唯一的火灾类灾种
+    "fire_explosion": "plantfire",   # 工厂火灾/爆炸 → 厂区火灾模式
 }
 
 # type=power 专用：grid_zone 是判定依据，缺失时服务端 fail-closed 不推算任何设施。
@@ -82,7 +81,7 @@ _NATURAL_KEYWORDS = (
 )
 
 # 上游 LLM 会把「工厂爆炸」按后果判成 capacity_disruption（松下湖口厂 CCL 爆炸即一例）。
-# 这类事故按标题关键词兜底识别，保证不会被漏推；山火/野火本就是 wildfire，无需额外标注。
+# 这类事故按标题关键词兜底识别，保证不会被漏推；山火/野火要排除，仍归 wildfire。
 _FIRE_MARKERS = (
     "爆炸", "起火", "火灾", "火警", "焚毁", "blast", "explosion", "factory fire",
 )
@@ -127,10 +126,13 @@ def resolve_hazard_type(event):
             for kw, hazard in _NATURAL_KEYWORDS:
                 if kw.lower() in haystack:
                     return hazard
-    # 兜底：标题明确是工厂火灾/爆炸，但上游按「停产/供应链冲击」标成了经营类事件。
+    # 兜底：标题明确是火灾/爆炸，但上游按「停产/供应链冲击」标成了经营类事件。
     # 只在前面没映射出任何灾种时启用，不会覆盖地震、罢工等明确分类。
     if _is_fire_incident(event):
-        return "wildfire"
+        # 山火/野火不是厂区火灾，仍走 wildfire
+        if any(m in haystack for m in _WILDFIRE_MARKERS):
+            return "wildfire"
+        return "plantfire"
     return None
 
 
@@ -176,19 +178,40 @@ def _stable_key(event):
     return f"{SOURCE_ID}:{raw}"
 
 
+def _parse_coord(value, limit):
+    """坐标只认合法数值，越界/非数字返回 None。"""
+    try:
+        v = float(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+    if not (-limit <= v <= limit):
+        return None
+    return round(v, 6)
+
+
 def _coords_for(event, coords):
-    """只在用户提供显式坐标表时返回 (lat, lon)，绝不推断。"""
-    if not coords:
-        return None, None
-    site = str(event.get("site") or "")
-    for key, pair in coords.items():
-        if key and key in site:
-            try:
-                lat, lon = float(pair[0]), float(pair[1])
+    """返回 (lat, lon)：人工核准的厂区坐标表优先，其次用抽取时写入的 LLM 坐标。
+
+    坐标错会让影响算到错误的晶圆厂上，所以：
+    1) --coords-file 里显式给出的人工坐标优先级最高；
+    2) 其次才用事件里的 lat/lon（抽取层已做范围校验）；
+    3) 两处都没有就返回 None，交给服务端走 region 模式，绝不推断。
+    """
+    if coords:
+        site = str(event.get("site") or "")
+        for key, pair in coords.items():
+            if key and key in site:
+                try:
+                    lat, lon = float(pair[0]), float(pair[1])
+                except (TypeError, ValueError, IndexError):
+                    continue
                 if -90 <= lat <= 90 and -180 <= lon <= 180:
                     return lat, lon
-            except (TypeError, ValueError, IndexError):
-                continue
+
+    lat = _parse_coord(event.get("lat"), 90)
+    lon = _parse_coord(event.get("lon"), 180)
+    if lat is not None and lon is not None:
+        return lat, lon
     return None, None
 
 
@@ -231,11 +254,10 @@ def build_event_payload(event, coords, confidence):
 
     title = _event_title(event)
     metric_note = ""
-    if hazard == "wildfire" and _is_fire_incident(event):
-        # 山火/野火本来就是 wildfire；厂内事故要显式标注，避免被读成山林火灾
-        if not any(m in _text(event).lower() for m in _WILDFIRE_MARKERS):
-            title = _clip(f"[火灾] {title}")
-            metric_note = " | 事故: 工厂火灾/爆炸→wildfire"
+    if hazard == "plantfire":
+        # 灾种已是「厂区火灾」，标题前缀便于在列表里快速识别，兼作人读标注
+        title = _clip(f"[厂区火灾] {title}")
+        metric_note = " | 事故: 厂区火灾/爆炸"
 
     payload = {
         "type": hazard,

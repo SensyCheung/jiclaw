@@ -786,6 +786,10 @@ def summarize_with_ai(
      不要写 "Taoyuan Factory" 这类英文。
    - country_region：国家/地区中文名，例如 "中国台湾"、"美国"、"日本"、"韩国"。
      台湾、香港、澳门一律写作 "中国台湾"、"中国香港"、"中国澳门"，不得当作国家。
+   - lat / lon：事件发生厂区或地点的 WGS84 十进制度坐标（纬度 -90~90，经度 -180~180，保留 4-6 位小数）。
+     仅在正文明确给出地址/园区、或该厂区位置公开且唯一确定时才填；只知城市、不确定具体厂区、
+     或正文没有地点信息时一律 null。**禁止凭印象或按城市中心估算**：错坐标会让下游把影响
+     算到错误的晶圆厂上，宁可给 null 也不要猜。
    - severity：0.0-1.0 的浮点数。0.8-1.0 = 全线停产/重大灾害/直接禁运；0.4-0.7 = 部分产线受影响或工期延误；
      0.1-0.3 = 局部摩擦、尚未影响生产；纯技术发布给 0.0。
      涉及十亿美元以上投资、主力产能或先进制程（HBM/DRAM 等紧俏品类）的项目停摆，至少给 0.6。
@@ -807,6 +811,8 @@ def summarize_with_ai(
     "entity": null,
     "site": null,
     "country_region": null,
+    "lat": null,
+    "lon": null,
     "severity": 0.0,
     "affected_products": [],
     "occurred_at": null
@@ -1294,6 +1300,8 @@ def _empty_risk_event() -> dict:
         "entity": None,
         "site": None,
         "country_region": None,
+        "lat": None,
+        "lon": None,
         "severity": 0.0,
         "affected_products": [],
         "occurred_at": None,
@@ -1352,6 +1360,17 @@ def _fix_event_year(occurred: str, reference_date: str):
     return "-".join([x for x in (ref_y, ev_m, ev_d) if x])
 
 
+def _parse_coord(value, limit):
+    """坐标只认合法数值；越界/非数字返回 None（下游靠 None 判断「不传坐标」）。"""
+    try:
+        v = float(str(value).strip())
+    except (TypeError, ValueError):
+        return None
+    if not (-limit <= v <= limit):
+        return None
+    return round(v, 6)
+
+
 def _normalize_risk_event(ai_data: dict, reference_date: str = None) -> dict:
     """把 LLM 的 risk_event 字段规整成稳定 schema，并写回 ai_data。
 
@@ -1380,6 +1399,13 @@ def _normalize_risk_event(ai_data: dict, reference_date: str = None) -> dict:
     risk["entity"] = _clean_str(raw.get("entity"))
     risk["site"] = _clean_str(raw.get("site"))
     risk["country_region"] = _clean_str(raw.get("country_region"))
+
+    # 坐标：只接受合法数值；缺失/越界/占位 (0,0) 一律丢弃，绝不替模型补值
+    lat = _parse_coord(raw.get("lat"), 90)
+    lon = _parse_coord(raw.get("lon"), 180)
+    if lat is not None and lon is not None and abs(lat) < 1e-6 and abs(lon) < 1e-6:
+        lat = lon = None
+    risk["lat"], risk["lon"] = lat, lon
 
     # severity：兼容 0-100 打分和 "0.7" 字符串；无法解析时给 0.0
     sev = raw.get("severity")
@@ -1430,6 +1456,8 @@ def format_risk_event(risk: dict) -> str:
         f"region={risk.get('country_region')}",
         f"severity={risk.get('severity')}",
     ]
+    if risk.get("lat") is not None and risk.get("lon") is not None:
+        parts.append(f"coord={risk['lat']},{risk['lon']}")
     if risk.get("affected_products"):
         parts.append("products=" + "/".join(risk["affected_products"]))
     if risk.get("occurred_at"):

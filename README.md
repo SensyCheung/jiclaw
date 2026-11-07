@@ -338,6 +338,7 @@ python jiclaw_discord.py
 | `entity` | 主体公司，统一中文通用名（首次附英文原名），如 `美光科技(Micron)` |
 | `site` | 厂区/地点，中文，如 `桃园厂`、`Fab 18` |
 | `country_region` | 国家/地区中文名 |
+| `lat` / `lon` | 事件地点的 WGS84 十进制度坐标；只在厂区位置公开且唯一确定时给，否则 `null`（禁止估算） |
 | `severity` | `0.0-1.0`；≥0.8 全线停产/重大灾害，0.4-0.7 部分产线受影响，≤0.3 局部摩擦 |
 | `affected_products` | 受影响品类数组，如 `["HBM","DRAM"]` |
 | `occurred_at` | 事件发生日期，`YYYY-MM-DD` 或 `YYYY-MM`，不确定为 `null` |
@@ -451,11 +452,11 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 1. **风险门槛**：跳过 `is_risk_event=false` 和 `severity < 0.4` 的记录（`--min-severity` 可调）。
    `latest.json` 里混着被上游误标成风险的低严重度财报，靠这道闸挡住。
 2. **灾种映射**：`/api/webhook/schema` 的 `event.type` 是**封闭枚举**
-   `earthquake / wildfire / volcano / flood / storm / drought / epidemic / strike / conflict / power`，
+   `earthquake / wildfire / volcano / flood / storm / drought / epidemic / strike / conflict / power / plantfire`，
    且写入后会立即重算「事件 × 晶圆厂」影响。没有对应灾种的事件硬塞进 `events`
    会写不进去或误触发地理影响计算，所以直接跳过。
 
-以当前真实数据为例：14 条 → 保留 2 条（松下湖口厂 CCL 爆炸 → `wildfire`、
+以当前真实数据为例：14 条 → 保留 2 条（松下湖口厂 CCL 爆炸 → `plantfire`、
 美光桃园厂停工 → `strike`），其余 12 条跳过，日志按原因计数（`严重度不足` / `无对应灾种`）。
 确实需要资讯通道时显式加 `--include-news`。
 
@@ -465,14 +466,14 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 | `geopolitical` | `conflict` | 地缘政治/冲突 |
 | `water_shortage` | `drought` | 供水短缺 |
 | `power_outage` | `power` | grid 模式；只从 `site` 明确识别园区时填 `grid_zone`，认不出就留空让服务端 fail-closed |
-| `fire_explosion` | `wildfire` | 工厂火灾/爆炸；SEISMIQ 唯一的火灾类灾种 |
+| `fire_explosion` | `plantfire` | 工厂火灾/爆炸；SEISMIQ 的厂区火灾专用模式（`wildfire` 只留给山火） |
 | `natural_disaster` | 按标题关键词细分 | 地震/火山/洪水/台风/干旱/山火/疫情；猜不出则不写入 |
 | 其余（含 `capacity_disruption`、`mna`、`earnings`） | 无 | 枚举里没有对应灾种，跳过 |
 
-> SEISMIQ 的 `typeEnum` 是封闭的，没有独立的 `fire` 灾种，`wildfire` 是唯一的火灾类，
-> 工厂火灾/爆炸按它写入。为避免被读成山林火灾，`title` 会加 `[火灾]` 前缀、
-> `metric` 注明「事故: 工厂火灾/爆炸→wildfire」，原始 `event_type` 仍完整保存在 `raw` 里；
-> 若平台后续新增 `fire` 灾种，只改 `_TYPE_MAP["fire_explosion"]` 即可。
+> SEISMIQ 已新增 `plantfire`（厂区火灾）灾种，工厂火灾/爆炸现在走这个专用模式，
+> 不再借 `wildfire`（山火语义）。`title` 会加 `[厂区火灾]` 前缀、`metric` 注明
+> 「事故: 厂区火灾/爆炸」，原始 `event_type` 仍完整保存在 `raw` 里。
+> 山火/野火仍归 `wildfire`，不会被当成厂区火灾。
 >
 > 上游 LLM 曾把「松下湖口厂爆炸」按后果判成 `capacity_disruption`。现在两层兜底：
 > 汇总时按标题把这类事件的主类型归一为 `fire_explosion`（原始类型留在 `event_types`），
@@ -486,9 +487,10 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 
 三点刻意保守的设计：
 
-1. **不编造经纬度**。jiclaw 没有坐标，而 SEISMIQ 用 `lat/lon` 算 distance 模式的影响半径，
-   错坐标会直接导致错误告警。默认不传，走 `country` 的 region 模式；
-   需要精确影响计算时用 `--coords-file` 提供一份显式、准确的厂区坐标表。
+1. **坐标有来源、可追溯**。抽取 prompt 允许模型在「厂区位置公开且唯一确定」时输出
+   `lat/lon`，并明确禁止按城市中心估算；归一化会丢弃越界值和 `(0,0)` 占位。
+   推送时 `--coords-file` 的人工核准坐标表优先级最高，其次才用模型坐标；
+   两者都没有就不传，走 `country` 的 region 模式。
 2. **`confidence` 默认 `assessed`**。事件是 LLM 从新闻里抽取的评估而非官方确证；
    SEISMIQ 会把 assessed 事件的影响等级封顶为「关注」，避免模型推断被当成确证事实放大告警。
    确有权威来源时可改 `--confidence fact`。
