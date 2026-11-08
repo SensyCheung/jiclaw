@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-08T04:48:00+00:00",
-  "count": 23,
+  "generated_at": "2026-11-08T17:58:41+00:00",
+  "count": 24,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -591,6 +591,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
+    },
+    {
+      "post_id": "670335a07c",
+      "dedup_key": "0fd7b75a60dc",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+      "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+      "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
+      "published_at": "2026-11-08T12:59:54.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-08T17:51:02",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "670335a07c",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+          "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+          "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-08T12:59:54.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "bb775a2649",
