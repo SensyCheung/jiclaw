@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-08T17:58:41+00:00",
-  "count": 24,
+  "generated_at": "2026-11-08T21:48:58+00:00",
+  "count": 25,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,44 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "890ffbee8d",
+      "dedup_key": "4ff4704b4be4",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/articles/nvidia-inquiry-anthropic-coreweave-unity-news-promise-big-week",
+      "title": "Nvidia Inquiry, Anthropic, CoreWeave and Unity News Promise Big Week",
+      "title_cn": "英伟达调查、Anthropic、CoreWeave 和 Unity 消息预示繁忙的一周",
+      "published_at": "2026-11-08T21:41:25.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-08T21:45:41",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-08",
+      "sources": [
+        {
+          "post_id": "890ffbee8d",
+          "url": "https://www.theinformation.com/articles/nvidia-inquiry-anthropic-coreweave-unity-news-promise-big-week",
+          "title": "Nvidia Inquiry, Anthropic, CoreWeave and Unity News Promise Big Week",
+          "title_cn": "英伟达调查、Anthropic、CoreWeave 和 Unity 消息预示繁忙的一周",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-08T21:41:25.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
     {
       "post_id": "7cbbe09784",
       "dedup_key": "3f3d803f4db7",
@@ -610,7 +648,7 @@
       "country_region": "中国",
       "lat": null,
       "lon": null,
-      "severity": 0.3,
+      "severity": 0.4,
       "affected_products": [
         "GPU"
       ],
@@ -624,12 +662,22 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-08T12:59:54.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "db92d38fc0",
+          "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-ceo-jensen-huang-admits-to-having-an-affair-with-suspected-chinese-spy-jensen-apologizes-in-letter-to-staff-company-board-forms-independent-committee-to-investigate",
+          "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
+          "title_cn": "英伟达CEO黄仁勋承认与疑似中国间谍存在婚外情",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-08T21:27:23.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
-        "export_control"
+        "export_control",
+        "litigation"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "export_control"
     },
     {
