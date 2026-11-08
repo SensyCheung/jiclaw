@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-07T23:32:01+00:00",
-  "count": 20,
+  "generated_at": "2026-11-08T04:48:00+00:00",
+  "count": 23,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -428,6 +428,44 @@
       "primary_event_type": "fire_explosion"
     },
     {
+      "post_id": "5c8fa849d5",
+      "dedup_key": "21aa2a3ffec1",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1137519",
+      "title": "54亿美元交易被否后，软银与ABB拟分拆中国机器人业务",
+      "title_cn": "54亿美元交易被否后，软银与ABB拟分拆中国机器人业务",
+      "published_at": "2026-11-08T04:33:06.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-08T04:45:15",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "regulatory",
+      "entity": "软银(SoftBank), ABB",
+      "site": "中国",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "5c8fa849d5",
+          "url": "https://laoyaoba.com/n/1137519",
+          "title": "54亿美元交易被否后，软银与ABB拟分拆中国机器人业务",
+          "title_cn": "54亿美元交易被否后，软银与ABB拟分拆中国机器人业务",
+          "source": "aijiwei",
+          "published_at": "2026-11-08T04:33:06.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
       "post_id": "584558bd47",
       "source": "aijiwei",
       "url": "https://laoyaoba.com/n/1136496",
@@ -473,6 +511,46 @@
         "labor_dispute"
       ],
       "source_count": 2,
+      "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "9655517dc3",
+      "dedup_key": "11abdc515d55",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1137509",
+      "title": "旧英伟达GPU“不合要求”：微软重估800亿美元AI算力租赁",
+      "title_cn": "旧英伟达GPU“不合要求”：微软重估800亿美元AI算力租赁",
+      "published_at": "2026-11-08T03:45:06.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-08T04:47:48",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "微软",
+      "site": "得克萨斯州，西弗吉尼亚州，英国",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "9655517dc3",
+          "url": "https://laoyaoba.com/n/1137509",
+          "title": "旧英伟达GPU“不合要求”：微软重估800亿美元AI算力租赁",
+          "title_cn": "旧英伟达GPU“不合要求”：微软重估800亿美元AI算力租赁",
+          "source": "aijiwei",
+          "published_at": "2026-11-08T03:45:06.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
       "primary_event_type": "capacity_disruption"
     },
     {
@@ -597,6 +675,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "54f1adf390",
+      "dedup_key": "364ee1d62d1f",
+      "source": "https://rss.etnews.com/06.xml",
+      "url": "https://www.etnews.com/20261108000045",
+      "title": "분규 줄었는데 손실은 45%↑…경총 “HL만도 갈등, 현대차·기아 공급망 변수”",
+      "title_cn": "劳资纠纷减少但损失增加45%……韩国经营者总协会：“HL万都矛盾或成现代汽车、起亚供应链变数”",
+      "published_at": "2026-11-08T02:24:28.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-08T04:41:09",
+      "is_risk_event": true,
+      "event_type": "labor_dispute",
+      "hazard_class": "operational",
+      "entity": "HL万都(HL Mando)",
+      "site": "韩国",
+      "country_region": "韩国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [],
+      "occurred_at": "2026-10",
+      "sources": [
+        {
+          "post_id": "54f1adf390",
+          "url": "https://www.etnews.com/20261108000045",
+          "title": "분규 줄었는데 손실은 45%↑…경총 “HL만도 갈등, 현대차·기아 공급망 변수”",
+          "title_cn": "劳资纠纷减少但损失增加45%……韩国经营者总协会：“HL万都矛盾或成现代汽车、起亚供应链变数”",
+          "source": "https://rss.etnews.com/06.xml",
+          "published_at": "2026-11-08T02:24:28.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "labor_dispute"
+      ],
+      "source_count": 1,
+      "primary_event_type": "labor_dispute"
     },
     {
       "post_id": "d34e7df2b7",
