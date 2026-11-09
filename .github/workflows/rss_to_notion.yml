@@ -26,6 +26,11 @@ on:
         required: false
         type: string
         default: 'false'
+      notion_hotornot:
+        description: '维护 Notion HotorNot：probe（只读排查）/ dry-run（预演）/ apply（批量修正历史页面）'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   run-script:
@@ -83,6 +88,15 @@ jobs:
           echo "=== GET /api/webhook/runs?limit=3 ==="
           curl -sS --max-time 30 -w "\n[HTTP %{http_code}]\n" \
             "https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=3" || true
+
+      # 周期性栏目文章（如「政治与市场」）不进首页：可单独触发，probe_only=true 时也能跑。
+      # apply 会真实更新 Notion 页面，务必先跑 probe / dry-run 确认范围。
+      - name: Maintain Notion HotorNot
+        if: github.event.inputs.notion_hotornot != ''
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python notion_hotornot.py --mode "${{ github.event.inputs.notion_hotornot }}"
 
       - name: Run Script
         if: github.event.inputs.probe_only != 'true'

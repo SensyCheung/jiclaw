@@ -1536,6 +1536,62 @@ def get_website_name(feed_url: str) -> str:
     return domain_map.get(domain, domain.split(".")[0])
 
 
+# ---------------------------------------------------------------------------
+# HotorNot / 首页收录口径
+# ---------------------------------------------------------------------------
+# 部分 RSS 源会周期性推同名栏目文章（Seeking Alpha 的「政治与市场」即一例），
+# 内容是宏观政治 / 市场评论，不是半导体产业新闻，不该占用首页。
+# 判定同时供「新写入」和「历史批量修正」使用，避免两套口径漂移。
+_NOHOME_COLUMN_PATTERNS = (
+    re.compile(r"政治与市场"),
+    re.compile(r"politics\s*(?:&|and|,|/|\+)\s*markets?", re.I),
+    re.compile(r"^(?:market|macro|politics)\s+(?:recap|brief|briefing|outlook|wrap|weekly|update|watch|review)", re.I),
+    re.compile(r"^(?:每周|每日|今日)?(?:市场|宏观|政经)(?:观察|综述|评论|回顾|周报|日报|简报|速览|展望)"),
+)
+# 标题里出现半导体产业主题词 → 即使标题重复也保留 Home。
+# 英文用词边界，避免 "fabric" / "fabulous" 误命中 fab；中文直接子串匹配。
+_SEMI_TOPIC_RE = re.compile(
+    r"\b(?:chips?|semiconductors?|wafers?|foundry|foundries|fabs?|tsmc|nvidia|intel|amd"
+    r"|dram|nand|hbm|euv|asics?|gpus?|cpus?|photonics?|eda)\b"
+    r"|芯片|半导体|晶圆|制程|光刻|封装|存储|代工|集成电路",
+    re.I,
+)
+
+
+def is_nohome_article(
+    title_en: str = "",
+    title_cn: str = "",
+    website_name: str = "",
+    category: str = None,
+    tags: list = None,
+    repeat_count: int = 1,
+) -> bool:
+    """周期性重复的栏目型标题 + 非半导体内容 → 不上首页（HotorNot=nohome）。
+
+    * category == "semiconductor" 或标题含半导体主题词：一律保留 Home；
+    * 命中显式栏目标题模式（「政治与市场」/ Politics & Markets / 市场周报 等）：nohome；
+    * 其余交给 repeat_count：同一源站同一标题在库里出现 ≥2 次即视为周期性栏目，
+      且已排除半导体内容 → nohome。新写入时 repeat_count 缺省为 1，只走显式模式。
+    """
+    text = f"{title_cn or ''} {title_en or ''}".lower()
+    if category == "semiconductor" or _SEMI_TOPIC_RE.search(text):
+        return False
+    if any(p.search(text) for p in _NOHOME_COLUMN_PATTERNS):
+        return True
+    return repeat_count >= 2
+
+
+def resolve_hotornot(item: dict, ai_data: dict, website_name: str) -> str:
+    """新写入 Notion 时决定 HotorNot 取值。"""
+    return "nohome" if is_nohome_article(
+        title_en=item.get("title", ""),
+        title_cn=ai_data.get("title_cn") or "",
+        website_name=website_name,
+        category=ai_data.get("category"),
+        tags=ai_data.get("tags") or [],
+    ) else "Home"
+
+
 def create_notion_page(
     notion_api_key: str,
     database_id: str,
@@ -1594,7 +1650,7 @@ def create_notion_page(
             ]
         },
         "HotorNot": {
-            "select": {"name": "Home"},
+            "select": {"name": resolve_hotornot(item, ai_data, website_name)},
         },
         "Description": {
             "rich_text": [
