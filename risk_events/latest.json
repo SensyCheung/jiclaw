@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-09T01:35:18+00:00",
-  "count": 26,
+  "generated_at": "2026-11-09T09:22:13+00:00",
+  "count": 28,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,44 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "1823d7669e",
+      "dedup_key": "b0c52e939974",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/jensen-huang-2026-11/",
+      "title": "Jensen Huang apologises: Nvidia board investigates",
+      "title_cn": "黄仁勋道歉：英伟达董事会展开调查",
+      "published_at": "2026-11-09T06:18:52.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-09T09:14:23",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "operational",
+      "entity": "英伟达(Nvidia)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-09",
+      "sources": [
+        {
+          "post_id": "1823d7669e",
+          "url": "https://www.electronicsweekly.com/news/business/jensen-huang-2026-11/",
+          "title": "Jensen Huang apologises: Nvidia board investigates",
+          "title_cn": "黄仁勋道歉：英伟达董事会展开调查",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-09T06:18:52.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
+    },
     {
       "post_id": "890ffbee8d",
       "dedup_key": "4ff4704b4be4",
@@ -464,6 +502,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "fire_explosion"
+    },
+    {
+      "post_id": "651966ef9a",
+      "dedup_key": "dd6d6d111426",
+      "source": "https://www.trendforce.com/feed/LED.html",
+      "url": "https://www.trendforce.com/presscenter/news/20261109-13300.html",
+      "title": "Penguin Solutions to Sell Cree LED to Private Equity Firm, Bringing Renewed Attention to the Lighting LED Supply Chain, Says TrendForce",
+      "title_cn": "Penguin Solutions 将 Cree LED 出售给私募股权公司，引起对照明 LED 供应链的重新关注",
+      "published_at": "2026-11-09T07:32:19.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-09T09:16:18",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "market",
+      "entity": "Penguin Solutions, Cree LED, Transom Capital Group",
+      "site": null,
+      "country_region": null,
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [],
+      "occurred_at": "2026-11-04",
+      "sources": [
+        {
+          "post_id": "651966ef9a",
+          "url": "https://www.trendforce.com/presscenter/news/20261109-13300.html",
+          "title": "Penguin Solutions to Sell Cree LED to Private Equity Firm, Bringing Renewed Attention to the Lighting LED Supply Chain, Says TrendForce",
+          "title_cn": "Penguin Solutions 将 Cree LED 出售给私募股权公司，引起对照明 LED 供应链的重新关注",
+          "source": "https://www.trendforce.com/feed/LED.html",
+          "published_at": "2026-11-09T07:32:19.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
     },
     {
       "post_id": "5c8fa849d5",
