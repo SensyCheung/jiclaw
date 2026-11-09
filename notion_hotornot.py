@@ -160,6 +160,18 @@ def probe(rows, options):
     for (site, key), items in site_repeated[:40]:
         print(f"{len(items):>3}x | {site[:24]:<26} | {key[:70]}")
 
+    from jiclaw_core import title_series_key
+    series = collections.defaultdict(list)
+    for r in rows:
+        key = title_series_key(r["title"], r["title_cn"])
+        if key:
+            series[(r["website"], key)].append(r)
+    series_repeated = sorted(((k, v) for k, v in series.items() if len(v) >= 2),
+                             key=lambda kv: -len(kv[1]))
+    print(f"=== 同源站周期性系列（去掉日期后同键，≥2 期）共 {len(series_repeated)} 组，Top 40 ===")
+    for (site, key), items in series_repeated[:40]:
+        print(f"{len(items):>3}x | {site[:24]:<26} | {key[:70]}")
+
     kw = ("政治", "市场", "politics", "markets", "macro", "fed", "tariff", "election")
     hits = [r for r in rows if any(k in norm_title(r["title_cn"] + " " + r["title"]) for k in kw)]
     print(f"=== 标题含政治/市场类词：{len(hits)} 条，样本 30 ===")
@@ -203,18 +215,18 @@ def select_targets(rows, only_unmarked=False):
 
     only_unmarked=True 用于 probe 预演，只看「还没改」的增量。
     """
-    from jiclaw_core import NOHOME_OPTION, is_nohome_article
+    from jiclaw_core import NOHOME_OPTION, is_nohome_article, title_series_key
 
     counts = collections.Counter(
-        (r["website"], norm_title(r["title_cn"] or r["title"])) for r in rows
+        (r["website"], title_series_key(r["title"], r["title_cn"])) for r in rows
     )
     targets = []
     for r in rows:
-        key = norm_title(r["title_cn"] or r["title"])
-        repeat = counts.get((r["website"], key), 0)
+        key = title_series_key(r["title"], r["title_cn"])
+        series_count = counts.get((r["website"], key), 0)
         if not is_nohome_article(
             title_en=r["title"], title_cn=r["title_cn"], website_name=r["website"],
-            tags=r["tags"], repeat_count=repeat,
+            tags=r["tags"], series_count=series_count,
         ):
             continue
         if only_unmarked and r["hotornot"] == NOHOME_OPTION:

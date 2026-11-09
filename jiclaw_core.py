@@ -1539,26 +1539,73 @@ def get_website_name(feed_url: str) -> str:
 # ---------------------------------------------------------------------------
 # HotorNot / 首页收录口径
 # ---------------------------------------------------------------------------
-# 部分 RSS 源会周期性推同名栏目文章（Seeking Alpha 的「政治与市场」即一例），
+# 部分 RSS 源会周期性推同一栏目（Seeking Alpha 的「政治与市场 11/8/26」即一例），
 # 内容是宏观政治 / 市场评论，不是半导体产业新闻，不该占用首页。
 # 判定同时供「新写入」和「历史批量修正」使用，避免两套口径漂移。
 # Notion 数据库里已有的选项名是驼峰 noHome，写成 nohome 会凭空造出一个新选项
 NOHOME_OPTION = "noHome"
 
-_NOHOME_COLUMN_PATTERNS = (
-    re.compile(r"政治与市场"),
-    re.compile(r"politics\s*(?:&|and|,|/|\+)\s*(?:the\s+)?markets?", re.I),
-    re.compile(r"^(?:market|macro|politics)\s+(?:recap|brief|briefing|outlook|wrap|weekly|update|watch|review)", re.I),
-    re.compile(r"^(?:每周|每日|今日)?(?:市场|宏观|政经)(?:观察|综述|评论|回顾|周报|日报|简报|速览|展望)"),
+# 整站口径：库里 kitguru(305 条游戏资讯) / electronicsforu(53 条招聘帖)
+# 已被整体标为 noHome。固化到代码，避免以后新写入又回到首页。
+NOHOME_WEBSITES = frozenset({"kitguru", "electronicsforu"})
+
+# 日期 / 期号片段：把「政治与市场 11/8/26」和「政治与市场 10/26/26」归成同一系列
+_DATE_RE = re.compile(
+    r"\b\d{1,2}/\d{1,2}/\d{2,4}\b"
+    r"|\b(?:january|february|march|april|may|june|july|august|september|october|november|december"
+    r"|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec)\.?\s+\d{1,2}(?:st|nd|rd|th)?,?\s*\d{4}\b"
+    r"|\d{4}\s*年\s*\d{1,2}\s*月\s*\d{1,2}\s*日"
+    r"|\b(?:19|20)\d{2}\b",
+    re.I,
 )
-# 标题里出现半导体产业主题词 → 即使标题重复也保留 Home。
+# 周期性栏目的常见标记（单独不足以判定，还要 series_count >= 2 或显式栏目名）
+_PERIODIC_RE = re.compile(
+    r"\b(?:newsletter|digest|roundup|recap|briefing|snapshot|weekly|daily|monthly|wrap"
+    r"|line-?up|issue|report|commentary|summary|review)\b"
+    r"|通讯|杂志|猎头|简报|周报|日报|综述|总结|评论|回顾|快照|每周|每日|月度|最新一期|招聘",
+    re.I,
+)
+# 显式栏目名：新写入时没有历史系列计数可用，靠这些识别已知的周期栏目。
+# 以后发现新栏目，把栏目名加进来即可，不用改判定逻辑。
+_NOHOME_COLUMN_PATTERNS = (
+    re.compile(r"政治与市场|politics\s*(?:&|and|,|/|\+)\s*(?:the\s+)?markets?", re.I),
+    re.compile(r"1[-\s]?minute\s+market\s+report|分钟市场(?:简报|报告)", re.I),
+    re.compile(r"treasury\s+yields?\s+snapshot|国债收益率快照", re.I),
+    re.compile(r"weekly\s+closed-?end\s+fund\s+roundup|每周封闭式基金综述", re.I),
+    re.compile(r"valuengine|每周市场总结", re.I),
+    re.compile(r"^(?:market|macro|politics)\s+(?:recap|brief|briefing|outlook|wrap|weekly|update|watch|review)", re.I),
+    re.compile(r"(?:每周|每日|今日|周度)?(?:市场|宏观|政经)(?:观察|综述|评论|回顾|周报|日报|简报|速览|展望)"),
+)
+# 半导体产业主题词 / 标签 → 一律保留 Home，宁可少改也不错杀产业新闻。
 # 英文用词边界，避免 "fabric" / "fabulous" 误命中 fab；中文直接子串匹配。
 _SEMI_TOPIC_RE = re.compile(
     r"\b(?:chips?|semiconductors?|wafers?|foundry|foundries|fabs?|tsmc|nvidia|intel|amd"
-    r"|dram|nand|hbm|euv|asics?|gpus?|cpus?|photonics?|eda)\b"
-    r"|芯片|半导体|晶圆|制程|光刻|封装|存储|代工|集成电路",
+    r"|dram|nand|hbm|euv|asics?|gpus?|cpus?|photonics?|eda|dsp|ssd|pcb|mocvd)\b"
+    r"|芯片|半导体|晶圆|制程|光刻|封装|存储|代工|集成电路|显卡|光互连|光模块|闪存|内存"
+    r"|固态硬盘|算力|湾芯|封测",
     re.I,
 )
+_SEMI_TAGS = frozenset({
+    "semiconductor", "dram", "nand", "hbm", "3d ic", "gpu", "cpu", "ai chip",
+    "chiplet", "euv", "emib", "eda", "hpc", "3nm", "2nm", "pcie", "gddr",
+    "memory", "microchip", "infineon", "ti", "arm", "gan", "nvidia", "amd",
+})
+
+
+def title_series_key(title_en: str = "", title_cn: str = "") -> str:
+    """把带日期 / 期号的周期栏目标题归一化成同一个「系列键」。
+
+    "Politics And The Markets 11/8/26" 与 "Politics And The Markets 10/26/26"
+    -> "politics and the markets"，据此可统计出「周期性重复」。
+    """
+    text = _DATE_RE.sub(" ", (title_en or "").lower())
+    text = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) < 4:  # 英文标题是韩文等非拉丁字符时，退回中文标题
+        text = _DATE_RE.sub(" ", (title_cn or "").lower())
+        text = re.sub(r"[^0-9\u4e00-\u9fff]+", " ", text)
+        text = re.sub(r"\s+", " ", text).strip()
+    return text
 
 
 def is_nohome_article(
@@ -1567,21 +1614,26 @@ def is_nohome_article(
     website_name: str = "",
     category: str = None,
     tags: list = None,
-    repeat_count: int = 1,
+    series_count: int = 1,
 ) -> bool:
-    """周期性重复的栏目型标题 + 非半导体内容 → 不上首页（HotorNot=nohome）。
+    """周期性重复的栏目型标题 + 非半导体内容 → 不上首页（HotorNot=noHome）。
 
-    * category == "semiconductor" 或标题含半导体主题词：一律保留 Home；
-    * 命中显式栏目标题模式（「政治与市场」/ Politics & Markets / 市场周报 等）：nohome；
-    * 其余交给 repeat_count：同一源站同一标题在库里出现 ≥2 次即视为周期性栏目，
-      且已排除半导体内容 → nohome。新写入时 repeat_count 缺省为 1，只走显式模式。
+    * 整站口径（kitguru / electronicsforu）：直接 noHome；
+    * category == "semiconductor"、标题含半导体主题词或带半导体标签：保留 Home；
+    * 命中已知周期栏目名：noHome；
+    * 其余：同一源站里「系列键」出现 >= 2 次、且标题带日期/期号或栏目词，
+      才算周期性栏目 → noHome。新写入时 series_count 缺省 1，只走前三条。
     """
+    if str(website_name or "").strip().lower() in NOHOME_WEBSITES:
+        return True
     text = f"{title_cn or ''} {title_en or ''}".lower()
-    if category == "semiconductor" or _SEMI_TOPIC_RE.search(text):
+    if (category == "semiconductor" or _SEMI_TOPIC_RE.search(text)
+            or any(str(t).strip().lower() in _SEMI_TAGS for t in (tags or []))):
         return False
     if any(p.search(text) for p in _NOHOME_COLUMN_PATTERNS):
         return True
-    return repeat_count >= 2
+    raw = f"{title_cn or ''} {title_en or ''}"
+    return series_count >= 2 and bool(_DATE_RE.search(raw) or _PERIODIC_RE.search(raw))
 
 
 def resolve_hotornot(item: dict, ai_data: dict, website_name: str) -> str:
