@@ -1582,7 +1582,11 @@ _SEMI_TOPIC_RE = re.compile(
     r"\b(?:chips?|semiconductors?|wafers?|foundry|foundries|fabs?|tsmc|nvidia|intel|amd"
     r"|dram|nand|hbm|euv|asics?|gpus?|cpus?|photonics?|eda|dsp|ssd|pcb|mocvd)\b"
     r"|芯片|半导体|晶圆|制程|光刻|封装|存储|代工|集成电路|显卡|光互连|光模块|闪存|内存"
-    r"|固态硬盘|算力|湾芯|封测",
+    r"|固态硬盘|算力|湾芯|封测"
+    # 半导体公司名：这些公司的财报 / 股息公告属于产业内容，别当栏目文章踢出首页
+    r"|瑞萨|renesas|恩智浦|\bnxp\b|英飞凌|infineon|美光|micron|海力士|hynix"
+    r"|台积电|联电|\bumc\b|格芯|globalfoundries|日月光|德州仪器|意法半导体"
+    r"|stmicro|analog devices|\bmikroe\b|asml|应用材料|泛林|lam research|\bkla\b",
     re.I,
 )
 _SEMI_TAGS = frozenset({

@@ -97,6 +97,7 @@ def iter_pages(token, db_id):
         for row in rows:
             yield row
         if not data.get("has_more"):
+            print(f"[query] 分页读取完成，共 {total} 条")
             break
         cursor = data.get("next_cursor")
         time.sleep(0.35)
