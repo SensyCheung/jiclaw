@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-08T21:48:58+00:00",
-  "count": 25,
+  "generated_at": "2026-11-09T01:35:18+00:00",
+  "count": 26,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -679,6 +679,54 @@
       ],
       "source_count": 2,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "0af83a8396",
+      "dedup_key": "72fc62553df7",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1137615",
+      "title": "台积电强化整顿供应链 没改善就掉单",
+      "title_cn": "台积电强化整顿供应链 没改善就掉单",
+      "published_at": "2026-11-08T23:34:19.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-09T01:34:44",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "台积电(TSMC)",
+      "site": "高雄楠梓园区, 宝山厂",
+      "country_region": "中国台湾",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "0af83a8396",
+          "url": "https://laoyaoba.com/n/1137615",
+          "title": "台积电强化整顿供应链 没改善就掉单",
+          "title_cn": "台积电强化整顿供应链 没改善就掉单",
+          "source": "aijiwei",
+          "published_at": "2026-11-08T23:34:19.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "180d3e9d26",
+          "url": "https://laoyaoba.com/n/1137608",
+          "title": "【头条】新一代光刻机亮相，关键零部件国产化率突破90%！",
+          "title_cn": "【头条】新一代光刻机亮相，关键零部件国产化率突破90%！",
+          "source": "aijiwei",
+          "published_at": "2026-11-08T23:34:19.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption",
+        "other"
+      ],
+      "primary_event_type": "capacity_disruption",
+      "source_count": 2
     },
     {
       "post_id": "bb775a2649",
