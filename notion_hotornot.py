@@ -254,17 +254,20 @@ def main():
         probe(rows, options)
         return 0
 
-    # 规则见 jiclaw_core.is_nohome_article：周期性重复标题 + 非半导体内容
-    targets = select_targets(rows)
+    # 规则见 jiclaw_core.is_nohome_article：周期性重复标题 + 非半导体内容。
+    # 已标 noHome 的页面跳过（幂等），只处理增量，日志也只看增量。
+    targets = select_targets(rows, only_unmarked=True)
 
     option_name = pick_nohome_option(options)
-    print(f"=== 命中 {len(targets)} 条，目标选项: {option_name!r} ===")
+    print(f"=== 本次新增 {len(targets)} 条，目标选项: {option_name!r} ===")
+    print("=== 按 Website ===")
+    print(collections.Counter(r["website"] for r in targets).most_common(20))
     by_title = collections.Counter(norm_title(r["title_cn"] or r["title"]) for r in targets)
     for key, n in by_title.most_common(40):
         print(f"{n:>3}x | {key[:80]}")
-    print("=== 样本 ===")
-    for r in targets[:25]:
-        print(f"  {r['id']} | {r['website'][:18]:<20} | {(r['title_cn'] or r['title'])[:60]}")
+    print("=== 完整命中清单 ===")
+    for r in targets:
+        print(f"  {r['website'][:20]:<22} | {(r['title_cn'] or r['title'])[:70]}")
 
     if args.mode == "dry-run":
         print("dry-run：未写入任何页面")
