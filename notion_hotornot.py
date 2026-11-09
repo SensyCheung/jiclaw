@@ -121,7 +121,8 @@ def pick_nohome_option(options):
         name = str(opt.get("name") or "")
         if re.sub(r"[\s_-]", "", name).lower() in ("nohome", "nonhome", "nohot"):
             return name
-    return "nohome"
+    from jiclaw_core import NOHOME_OPTION
+    return NOHOME_OPTION
 
 
 def probe(rows, options):
@@ -165,6 +166,62 @@ def probe(rows, options):
     for r in hits[:30]:
         print(f"  [{r['hotornot']}] {r['website'][:18]:<20} | {(r['title_cn'] or r['title'])[:60]} | {(r['title'])[:70]}")
 
+    # 用户此前手工标过一批 noHome，先看清楚口径再批量改，避免猜错范围
+    marked = [r for r in rows if r["hotornot"] and r["hotornot"].lower() == "nohome"]
+    print(f"=== 已是 noHome 的 {len(marked)} 条：Website Top 15 ===")
+    print(collections.Counter(r["website"] for r in marked).most_common(15))
+    by_title = collections.defaultdict(list)
+    for r in marked:
+        by_title[norm_title(r["title_cn"] or r["title"])].append(r)
+    rep = sorted(((k, v) for k, v in by_title.items() if len(v) >= 2), key=lambda kv: -len(kv[1]))
+    print(f"=== 已标 noHome 的重复标题组 {len(rep)} 个，Top 30 ===")
+    for key, items in rep[:30]:
+        print(f"{len(items):>3}x | {items[0]['website'][:20]:<22} | {key[:80]}")
+    print("=== 已标 noHome 样本 40 ===")
+    for r in marked[:40]:
+        print(f"  {r['website'][:20]:<22} | {(r['title_cn'] or r['title'])[:66]} | {r['title'][:60]}")
+
+    # 周期性栏目常带日期 / 期号；列出 Seeking Alpha 里的候选，确认还有哪些同系列
+    date_pat = re.compile(r"(\d{1,2}/\d{1,2}/\d{2,4}|\d{4}年\d{1,2}月\d{1,2}日|(?:january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},?\s+\d{4})", re.I)
+    dated = [r for r in rows if r["website"] == "Seeking Alpha"
+             and date_pat.search(f"{r['title_cn']} {r['title']}")]
+    print(f"=== Seeking Alpha 标题带日期的候选 {len(dated)} 条，样本 40 ===")
+    for r in dated[:40]:
+        print(f"  [{r['hotornot']}] {(r['title_cn'] or r['title'])[:56]:<58} | {r['title'][:60]}")
+
+    # 当前规则预演：不写库，只统计命中范围
+    targets = select_targets(rows, only_unmarked=True)
+    print(f"=== 当前规则将新增 noHome：{len(targets)} 条，按 Website ===")
+    print(collections.Counter(r["website"] for r in targets).most_common(15))
+    print("=== 命中样本 40 ===")
+    for r in targets[:40]:
+        print(f"  {r['website'][:20]:<22} | {(r['title_cn'] or r['title'])[:70]}")
+
+
+def select_targets(rows, only_unmarked=False):
+    """按 jiclaw_core 的统一口径挑出该标 noHome 的页面。
+
+    only_unmarked=True 用于 probe 预演，只看「还没改」的增量。
+    """
+    from jiclaw_core import NOHOME_OPTION, is_nohome_article
+
+    counts = collections.Counter(
+        (r["website"], norm_title(r["title_cn"] or r["title"])) for r in rows
+    )
+    targets = []
+    for r in rows:
+        key = norm_title(r["title_cn"] or r["title"])
+        repeat = counts.get((r["website"], key), 0)
+        if not is_nohome_article(
+            title_en=r["title"], title_cn=r["title_cn"], website_name=r["website"],
+            tags=r["tags"], repeat_count=repeat,
+        ):
+            continue
+        if only_unmarked and r["hotornot"] == NOHOME_OPTION:
+            continue
+        targets.append(r)
+    return targets
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -186,19 +243,7 @@ def main():
         return 0
 
     # 规则见 jiclaw_core.is_nohome_article：周期性重复标题 + 非半导体内容
-    from jiclaw_core import is_nohome_article
-
-    counts = collections.Counter(
-        (r["website"], norm_title(r["title_cn"] or r["title"])) for r in rows
-    )
-    targets = []
-    for r in rows:
-        key = norm_title(r["title_cn"] or r["title"])
-        if is_nohome_article(
-            title_en=r["title"], title_cn=r["title_cn"], website_name=r["website"],
-            tags=r["tags"], repeat_count=counts.get((r["website"], key), 0),
-        ):
-            targets.append(r)
+    targets = select_targets(rows)
 
     option_name = pick_nohome_option(options)
     print(f"=== 命中 {len(targets)} 条，目标选项: {option_name!r} ===")

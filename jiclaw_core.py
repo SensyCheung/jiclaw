@@ -1542,9 +1542,12 @@ def get_website_name(feed_url: str) -> str:
 # 部分 RSS 源会周期性推同名栏目文章（Seeking Alpha 的「政治与市场」即一例），
 # 内容是宏观政治 / 市场评论，不是半导体产业新闻，不该占用首页。
 # 判定同时供「新写入」和「历史批量修正」使用，避免两套口径漂移。
+# Notion 数据库里已有的选项名是驼峰 noHome，写成 nohome 会凭空造出一个新选项
+NOHOME_OPTION = "noHome"
+
 _NOHOME_COLUMN_PATTERNS = (
     re.compile(r"政治与市场"),
-    re.compile(r"politics\s*(?:&|and|,|/|\+)\s*markets?", re.I),
+    re.compile(r"politics\s*(?:&|and|,|/|\+)\s*(?:the\s+)?markets?", re.I),
     re.compile(r"^(?:market|macro|politics)\s+(?:recap|brief|briefing|outlook|wrap|weekly|update|watch|review)", re.I),
     re.compile(r"^(?:每周|每日|今日)?(?:市场|宏观|政经)(?:观察|综述|评论|回顾|周报|日报|简报|速览|展望)"),
 )
@@ -1583,7 +1586,7 @@ def is_nohome_article(
 
 def resolve_hotornot(item: dict, ai_data: dict, website_name: str) -> str:
     """新写入 Notion 时决定 HotorNot 取值。"""
-    return "nohome" if is_nohome_article(
+    return NOHOME_OPTION if is_nohome_article(
         title_en=item.get("title", ""),
         title_cn=ai_data.get("title_cn") or "",
         website_name=website_name,
