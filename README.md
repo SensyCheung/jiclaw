@@ -412,6 +412,35 @@ const alerts = events.filter(e => e.severity >= 0.6);
 > 归并是**保守的**：必须有相同的发生日期与灾种，且主体名互相包含（或泛称+同厂区）才合并。
 > 泛称已在 prompt 层禁掉，所以新数据主要走实体名匹配这条路径。
 
+## HotorNot / 首页收录口径
+
+Notion 的 `HotorNot` 是 select，选项为 `Not / Hot / Home / noHome`（**注意驼峰**，
+写成 `nohome` 会凭空造出一个新选项）。`create_notion_page` 默认写 `Home`，下列文章写 `noHome`：
+
+| 类型 | 例子 | 判定 |
+|------|------|------|
+| 整站口径 | kitguru（游戏资讯）、electronicsforu（招聘帖） | `NOHOME_WEBSITES` |
+| 周期性栏目 | Seeking Alpha「政治与市场 11/8/26」「1-Minute Market Report」「国债收益率快照」、Tom's Hardware Premium 周报 | 显式栏目名 `_NOHOME_COLUMN_PATTERNS` |
+| 其他源站的周期栏目 | Electronics Weekly 时事通讯订阅页、bits-chips「阅读最新一期杂志」、IFA 2026 展会图文 | 「系列键」在同一源站出现 ≥2 次，且标题带日期/期号或栏目词 |
+
+`title_series_key()` 会把 `Politics And The Markets 11/8/26` 与 `... 10/26/26` 归一成
+同一个系列键 —— 按完整标题去重是识别不出这种「周期性重复」的。发现新栏目时，
+把栏目名加进 `_NOHOME_COLUMN_PATTERNS` 即可，不用改判定逻辑。
+
+**半导体内容一律保留 `Home`**：`category=semiconductor`、标题含半导体主题词或公司名、
+`tags` 含半导体标签，都优先保护，避免把湾芯展、光互连、瑞萨财报这类产业新闻踢出首页。
+
+历史页面批量修正（`notion_hotornot.py`，密钥由 Actions Secrets 注入，本地无需保存 token）：
+
+```bash
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_hotornot=probe     # 只读排查
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_hotornot=dry-run   # 预演增量
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_hotornot=apply     # 批量写入
+```
+
+`apply` 幂等：已标 `noHome` 的页面会跳过。2026-11-09 首次执行更新 67 条、失败 0 条，
+库内 `noHome` 由 358 条增至 425 条（总 10000 条），复跑预演新增 0 条。
+
 ## 推送到 SEISMIQ
 
 `push_to_seismiq.py` 把 `latest.json` 推到 `POST https://seismiq-api.jijibot.workers.dev/api/webhook`。
