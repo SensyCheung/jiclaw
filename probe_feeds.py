@@ -16,6 +16,7 @@ runner 验证新 feed 是否真的能解析出文章，再加进订阅清单。
 import argparse
 import os
 import re
+import socket
 import sys
 
 import feedparser
@@ -25,9 +26,28 @@ UA = "Mozilla/5.0 (compatible; jiclaw-rss-probe/1.0)"
 _AUTHOR_LINK_RE = re.compile(r"/authors/([A-Za-z0-9_-]+)/([a-z0-9-]+)")
 
 
-def probe(url: str, timeout: int = 45) -> bool:
-    """返回该 URL 是否给出了至少一条有效条目。"""
-    print(f"\n=== {url} ===", flush=True)
+def probe(url: str, timeout: int = 45, use_feedparser: bool = False) -> bool:
+    """返回该 URL 是否给出了至少一条有效条目。
+
+    use_feedparser=True 时走 feedparser.parse(url)，与 jiclaw_core 的真实抓取路径
+    完全一致（urllib + socket 默认超时），用来验证慢源在生产代码里也能等到响应。
+    """
+    print(f"\n=== {url} ===" + (" [feedparser 真实路径]" if use_feedparser else ""), flush=True)
+    if use_feedparser:
+        socket.setdefaulttimeout(timeout)
+        try:
+            feed = feedparser.parse(url)
+        except Exception as exc:
+            print(f"  feedparser 请求失败: {type(exc).__name__}: {str(exc)[:200]}")
+            return False
+        print(f"  feed title: {feed.feed.get('title')!r} | items: {len(feed.entries)}")
+        if feed.bozo:
+            print(f"  解析警告: {str(feed.bozo_exception)[:150]}")
+        for entry in feed.entries[:3]:
+            date = entry.get("published") or entry.get("updated") or ""
+            print(f"    - {(entry.get('title') or '')[:88]} | {date}")
+        return len(feed.entries) > 0
+
     try:
         resp = requests.get(url, headers={"User-Agent": UA}, timeout=timeout)
     except Exception as exc:
@@ -48,6 +68,9 @@ def probe(url: str, timeout: int = 45) -> bool:
         text = re.sub(r"<[^>]+>", " ", body[:6000].decode("utf-8", "replace"))
         print(f"  HTML 页面（非 feed）: {' '.join(text.split())[:260]}")
         return False
+    if not any(tag in body[:2000].lower() for tag in (b"<rss", b"<feed", b"<?xml")):
+        # JSON / 纯文本接口，打印片段便于排查（例如找作者 ID 的 lineup API）
+        print(f"  响应片段（非 XML）: {body[:300].decode('utf-8', 'replace')}")
 
     feed = feedparser.parse(body)
     print(f"  feed title: {feed.feed.get('title')!r} | items: {len(feed.entries)}")
@@ -81,6 +104,8 @@ def main() -> None:
     ap.add_argument("--extract-authors", metavar="ARTICLE_URL",
                     help="从 Bloomberg 文章页提取作者 ID/slug")
     ap.add_argument("--timeout", type=int, default=45, help="单请求超时秒数")
+    ap.add_argument("--feedparser", action="store_true",
+                    help="用 feedparser.parse(url) 走生产代码相同的抓取路径")
     args = ap.parse_args()
 
     urls = args.urls or os.environ.get("PROBE_FEEDS", "").split()
@@ -90,7 +115,7 @@ def main() -> None:
     if not urls and not pages:
         ap.error("没有目标：用位置参数 / PROBE_FEEDS / --extract-authors / PROBE_AUTHOR_PAGES 提供")
 
-    ok = sum(bool(probe(u, args.timeout)) for u in urls)
+    ok = sum(bool(probe(u, args.timeout, args.feedparser)) for u in urls)
     for page in pages:
         extract_authors(page, args.timeout)
     print(f"\n=== 可用 feed: {ok}/{len(urls)} ===", flush=True)
