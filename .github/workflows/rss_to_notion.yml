@@ -41,6 +41,11 @@ on:
         required: false
         type: string
         default: ''
+      probe_timeout:
+        description: '探测单请求超时秒数（反爬源可设 120-180）'
+        required: false
+        type: string
+        default: '45'
 
 jobs:
   run-script:
@@ -106,7 +111,7 @@ jobs:
         env:
           PROBE_FEEDS: ${{ github.event.inputs.probe_feed }}
           PROBE_AUTHOR_PAGES: ${{ github.event.inputs.probe_author_pages }}
-        run: python probe_feeds.py
+        run: python probe_feeds.py --timeout "${{ github.event.inputs.probe_timeout || '45' }}"
 
       # 周期性栏目文章（如「政治与市场」）不进首页：可单独触发，probe_only=true 时也能跑。
       # apply 会真实更新 Notion 页面，务必先跑 probe / dry-run 确认范围。
