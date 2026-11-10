@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-10T03:23:54+00:00",
-  "count": 36,
+  "generated_at": "2026-11-10T12:43:20+00:00",
+  "count": 38,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -876,6 +876,46 @@
       "primary_event_type": "capacity_disruption"
     },
     {
+      "post_id": "8c09a017a2",
+      "dedup_key": "21029bdfa20c",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/delays-reported-at-rapidus-2026-11/",
+      "title": "Delays reported at Rapidus",
+      "title_cn": "报道称Rapidus 2nm芯片项目遭遇延误",
+      "published_at": "2026-11-10T07:35:59.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-10T12:13:00",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "technology",
+      "entity": "Rapidus",
+      "site": null,
+      "country_region": "日本",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "2nm"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "8c09a017a2",
+          "url": "https://www.electronicsweekly.com/news/business/delays-reported-at-rapidus-2026-11/",
+          "title": "Delays reported at Rapidus",
+          "title_cn": "报道称Rapidus 2nm芯片项目遭遇延误",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-10T07:35:59.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
+    },
+    {
       "post_id": "c2f537a55d",
       "source": "aijiwei",
       "url": "https://laoyaoba.com/n/1136325",
@@ -1326,6 +1366,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "other"
+    },
+    {
+      "post_id": "012db1f0c2",
+      "dedup_key": "4c94d58b2808",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/articles/jensen-huangs-yearslong-ties-alice-huang-enabled-nvidia-chip-sales-china",
+      "title": "How Jensen Huang’s Yearslong Ties to Alice Huang Enabled $7 Billion-Plus Nvidia Chip Sales to China",
+      "title_cn": "黄仁勋与 Alice Huang 的多年关系如何促成英伟达(Nvidia)向中国销售超过 70 亿美元的芯片",
+      "published_at": "2026-11-10T10:41:09.000Z",
+      "llm": "gemini:gemma-4-31b-it",
+      "ingested_at": "2026-11-10T12:32:48",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(Nvidia)",
+      "site": "中国",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.6,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "012db1f0c2",
+          "url": "https://www.theinformation.com/articles/jensen-huangs-yearslong-ties-alice-huang-enabled-nvidia-chip-sales-china",
+          "title": "How Jensen Huang’s Yearslong Ties to Alice Huang Enabled $7 Billion-Plus Nvidia Chip Sales to China",
+          "title_cn": "黄仁勋与 Alice Huang 的多年关系如何促成英伟达(Nvidia)向中国销售超过 70 亿美元的芯片",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-10T10:41:09.000Z",
+          "llm": "gemini:gemma-4-31b-it"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "dd9ac9e304",
