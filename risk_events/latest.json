@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-10T12:43:20+00:00",
-  "count": 38,
+  "generated_at": "2026-11-10T20:48:59+00:00",
+  "count": 41,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,49 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "9623c7701a",
+      "dedup_key": "a896580e6ad3",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/policy/alice-huang-reportedly-instrumental-in-securing-over-usd7-5-billion-of-nvidia-ai-gpu-imports-during-three-year-relationship-with-jensen-huang-helped-move-240-000-banned-chips-into-china-mostly-h100-and-h200",
+      "title": "Alice Huang reportedly instrumental in securing over $7.5 billion of Nvidia AI GPU imports during three-year relationship with Jensen Huang",
+      "title_cn": "报道称Alice Huang在与黄仁勋的三年关系中，在获取价值超75亿美元的英伟达AI GPU进口中发挥了关键作用",
+      "published_at": "2026-11-10T16:50:01.000Z",
+      "llm": "gemini:gemini-3.5-flash-lite",
+      "ingested_at": "2026-11-10T20:22:19",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "Nvidia, Megaspeed, 上海世纪利通(Shanghai Century Litong)",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "GPU",
+        "AI chip",
+        "H100",
+        "H200"
+      ],
+      "occurred_at": "2026-11-10",
+      "sources": [
+        {
+          "post_id": "9623c7701a",
+          "url": "https://www.tomshardware.com/tech-industry/policy/alice-huang-reportedly-instrumental-in-securing-over-usd7-5-billion-of-nvidia-ai-gpu-imports-during-three-year-relationship-with-jensen-huang-helped-move-240-000-banned-chips-into-china-mostly-h100-and-h200",
+          "title": "Alice Huang reportedly instrumental in securing over $7.5 billion of Nvidia AI GPU imports during three-year relationship with Jensen Huang",
+          "title_cn": "报道称Alice Huang在与黄仁勋的三年关系中，在获取价值超75亿美元的英伟达AI GPU进口中发挥了关键作用",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-10T16:50:01.000Z",
+          "llm": "gemini:gemini-3.5-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
     {
       "post_id": "305e87f3a3",
       "dedup_key": "6f22ed06161f",
@@ -1526,6 +1569,82 @@
       ],
       "source_count": 1,
       "primary_event_type": "labor_dispute"
+    },
+    {
+      "post_id": "8d93d8f57c",
+      "dedup_key": "c795ac01cf0d",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/AB1M_8ht4mM/ian-king/rss",
+      "url": "https://www.bloomberg.com/news/features/2026-11-09/nvidia-ceo-jensen-huang-s-affair-with-alleged-spy-raises-succession-concerns",
+      "title": "Jensen Huang’s 700,000% Return Magnifies Nvidia Succession Crisis",
+      "title_cn": "黄仁勋700,000%回报加剧英伟达继任危机",
+      "published_at": "2026-11-09T23:41:26.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-10T20:28:34",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "operational",
+      "entity": "英伟达(Nvidia)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "8d93d8f57c",
+          "url": "https://www.bloomberg.com/news/features/2026-11-09/nvidia-ceo-jensen-huang-s-affair-with-alleged-spy-raises-succession-concerns",
+          "title": "Jensen Huang’s 700,000% Return Magnifies Nvidia Succession Crisis",
+          "title_cn": "黄仁勋700,000%回报加剧英伟达继任危机",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/AB1M_8ht4mM/ian-king/rss",
+          "published_at": "2026-11-09T23:41:26.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
+    },
+    {
+      "post_id": "8c65c6a48d",
+      "dedup_key": "9ab524e8d689",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/AB1M_8ht4mM/ian-king/rss",
+      "url": "https://www.bloomberg.com/news/articles/2026-11-04/arm-forecast-meets-estimates-after-data-center-push-pays-off",
+      "title": "Arm Fails to Impress Investors With AI-Fueled Sales Forecast",
+      "title_cn": "Arm 未能用 AI 驱动的销售预测令投资者满意",
+      "published_at": "2026-11-04T21:05:55.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-10T20:29:58",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "financial",
+      "entity": "Arm",
+      "site": null,
+      "country_region": null,
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "8c65c6a48d",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-04/arm-forecast-meets-estimates-after-data-center-push-pays-off",
+          "title": "Arm Fails to Impress Investors With AI-Fueled Sales Forecast",
+          "title_cn": "Arm 未能用 AI 驱动的销售预测令投资者满意",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/AB1M_8ht4mM/ian-king/rss",
+          "published_at": "2026-11-04T21:05:55.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
     }
   ]
 }
