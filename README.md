@@ -466,6 +466,46 @@ python probe_feeds.py --timeout 180 "<feed url>"
 可复现生产代码的 `feedparser.parse(url)` 路径。`probe_author_pages` 输入可从文章页
 HTML 里提取 `/authors/{id}/{slug}` 链接（反爬拦截时拿不到，需另找作者页 URL）。
 
+## Notion `tags` 选项治理
+
+`tags` 是 multi_select：写入一个库里不存在的 name，Notion 会**自动新建一个选项**。
+旧 prompt 允许模型「列表没有合适的就提取正文公司名」，长期累积到 **5859 个选项 /
+651KB**（官方建议整个 schema ≤ 50KB），新文章写入开始返回
+`400 database schema has exceeded the maximum size`，整条页面被拒。
+
+**收敛到固定词表**（`jiclaw_core.py`）：`CANDIDATE_TAGS` 是唯一数据源（43 个标签），
+既生成 prompt 的 `[Candidate Tags]`，也在 `create_notion_page` 里经 `normalize_tags()`
+硬过滤 —— 归一大小写/空白、去重、最多 3 个、自造词一律丢弃。要加标签只改这一处，
+`PROHIBITED_TAGS` 里的词永远不写入；这样选项数不会再增长。
+
+**历史选项清理**（`notion_tags_cleanup.py`，密钥由 Actions Secrets 注入）：
+
+```bash
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_tags=probe    # 只读统计 + 备份
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_tags=dry-run  # 预演
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_tags=apply    # 清理并自动恢复页面标签
+# 从某次 run 的备份单独恢复标签
+gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_tags=restore -f tags_backup_run=42922769007
+```
+
+备份 `tags_options_backup.json` 含全部选项与**页面级标签映射**，由 workflow 上传为
+artifact 保留 90 天（本地 `.gitignore` 忽略）。`apply` 幂等：没有零引用选项时直接跳过。
+`tags_keep_min` 默认 1（只删零引用），脚本会自动适配 API 上限。
+
+三个实测坑，别再踩：
+
+1. **选项名匹配忽略大小写/空格**。库里有 `chiplet` 时再新增 `Chiplet` 会 400
+   `duplicates not allowed`；页面写入 `Chiplet` 本来就会复用 `chiplet`。
+2. **PATCH database 的 `options` 数组最多 100 项**，且它是「完整保留列表」——
+   未列出的选项会被移除。脚本会自动抬高 `tags_keep_min` 直到满足上限。
+3. **移除选项会连带清掉页面上的标签值**（官方文档说不会，实测会）。所以 `apply`
+   在清理后立即按清理前快照把标签逐页写回；写回不存在的 name 时 Notion 自动重建
+   该选项，最终状态等价于「只删零引用选项」，页面数据零损失。
+
+2026-11-11 执行结果：清掉 5454 个零引用选项，`tags` 属性 651,632 → 44,441 bytes，
+选项 5859 → 405 个（全部仍被页面引用）；中途 277 个页面的标签被连带清掉，已用备份
+全部补回，逐页校验缺失 0 条。
+
 ## HotorNot / 首页收录口径
 
 Notion 的 `HotorNot` 是 select，选项为 `Not / Hot / Home / noHome`（**注意驼峰**，
