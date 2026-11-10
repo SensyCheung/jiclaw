@@ -8,6 +8,7 @@ import json
 import re
 import hashlib
 import time
+import socket
 from datetime import datetime
 from urllib.parse import urlparse
 
@@ -47,6 +48,22 @@ USE_RSS_SUMMARY_FEEDS = [
 ]
 
 
+# feedparser.parse(url) 走 urllib，未显式给 timeout 时用 socket 默认超时（None = 无限等）。
+# 自定义 RSSHub 的作者源串行抓全文约 60-65s，偶发不响应会让整轮 GitHub Actions 永久挂住，
+# 所以给所有 feed 抓取设一个宽松上限（正常源秒回，不受影响）。
+FEED_FETCH_TIMEOUT = 180
+
+
+def _parse_feed(feed_url: str):
+    """带超时地抓取并解析 RSS；超时异常由 jiclaw.py 的 per-source try/except 兜底。"""
+    previous = socket.getdefaulttimeout()
+    socket.setdefaulttimeout(FEED_FETCH_TIMEOUT)
+    try:
+        return feedparser.parse(feed_url)
+    finally:
+        socket.setdefaulttimeout(previous)
+
+
 def _should_fetch_content(feed_url: str) -> bool:
     """判断是否需要抓取网页正文内容
     
@@ -83,7 +100,7 @@ def _entry_summary(entry) -> str:
 
 def get_latest_item(feed_url: str):
     """从 RSS 源中获取最新一篇文章的标题、链接和摘要。"""
-    feed = feedparser.parse(feed_url)
+    feed = _parse_feed(feed_url)
 
     if not feed.entries:
         print("该 RSS 源没有找到任何条目。")
@@ -119,7 +136,7 @@ def get_latest_item(feed_url: str):
 
 def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
     """从 RSS 源中获取最近若干篇文章的信息。"""
-    feed = feedparser.parse(feed_url)
+    feed = _parse_feed(feed_url)
 
     if not feed.entries:
         print("该 RSS 源没有找到任何条目。")
