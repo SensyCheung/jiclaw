@@ -57,10 +57,10 @@ on:
         type: string
         default: ''
       tags_keep_min:
-        description: 'tags 高频选项保留阈值（引用次数 ≥ 该值才保留），默认 10'
+        description: 'tags 选项保留阈值（引用 ≥ 该值才保留）；1=只删零引用（最安全，默认），2/5/10 更激进'
         required: false
         type: string
-        default: '10'
+        default: '1'
 
 jobs:
   run-script:
@@ -144,7 +144,7 @@ jobs:
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        run: python notion_tags_cleanup.py --mode "${{ github.event.inputs.notion_tags }}" --keep-min "${{ github.event.inputs.tags_keep_min || '10' }}"
+        run: python notion_tags_cleanup.py --mode "${{ github.event.inputs.notion_tags }}" --keep-min "${{ github.event.inputs.tags_keep_min || '1' }}"
 
       - name: Upload tags options backup
         if: github.event.inputs.notion_tags != ''

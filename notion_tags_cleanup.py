@@ -182,7 +182,8 @@ def describe(db, options, usage_id, usage_norm, orphan, keep_min):
     print(f"引用分布: {dict(buckets)}")
 
     print("=== 不同 keep-min 下的保留规模（词表 + 高频） ===")
-    for k in (2, 5, 10, 20, 50, 100):
+    print("  keep-min=1 即「只删零引用」：不触碰任何仍被页面引用的选项，最安全")
+    for k in (1, 2, 5, 10, 20, 50, 100):
         keep, _, new_names, _ = build_plan(options, usage_id, usage_norm, k)
         est = sum(_byte_size({"id": o.get("id"), "name": o.get("name")}) for o in keep)
         print(f"  keep-min={k:<4} 保留 {len(keep):>5} 个 | 移除 {len(options)-len(keep):>5} 个 "
@@ -247,6 +248,54 @@ def write_backup(db_id, options, usage_id, usage_norm, keep_min):
     return payload
 
 
+def page_tag_stats(rows):
+    """统计页面上实际选中的标签，用于 apply 前后核对「值没有被误删」。"""
+    total = 0
+    distinct = set()
+    for page in rows:
+        for _, name in page_tags(page):
+            total += 1
+            norm = _norm_tag(name)
+            if norm:
+                distinct.add(norm)
+    return total, len(distinct)
+
+
+def verify_page_values(token, db_id, rows, removed_ids, before_total, before_distinct):
+    """移除选项后重新读库，确认页面上的标签值完好（官方说只改可选项、不改页面值）。"""
+    print("[verify] 重新分页读取全部页面，核对标签值是否被误删 ...")
+    after_rows = list(iter_pages(token, db_id))
+    after_total, after_distinct = page_tag_stats(after_rows)
+    print(f"[verify] 页面已选标签总次数: {before_total} → {after_total} | "
+          f"不同标签值: {before_distinct} → {after_distinct}")
+
+    # 抽查原本引用了「被移除选项」的页面（keep-min=1 时不会有这类页面）
+    samples = []
+    for page in rows:
+        tags = page_tags(page)
+        names = [n for _, n in tags]
+        if names and any(i in removed_ids for i, _ in tags):
+            samples.append((page.get("id"), names))
+        if len(samples) >= 10:
+            break
+    for pid, names in samples:
+        resp = requests.get(f"{BASE}/v1/pages/{pid}", headers=_headers(token), timeout=20)
+        if resp.status_code >= 300:
+            print(f"  [verify] 抽样页 {pid} 读取失败 HTTP {resp.status_code}")
+            continue
+        now = [n for _, n in page_tags(resp.json())]
+        same = set(map(_norm_tag, now)) == set(map(_norm_tag, names))
+        print(f"  [verify] {'OK' if same else 'DIFF'} {pid} 前={names} 后={now}")
+    if not samples:
+        print("[verify] 无页面引用被移除的选项（只删零引用），历史标签值不受影响")
+
+    if after_total < before_total or after_distinct < before_distinct:
+        print("[verify] ⚠️ 页面标签数量下降，移除选项可能影响了页面值，请对照备份排查")
+        return False
+    print("[verify] 页面标签值完整，未丢失")
+    return True
+
+
 def apply_plan(token, db_id, keep, new_names):
     body = {
         "properties": {
@@ -278,8 +327,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=("probe", "dry-run", "apply"), default="probe")
     ap.add_argument("--keep-min", type=int,
-                    default=int(os.environ.get("TAGS_KEEP_MIN", "10")),
-                    help="高频标签保留阈值（引用次数 ≥ 该值）")
+                    default=int(os.environ.get("TAGS_KEEP_MIN", "1")),
+                    help="高频标签保留阈值（引用次数 ≥ 该值）；默认 1 = 只删零引用选项")
     args = ap.parse_args()
 
     token = os.environ.get("NOTION_API_KEY", "")
@@ -300,6 +349,8 @@ def main():
 
     rows = list(iter_pages(token, db_id))
     usage_id, usage_norm, orphan = collect_usage(rows, options)
+    before_tags, before_distinct = page_tag_stats(rows)
+    print(f"=== 页面上已选标签：{before_tags} 次 / {before_distinct} 种（清理前基线） ===")
     describe(db, options, usage_id, usage_norm, orphan, args.keep_min)
     keep, remove, new_names, _ = build_plan(options, usage_id, usage_norm, args.keep_min)
     write_backup(db_id, options, usage_id, usage_norm, args.keep_min)
@@ -308,9 +359,12 @@ def main():
         print("probe：只读，未写入任何内容")
         return 0
 
-    print(f"=== 完整移除清单（{len(remove)} 个） ===")
-    for opt in remove:
+    print(f"=== 移除清单（共 {len(remove)} 个，日志只列前 100；完整清单见备份 artifact） ===")
+    for opt in remove[:100]:
         print(f"  {usage_id.get(opt.get('id'), 0):>5}x | {opt.get('id')} | {opt.get('name')}")
+    if len(remove) > 100:
+        print(f"  ... 其余 {len(remove) - 100} 个见 {BACKUP_FILE}")
+    print(f"=== 移除项里有引用的：{sum(1 for o in remove if usage_id.get(o.get('id'), 0))} 个 ===")
 
     if args.mode == "dry-run":
         print("dry-run：未写入任何内容")
@@ -330,6 +384,10 @@ def main():
           f"tags 属性 {before_bytes:,} → {after_bytes:,} bytes ===")
     print("=== 现有选项（前 60） ===")
     print([o.get("name") for o in after_options[:60]])
+
+    if not verify_page_values(token, db_id, rows, {o.get("id") for o in remove},
+                              before_tags, before_distinct):
+        return 1
     return 0
 
 
