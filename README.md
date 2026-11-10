@@ -412,6 +412,52 @@ const alerts = events.filter(e => e.severity >= 0.6);
 > 归并是**保守的**：必须有相同的发生日期与灾种，且主体名互相包含（或泛称+同厂区）才合并。
 > 泛称已在 prompt 层禁掉，所以新数据主要走实体名匹配这条路径。
 
+## 自定义 RSSHub：Bloomberg 作者源
+
+Bloomberg 作者页反爬严格，官方 `rsshub.app` 不稳；订阅走自建实例
+`https://rsshub-demo.cautious-menu.workers.dev`，路由用 RSSHub 官方的
+`/bloomberg/authors/:id/:slug/:source?`，第三段固定 `rss`（直接取 Bloomberg 作者的
+`.rss`，比 lineup API 稳）。当前订阅 3 位长期写半导体的作者：
+
+| 作者 | 分工 | id / slug |
+|------|------|-----------|
+| Ian King | 美国半导体记者：Nvidia / Intel / 出口管制 / 芯片股 | `AB1M_8ht4mM/ian-king` |
+| Debby Wu | 亚洲科技：台积电、美光、存储与供应链 | `ATjxWD012Wk/debby-wu` |
+| Catherine Thorbecke | 亚洲科技专栏：TSMC / Rapidus / 芯片地缘 | `AWztaihZGwI/catherine-thorbecke` |
+
+Mark Gurman（苹果公司动向）、Matt Levine（金融）、John Authers（宏观）等也有作者 feed，
+但内容与半导体无关，不订阅，避免污染首页。
+
+**两个必须知道的特性**：
+
+1. **慢源**：RSSHub 会串行抓取 20 篇文章全文，实测每个 feed 约 **60–65 秒**才返回。
+   探测时 timeout 至少给 120–180 秒，45 秒会误判成不可用；生产路径用
+   `feedparser.parse(url)`（无显式超时），可以正常等到。
+2. **不要二次抓正文**：RSSHub 已把全文写进 `content:encoded`，而 `bloomberg.com`
+   正文对 runner 返回 403。该域名已加进 `USE_RSS_SUMMARY_FEEDS`，直接用 RSS 内容；
+   `get_website_name()` 也按 `/bloomberg` 前缀把 Notion 的 Website 还原成 `Bloomberg`，
+   否则会显示成 `rsshub-demo`。
+
+> RSSHub 的 feed 标题取自首篇文章的第一作者，合著稿件可能显示成别人
+> （Debby Wu 的 feed 曾显示 `Bloomberg - Molly Schuetz`）；条目本身正确，不影响入库。
+
+新增作者：从作者页 URL `https://www.bloomberg.com/authors/{id}/{slug}` 取 id 与 slug，
+先用只读探测确认可用，再加进 `rss_to_notion.yml` 的 URL 列表：
+
+```bash
+# 借 GitHub Actions 的境外网络（本地到 *.workers.dev 不通）
+gh workflow run rss_to_notion.yml --ref main \
+  -f probe_only=true -f probe_timeout=180 \
+  -f "probe_feed=https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/{id}/{slug}/rss"
+
+# 本地能连外网时直接跑
+python probe_feeds.py --timeout 180 "<feed url>"
+```
+
+`probe_feeds.py` 打印 HTTP 状态、feed 标题、条目数与前三条标题；加 `--feedparser`
+可复现生产代码的 `feedparser.parse(url)` 路径。`probe_author_pages` 输入可从文章页
+HTML 里提取 `/authors/{id}/{slug}` 链接（反爬拦截时拿不到，需另找作者页 URL）。
+
 ## HotorNot / 首页收录口径
 
 Notion 的 `HotorNot` 是 select，选项为 `Not / Hot / Home / noHome`（**注意驼峰**，

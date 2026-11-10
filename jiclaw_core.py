@@ -39,6 +39,10 @@ USE_RSS_SUMMARY_FEEDS = [
     # The Information：文章页被 Cloudflare 拦截（403 "Just a moment"）
     # 且正文在付费墙后，feed 的 content 就是官方导语（平均 900+ 字符），直接用它
     "theinformation.com",
+
+    # 自定义 RSSHub 的 Bloomberg 作者 feed：RSSHub 已逐篇把全文写进 content:encoded，
+    # 而 bloomberg.com 正文对 runner 返回 403，再抓一次只会失败且拖慢整轮；直接用 RSS 内容。
+    "rsshub-demo.cautious-menu.workers.dev",
 ]
 
 
@@ -1525,6 +1529,10 @@ def get_website_name(feed_url: str) -> str:
         "qualcomm.com": "Qualcomm",
         "theinformation.com": "The Information",
     }
+
+    # 自定义 RSSHub：域名本身没有辨识度，按路由前缀还原真实媒体名
+    if domain == "rsshub-demo.cautious-menu.workers.dev":
+        return "Bloomberg" if path.startswith("/bloomberg") else domain.split(".")[0]
 
     # Broadcom 特殊处理：根据路径区分 News 和 Blog
     if domain == "broadcom.com" or domain == "www.broadcom.com":
