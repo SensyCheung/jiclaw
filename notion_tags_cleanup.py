@@ -22,7 +22,9 @@ Notion 2022-06-28 的官方行为（Update property schema 文档）::
 1. 固定词表 ``jiclaw_core.CANDIDATE_TAGS`` 里的规范名（写库前已硬过滤到这个词表）；
 2. 词表的历史大小写变体（仅在仍被页面引用时保留，避免历史值成为幽灵选项）；
 3. 引用次数 ≥ ``--keep-min`` 的高频历史标签（保住常用筛选视图）；
-其余一律移除。apply 时还会补齐词表里缺失的规范名，之后写入永远命中已有选项。
+其余一律移除。apply 时只补齐词表里**连大小写变体都不存在**的规范名：Notion 的选项名
+匹配忽略大小写/空格，已有 ``chiplet`` 时再传 ``Chiplet`` 会 400 duplicates not allowed，
+而页面写入 ``Chiplet`` 本来就会自动复用 ``chiplet`` 这个选项。
 
 Notion PATCH database 的 ``options`` 数组**最多 100 项**，而它是「完整保留列表」，
 所以清理后的选项总数必然 ≤ 100。``--keep-min`` 会在必要时自动提高，使
@@ -135,14 +137,18 @@ def collect_usage(rows, options):
 def build_plan(options, usage_id, usage_norm, keep_min):
     """给出 (保留的 option 列表, 移除的 option 列表, 需新增的规范名, 原因分布)。"""
     vocab = {_norm_tag(t): t for t in CANDIDATE_TAGS}
-    exact_names = {o.get("name") for o in options}
+    # Notion 的选项名匹配忽略大小写与首尾空格（文档: "Names match without regard
+    # to case or surrounding spaces"）。所以只要存在归一化同名的选项，就不能再
+    # 新增规范名，否则 400 "duplicates not allowed"；页面写入用规范名也会自动
+    # 命中那个已有变体，不会新建选项。
+    existing_norms = {_norm_tag(o.get("name")) for o in options}
     keep, remove, reasons = [], [], collections.Counter()
 
     for opt in options:
         name = str(opt.get("name") or "")
         norm = _norm_tag(name)
         uses = usage_id.get(opt.get("id"), 0) or usage_norm.get(norm, 0)
-        if name in exact_names and name in CANDIDATE_TAGS:
+        if name in CANDIDATE_TAGS:
             keep.append(opt)
             reasons["词表规范名"] += 1
         elif norm in vocab and uses > 0:
@@ -154,7 +160,7 @@ def build_plan(options, usage_id, usage_norm, keep_min):
         else:
             remove.append(opt)
 
-    new_names = [t for t in CANDIDATE_TAGS if t not in exact_names]
+    new_names = [t for t in CANDIDATE_TAGS if _norm_tag(t) not in existing_norms]
     return keep, remove, new_names, reasons
 
 
