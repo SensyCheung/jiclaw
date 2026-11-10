@@ -17,7 +17,6 @@ import argparse
 import os
 import re
 import socket
-import sys
 
 import feedparser
 import requests
@@ -118,8 +117,8 @@ def main() -> None:
     ok = sum(bool(probe(u, args.timeout, args.feedparser)) for u in urls)
     for page in pages:
         extract_authors(page, args.timeout)
+    # 只读探测：部分源不可用是「探测结论」，不该把 workflow 标成失败，由日志里看结果即可
     print(f"\n=== 可用 feed: {ok}/{len(urls)} ===", flush=True)
-    sys.exit(0 if (not urls or ok == len(urls)) else 1)
 
 
 if __name__ == "__main__":
