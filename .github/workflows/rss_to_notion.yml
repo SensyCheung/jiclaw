@@ -52,15 +52,20 @@ on:
         type: string
         default: 'false'
       notion_tags:
-        description: '收敛 Notion tags 选项：probe（只读统计）/ dry-run（预演）/ apply（真正清理）'
+        description: '维护 Notion tags 选项：probe（只读）/ dry-run（预演）/ apply（清理并自动恢复页面标签）/ restore（从备份补回标签）'
         required: false
         type: string
         default: ''
       tags_keep_min:
-        description: 'tags 选项保留阈值（引用 ≥ 该值才保留）；1=只删零引用（最安全，默认），2/5/10 更激进'
+        description: 'tags 保留阈值（引用 ≥ 该值）；默认 1，脚本会自动适配 Notion PATCH 的 100 项上限'
         required: false
         type: string
         default: '1'
+      tags_backup_run:
+        description: 'restore 模式用：含 tags-options artifact 的 run id（如 42922769007）'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   run-script:
@@ -71,6 +76,7 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write
+      actions: read  # restore 模式需要跨 run 下载 tags 选项备份 artifact
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -137,8 +143,14 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python notion_hotornot.py --mode "${{ github.event.inputs.notion_hotornot }}"
 
-      # tags multi_select 选项被 LLM 自造词撑到 ~499KB，导致写入 400。
-      # apply 只移除选项定义（页面上已选的标签值保留），执行前一定先 probe / dry-run。
+      # tags multi_select 选项被 LLM 自造词撑到 ~651KB，导致写入 400。
+      # apply 会清理零引用选项并自动恢复页面标签值；执行前先 probe / dry-run。
+      - name: Download tags backup
+        if: github.event.inputs.notion_tags == 'restore' && github.event.inputs.tags_backup_run != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh run download "${{ github.event.inputs.tags_backup_run }}" -n "tags-options-${{ github.event.inputs.tags_backup_run }}" -D .
+
       - name: Maintain Notion tags
         if: github.event.inputs.notion_tags != ''
         env:
@@ -147,7 +159,8 @@ jobs:
         run: python notion_tags_cleanup.py --mode "${{ github.event.inputs.notion_tags }}" --keep-min "${{ github.event.inputs.tags_keep_min || '1' }}"
 
       - name: Upload tags options backup
-        if: github.event.inputs.notion_tags != ''
+        # 即使清理步骤失败也要留档：备份含页面级标签映射，是唯一恢复依据
+        if: ${{ always() && github.event.inputs.notion_tags != '' && github.event.inputs.notion_tags != 'restore' }}
         uses: actions/upload-artifact@v4
         with:
           name: tags-options-${{ github.run_id }}

@@ -31,11 +31,21 @@ Notion PATCH database 的 ``options`` 数组**最多 100 项**，而它是「完
 「保留 + 新增」不超上限：例如 keep-min=1（只删零引用、保留 405 项）会被自动抬到
 实际可行的最小阈值。这也是为什么想保住所有历史引用标签在 API 上做不到。
 
+重要实测
+--------
+官方说 "This changes the available tags, not the tags selected on one page"，
+但线上验证：被移除的选项如果仍被页面引用，**页面上的对应标签值会被一起清掉**
+（5859→82 个选项那次，277 个页面丢了 507 个标签值）。因此 apply 会在清理后
+立即按清理前的页面快照把标签写回；写回一个不存在的 name 时 Notion 自动重建该
+选项，最终状态等价于「只删零引用选项」，页面数据零损失。``restore`` 模式用于
+从备份文件单独补一次（例如早期版本 apply 没带自动恢复）。
+
 用法（需要 NOTION_API_KEY / NOTION_DATABASE_ID）::
 
     python notion_tags_cleanup.py --mode probe     # 只读统计 + 备份完整选项清单
     python notion_tags_cleanup.py --mode dry-run   # 预演保留/移除范围，不写
-    python notion_tags_cleanup.py --mode apply     # 真正收敛选项（自动先备份）
+    python notion_tags_cleanup.py --mode apply     # 清理选项并自动恢复页面标签值
+    python notion_tags_cleanup.py --mode restore --backup tags_options_backup.json
 
 线上通过 workflow_dispatch 的 ``notion_tags`` 输入触发，密钥由 Actions Secrets
 注入；完整选项清单写成本地 JSON 并由 workflow 上传为 artifact 留档。
@@ -357,6 +367,75 @@ def verify_page_values(token, db_id, rows, removed_ids, before_total, before_dis
     return True
 
 
+def load_backup(path):
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    desired = data.get("page_tags") or {}
+    if not desired:
+        raise RuntimeError(f"备份 {path} 里没有 page_tags 映射，无法恢复")
+    print(f"[backup] 读取 {path}：{len(desired)} 个页面的标签映射，"
+          f"生成于 {data.get('generated_at')}")
+    return desired
+
+
+def rows_tag_map(rows):
+    return {p.get("id"): [n for _, n in page_tags(p)] for p in rows if page_tags(p)}
+
+
+def restore_tags(token, db_id, desired_map):
+    """把备份里、当前页面已缺失的标签逐页写回 multi_select。
+
+    写回一个不存在的 name 时 Notion 会自动重建该选项（历史上几千个选项就是这么
+    累积的），因此恢复后选项数会回到「所有仍被页面引用的选项」，而零引用垃圾
+    不会被重建——正好是「只删零引用」的目标状态，页面数据零损失。
+    """
+    current_rows = list(iter_pages(token, db_id))
+    current = {p.get("id"): [n for _, n in page_tags(p)] for p in current_rows}
+    plan = []
+    for pid, names in desired_map.items():
+        have = {_norm_tag(n) for n in current.get(pid, [])}
+        missing = [n for n in names if _norm_tag(n) and _norm_tag(n) not in have]
+        if missing:
+            plan.append((pid, current.get(pid, []) + missing))
+    print(f"[restore] 需补回标签的页面 {len(plan)} 个 / 备份页面 {len(desired_map)} 个")
+    for pid, names in plan[:15]:
+        print(f"  [restore] {pid}: {names}")
+
+    changed = failed = 0
+    for pid, names in plan:
+        resp = requests.patch(
+            f"{BASE}/v1/pages/{pid}",
+            headers=_headers(token),
+            data=json.dumps({"properties": {
+                TAG_PROP: {"multi_select": [{"name": n} for n in names]}
+            }}),
+            timeout=20,
+        )
+        if resp.status_code >= 300:
+            failed += 1
+            if failed <= 5:
+                print(f"  [restore] 失败 {pid}: HTTP {resp.status_code} {resp.text[:200]}")
+        else:
+            changed += 1
+        time.sleep(0.35)  # Notion 限流约 3 req/s
+    print(f"[restore] 完成：补回 {changed} 页，失败 {failed} 页")
+    return failed == 0
+
+
+def verify_restore(token, db_id, desired_map):
+    rows = list(iter_pages(token, db_id))
+    current = {p.get("id"): {_norm_tag(n) for _, n in page_tags(p)} for p in rows}
+    lost = []
+    for pid, names in desired_map.items():
+        missing = {_norm_tag(n) for n in names} - current.get(pid, set())
+        if missing:
+            lost.append((pid, sorted(missing)))
+    print(f"[verify] 恢复后仍缺失标签的页面: {len(lost)} / {len(desired_map)}")
+    for pid, missing in lost[:10]:
+        print(f"  [verify] 缺失 {pid}: {missing}")
+    return not lost
+
+
 def apply_plan(token, db_id, keep, new_names):
     body = {
         "properties": {
@@ -386,10 +465,13 @@ def apply_plan(token, db_id, keep, new_names):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--mode", choices=("probe", "dry-run", "apply"), default="probe")
+    ap.add_argument("--mode", choices=("probe", "dry-run", "apply", "restore"),
+                    default="probe")
     ap.add_argument("--keep-min", type=int,
                     default=int(os.environ.get("TAGS_KEEP_MIN", "1")),
                     help="高频标签保留阈值（引用次数 ≥ 该值）；默认 1 = 只删零引用选项")
+    ap.add_argument("--backup", default=BACKUP_FILE,
+                    help="restore 模式读取的备份 JSON（默认 tags_options_backup.json）")
     args = ap.parse_args()
 
     token = os.environ.get("NOTION_API_KEY", "")
@@ -398,6 +480,22 @@ def main():
         print("缺少 NOTION_API_KEY / NOTION_DATABASE_ID，退出")
         return 1
     print(f"模式: {args.mode} | keep-min: {args.keep_min} | 密钥状态: 已注入（值不打印）")
+
+    # restore 必须走最前面的独立分支：主流程会重写备份文件，覆盖掉恢复依据。
+    if args.mode == "restore":
+        try:
+            desired = load_backup(args.backup)
+        except (OSError, ValueError, RuntimeError) as exc:
+            print(f"[restore] 读取备份失败：{exc}")
+            return 1
+        ok = restore_tags(token, db_id, desired)
+        after = fetch_database(token, db_id)
+        after_options = (after["properties"][TAG_PROP]["multi_select"].get("options") or [])
+        print(f"=== 恢复后 schema：选项 {len(after_options)} 个 | "
+              f"tags 属性 {_byte_size(after['properties'].get(TAG_PROP)):,} bytes ===")
+        if not verify_restore(token, db_id, desired):
+            return 1
+        return 0 if ok else 1
 
     db = fetch_database(token, db_id)
     props = db.get("properties") or {}
@@ -444,8 +542,23 @@ def main():
         print("无需变更：选项集合已经收敛（幂等）")
         return 0
 
+    # 恢复完成后所有选项都仍被页面引用；再跑 apply 会「删了又自动重建」空转一轮。
+    zero_removed = sum(
+        1 for o in remove
+        if not usage_id.get(o.get("id"), 0)
+        and not usage_norm.get(_norm_tag(o.get("name")), 0)
+    )
+    if zero_removed == 0 and not new_names:
+        print("[apply] 没有零引用选项可清理（现有选项均被页面引用），跳过以避免空转")
+        return 0
+    print(f"[apply] 本次真正清掉的零引用选项: {zero_removed} 个；"
+          f"其余 {len(remove) - zero_removed} 个仅被低频引用的选项将在恢复时重建")
+
     if not apply_plan(token, db_id, keep, new_names):
         return 1
+
+    # 实测：移除选项会连带清掉页面上的标签值，立刻按清理前快照写回。
+    restored = restore_tags(token, db_id, rows_tag_map(rows))
 
     after = fetch_database(token, db_id)
     after_options = (after["properties"][TAG_PROP]["multi_select"].get("options") or [])
@@ -458,7 +571,7 @@ def main():
     if not verify_page_values(token, db_id, rows, {o.get("id") for o in remove},
                               before_tags, before_distinct):
         return 1
-    return 0
+    return 0 if restored else 1
 
 
 if __name__ == "__main__":
