@@ -440,6 +440,14 @@ Mark Gurman（苹果公司动向）、Matt Levine（金融）、John Authers（�
 
 > RSSHub 的 feed 标题取自首篇文章的第一作者，合著稿件可能显示成别人
 > （Debby Wu 的 feed 曾显示 `Bloomberg - Molly Schuetz`）；条目本身正确，不影响入库。
+>
+> 另外，`feedparser.parse(url)` 本身没有超时，慢源偶发不响应会把整轮 Actions 挂死；
+> `jiclaw_core._parse_feed` 已给抓取设 180 秒上限并恢复全局 socket 设置。
+>
+> **已知问题**：Notion `tags` 是 multi_select，LLM 每造一个新标签就新增一个 select 选项，
+> 线上该属性已涨到 499KB，触顶后 Notion 返回 400 拒绝整条页面。
+> `create_notion_page` 现在遇到 `maximum size` 会去掉标签重试一次，保证文章本体入库；
+> 彻底解决需要清理未使用的 tags 选项，或把标签收敛到固定词表。
 
 新增作者：从作者页 URL `https://www.bloomberg.com/authors/{id}/{slug}` 取 id 与 slug，
 先用只读探测确认可用，再加进 `rss_to_notion.yml` 的 URL 列表：

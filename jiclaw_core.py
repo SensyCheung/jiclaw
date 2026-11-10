@@ -1828,6 +1828,23 @@ def create_notion_page(
             timeout=10,
         )
 
+    # tags 是 multi_select，LLM 每造一个新标签都会在数据库里新增一个 select 选项。
+    # 库用久了选项把 schema 撑爆（线上实测 tags 属性 499KB），Notion 会返回 400
+    # 拒绝整条页面。保底：去掉标签重试一次，先让文章本体入库，标签缺失好过整条丢失。
+    if (
+        resp.status_code >= 300
+        and "maximum size" in resp.text
+        and "tags" in properties
+    ):
+        print("Notion tags 选项已撑爆 schema，去掉标签后重试")
+        properties.pop("tags", None)
+        resp = requests.post(
+            "https://api.notion.com/v1/pages",
+            headers=headers,
+            data=json.dumps(payload),
+            timeout=10,
+        )
+
     if resp.status_code >= 300:
         print("写入 Notion 失败：", resp.status_code, resp.text)
     else:
