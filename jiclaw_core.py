@@ -17,6 +17,7 @@ from bs4 import BeautifulSoup
 from openai import OpenAI
 
 from jiclaw_scraper import scrape_site
+from jiclaw_ogimage import fetch_og_image, remember_og_image
 from scraper_config import SCRAPER_CONFIG
 from jiclaw_twitter import fetch_twitter_tweets
 from jiclaw_telegram import (
@@ -255,6 +256,9 @@ def fetch_article_content(url: str) -> str:
             resp = requests.get(url, headers=headers, timeout=15)
             resp.raise_for_status()
             html = resp.text
+            # 正文抓取已经拿到完整 HTML，顺手把 og:image 记下来，
+            # 写库时不必为分享封面再发一次请求。
+            remember_og_image(url, html)
             break
         except Exception as e:
             if attempt == max_retries - 1:
@@ -586,6 +590,7 @@ def fetch_article_content_playwright(url: str) -> str:
                 pass
 
             html_content = page.content()
+            remember_og_image(url, html_content)
             browser.close()
 
         soup = BeautifulSoup(html_content, "html.parser")
@@ -1772,6 +1777,12 @@ def create_notion_page(
         },
     }
 
+    # 只有抓到封面才写这个属性。og:image 是给社交平台爬虫取的外链，
+    # 站内不托管图片；数据库还没建 og_image 列时也不影响老数据入库。
+    og_image = str(item.get("og_image") or "").strip()
+    if og_image.startswith(("http://", "https://")):
+        properties["og_image"] = {"url": og_image[:2000]}
+
     payload = {
         "parent": {"database_id": database_id},
         "properties": properties,
@@ -1783,6 +1794,22 @@ def create_notion_page(
         data=json.dumps(payload),
         timeout=10,
     )
+
+    # 数据库尚未新增 og_image 列（或建成了 rich_text 而非 URL）时，
+    # 不能让一篇文章因为封面写不进去而整条丢失：去掉该属性重试一次。
+    if (
+        resp.status_code >= 300
+        and "og_image" in properties
+        and "og_image" in resp.text
+    ):
+        print("Notion 的 og_image 列不存在或类型不符，跳过分享封面后重试")
+        properties.pop("og_image", None)
+        resp = requests.post(
+            "https://api.notion.com/v1/pages",
+            headers=headers,
+            data=json.dumps(payload),
+            timeout=10,
+        )
 
     if resp.status_code >= 300:
         print("写入 Notion 失败：", resp.status_code, resp.text)
@@ -1984,6 +2011,11 @@ def _process_items(
 
         if not content:
             content = summary
+
+        # 分享封面：正文抓取时已缓存的直接用，没抓过正文的源单独取一次头部。
+        # 未配置 Notion 时不必浪费这次请求；抓不到也不影响正文与入库。
+        if notion_api_key and notion_db_id:
+            item["og_image"] = fetch_og_image(link)
 
         # --- Debug 代码开始 ---
         try:
