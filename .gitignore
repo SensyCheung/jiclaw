@@ -3,6 +3,9 @@ __pycache__/
 .workbuddy/
 debug_content.txt
 
+# tags 选项清单是 Notion 数据快照，只走 workflow artifact 留档，不进仓库
+tags_options_backup.json
+
 # 密钥绝不能进仓库：WEBHOOK_TOKEN / 各类 API Key 都存在本地 .env
 .env
 .env.*

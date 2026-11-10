@@ -51,6 +51,16 @@ on:
         required: false
         type: string
         default: 'false'
+      notion_tags:
+        description: '收敛 Notion tags 选项：probe（只读统计）/ dry-run（预演）/ apply（真正清理）'
+        required: false
+        type: string
+        default: ''
+      tags_keep_min:
+        description: 'tags 高频选项保留阈值（引用次数 ≥ 该值才保留），默认 10'
+        required: false
+        type: string
+        default: '10'
 
 jobs:
   run-script:
@@ -126,6 +136,24 @@ jobs:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python notion_hotornot.py --mode "${{ github.event.inputs.notion_hotornot }}"
+
+      # tags multi_select 选项被 LLM 自造词撑到 ~499KB，导致写入 400。
+      # apply 只移除选项定义（页面上已选的标签值保留），执行前一定先 probe / dry-run。
+      - name: Maintain Notion tags
+        if: github.event.inputs.notion_tags != ''
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python notion_tags_cleanup.py --mode "${{ github.event.inputs.notion_tags }}" --keep-min "${{ github.event.inputs.tags_keep_min || '10' }}"
+
+      - name: Upload tags options backup
+        if: github.event.inputs.notion_tags != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: tags-options-${{ github.run_id }}
+          path: tags_options_backup.json
+          if-no-files-found: ignore
+          retention-days: 90
 
       - name: Run Script
         if: github.event.inputs.probe_only != 'true'

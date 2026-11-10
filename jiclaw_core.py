@@ -29,6 +29,55 @@ from jiclaw_telegram import (
 from jiclaw_discord import send_to_discord
 
 
+# ---------------------------------------------------------------------------
+# 标签词表：Notion tags (multi_select) 唯一合法的取值集合
+#
+# multi_select 写入一个库里不存在的 name 时，Notion 会**自动新建一个选项**。
+# 旧 prompt 允许「列表没有合适的就提取正文中的公司名」，长期累积出几千个选项，
+# 把 database schema 撑到 ~499KB（官方建议 ≤50KB），新文章写入开始返回 400
+# "database schema has exceeded the maximum size"。
+# 所以词表只在这里定义一次：既生成 prompt 的 [Candidate Tags]，也在写库前硬过滤。
+# 历史膨胀选项由 notion_tags_cleanup.py 收敛；要加标签只改 CANDIDATE_TAGS 一处。
+# ---------------------------------------------------------------------------
+CANDIDATE_TAGS = (
+    "Gaming", "NVIDIA", "SK Hynix", "DRAM", "3D IC", "GPU", "CPU", "AI",
+    "AI PC", "HBM", "NPU", "SSD", "Chiplet", "EUV", "EMIB", "EDA", "HPC",
+    "AMD", "Dell", "Linux", "3nm", "Raspberry Pi", "Switch", "PCIe", "GDDR",
+    "2nm", "Semiconductor", "TI", "ARM", "memory", "Monitor", "automotive",
+    "Laptop", "Cybersecurity", "Privacy", "Microchip", "Asus", "Infineon",
+    "AI chip", "Software", "GaN", "iOS", "Cooling",
+)
+PROHIBITED_TAGS = (
+    "Reviews", "Featured Tech News", "Tech News", "technology", "Tech Industry",
+    "Hardware", "semiconductor", "Industry", "electronics", "Manufacturing", "Sales",
+)
+_TAGS_MAX = 3
+
+
+def _norm_tag(value):
+    """标签归一化：忽略大小写与空白差异，用于词表匹配和选项去重统计。"""
+    return re.sub(r"\s+", " ", str(value or "").strip()).casefold()
+
+
+_TAG_LOOKUP = {_norm_tag(t): t for t in CANDIDATE_TAGS}
+
+
+def normalize_tags(tags, limit=_TAGS_MAX):
+    """把 LLM 输出的标签收敛到固定词表：归一大小写/空白、去重、限量、丢弃自造词。
+
+    这是防止 Notion multi_select 选项无限增长的硬防线，不依赖模型是否听话。
+    返回的是词表里的规范写法，最多 limit 个；模型自造词一律丢弃。
+    """
+    out = []
+    for tag in tags or []:
+        name = _TAG_LOOKUP.get(_norm_tag(tag))
+        if name and name not in out:
+            out.append(name)
+        if len(out) >= limit:
+            break
+    return out
+
+
 # 直接使用 RSS 摘要的 feed 名单
 # 在这个名单中的 feed 直接使用 RSS 提供的摘要，不抓取网页正文
 # 不在名单中的 feed 都会抓取网页正文
@@ -776,10 +825,12 @@ def summarize_with_ai(
      * **拿不准就判 "other"**，禁止为了保险而默认判成 "semiconductor"。
 
 2. **Tags 提取**:
-   - 从下方的 [Candidate Tags] 列表中选择 **1-3 个** 最相关的标签。
-   - **禁止原则**: 严禁选择正文中未提及的公司或技术。如果列表中没有合适的，请优先提取正文中的公司名。
-   - [Candidate Tags]: 'Gaming', 'NVIDIA', 'SK Hynix', 'DRAM', '3D IC', 'GPU', 'CPU', 'AI', 'AI PC', 'HBM', 'NPU', 'SSD', 'Chiplet', 'EUV', 'EMIB', 'EDA', 'HPC', 'AMD', 'Dell', 'Linux', '3nm', 'laptop', 'Raspberry Pi', 'Switch', 'PCIe', 'GDDR', '2nm', 'Semiconductor', 'TI', 'ARM', 'memory', 'Monitor', 'automotive', 'Laptop', 'Cybersecurity', 'Privacy', 'Microchip', 'Asus', 'Infineon', 'AI chip', 'Software', 'GaN', 'iOS', 'Cooling'.
-   - [Prohibited Tags]: 'Reviews', 'Featured Tech News', 'Tech News', 'technology', 'Tech Industry', 'Hardware', 'semiconductor', 'Industry', 'electronics', 'Manufacturing', 'Sales'.
+   - 只能从下方的 [Candidate Tags] 列表中选择 **1-3 个** 最相关的标签。
+   - **禁止原则**: 严禁选择正文中未提及的公司或技术；严禁自造标签、严禁把正文里的公司名或技术名
+     当作新标签输出。列表中没有合适的就输出空数组 []，不要编造。
+   - 输出的标签必须与列表中的写法完全一致（含大小写与空格），最多 3 个。
+   - __CANDIDATE_TAGS_LINE__
+   - __PROHIBITED_TAGS_LINE__
 3. 将英文标题翻译为简体中文（title_cn）。
 
 4. 要点摘要：基于正文内容，提取正文中的硬核技术/商业信息。：
@@ -855,6 +906,20 @@ affected_products 为 []；event_type 与 hazard_class 的取值必须来自上�
                 "content": user_content,
             },
     ]
+
+    # 标签词表只有 CANDIDATE_TAGS 一个数据源，避免 prompt 与写库过滤规则漂移。
+    # 这里用占位符替换而不是 f-string：system prompt 里有大量 JSON 花括号示例。
+    messages[0]["content"] = (
+        messages[0]["content"]
+        .replace(
+            "__CANDIDATE_TAGS_LINE__",
+            "[Candidate Tags]: " + ", ".join("'%s'" % t for t in CANDIDATE_TAGS),
+        )
+        .replace(
+            "__PROHIBITED_TAGS_LINE__",
+            "[Prohibited Tags]: " + ", ".join("'%s'" % t for t in PROHIBITED_TAGS),
+        )
+    )
 
     response, provider, used_model = _chat_with_failover(messages, zhipu_model=model)
 
@@ -1704,11 +1769,11 @@ def create_notion_page(
     title_cn = ai_data.get("title_cn") or title_en
     summary_en = ai_data.get("summary_en", "")
     summary_cn = ai_data.get("summary_cn", "")
-    tags = ai_data.get("tags") or []
-    # 清洗 LLM 标签：Notion multi_select 只接受非空字符串，且选项名有长度
-    # 上限。旧版本这里有一行 tags = [] 把选好的标签全清空了，导致站点标签页、
-    # 相关文章与标签云持续退化，不要再加回来。
-    tags = [str(tag).strip()[:100] for tag in tags if str(tag).strip()]
+    # 硬防线：只允许固定词表里的标签写进 multi_select。
+    # 旧版本这里有一行 tags = [] 把选好的标签全清空了，导致站点标签页、
+    # 相关文章与标签云持续退化，不要再加回来；但也绝不能不设防地透传模型输出，
+    # 否则每个自造词都会在 Notion 里新建一个选项，把 database schema 撑爆。
+    tags = normalize_tags(ai_data.get("tags") or [])
     website_name = get_website_name(feed_url)
 
     def truncate(text: str, max_len: int = 1800) -> str:
