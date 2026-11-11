@@ -72,6 +72,10 @@ BACKUP_FILE = "tags_options_backup.json"
 # 而该数组是「完整保留列表」（未列出的会被移除），所以清理后选项总数必然 ≤ 100。
 # 库里能累积到几千个，是因为页面写入时自动新建选项不走这条校验。
 MAX_PATCH_OPTIONS = 100
+# PATCH 一次只能保留 ≤100 项，而库里有 400+ 个仍被引用的选项，所以每轮 apply
+# 都必然「删掉大部分 → 靠 restore 重建」。只有真的攒了一批零引用垃圾时才值得跑，
+# 否则几个新垃圾就触发一轮 250+ 页的删除/恢复空转。
+MIN_ZERO_REF_TO_CLEAN = 20
 
 
 def _headers(token):
@@ -367,6 +371,20 @@ def verify_page_values(token, db_id, rows, removed_ids, before_total, before_dis
     return True
 
 
+def unused_option(opt, usage_id, usage_norm):
+    return (not usage_id.get(opt.get("id"), 0)
+            and not usage_norm.get(_norm_tag(opt.get("name")), 0))
+
+
+def should_apply(options, usage_id, usage_norm, new_names):
+    """判断这轮清理值不值得跑，返回 (是否执行, 原因)。"""
+    zero_total = sum(1 for o in options if unused_option(o, usage_id, usage_norm))
+    if zero_total < MIN_ZERO_REF_TO_CLEAN and not new_names:
+        return False, (f"零引用选项仅 {zero_total} 个（< {MIN_ZERO_REF_TO_CLEAN}），"
+                       f"不值得触发一轮「删选项 → 恢复页面标签」")
+    return True, f"零引用选项 {zero_total} 个，可以清理"
+
+
 def load_backup(path):
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
@@ -542,14 +560,19 @@ def main():
         print("无需变更：选项集合已经收敛（幂等）")
         return 0
 
-    # 恢复完成后所有选项都仍被页面引用；再跑 apply 会「删了又自动重建」空转一轮。
+    # 恢复完成后几乎所有选项都仍被页面引用；为数不多的新垃圾不值得触发一轮
+    # 「删选项 → 恢复几百页标签」的空转，所以设最小收益阈值。
+    proceed, reason = should_apply(options, usage_id, usage_norm, new_names)
+    if not proceed:
+        print(f"[apply] {reason}，跳过")
+        return 0
     zero_removed = sum(
         1 for o in remove
         if not usage_id.get(o.get("id"), 0)
         and not usage_norm.get(_norm_tag(o.get("name")), 0)
     )
     if zero_removed == 0 and not new_names:
-        print("[apply] 没有零引用选项可清理（现有选项均被页面引用），跳过以避免空转")
+        print("[apply] 移除清单里没有零引用选项，跳过")
         return 0
     print(f"[apply] 本次真正清掉的零引用选项: {zero_removed} 个；"
           f"其余 {len(remove) - zero_removed} 个仅被低频引用的选项将在恢复时重建")

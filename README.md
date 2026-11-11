@@ -489,8 +489,10 @@ gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_tags=r
 ```
 
 备份 `tags_options_backup.json` 含全部选项与**页面级标签映射**，由 workflow 上传为
-artifact 保留 90 天（本地 `.gitignore` 忽略）。`apply` 幂等：没有零引用选项时直接跳过。
-`tags_keep_min` 默认 1（只删零引用），脚本会自动适配 API 上限。
+artifact 保留 90 天（本地 `.gitignore` 忽略）。`apply` 幂等：零引用选项少于 20 个
+（`MIN_ZERO_REF_TO_CLEAN`）时直接跳过 —— 因为每轮清理都会删掉大部分仍被引用的选项
+再靠 `restore` 重建，为几个新垃圾跑一轮不划算。`tags_keep_min` 默认 1，
+脚本会自动适配 API 上限。
 
 三个实测坑，别再踩：
 
@@ -504,7 +506,9 @@ artifact 保留 90 天（本地 `.gitignore` 忽略）。`apply` 幂等：没有
 
 2026-11-11 执行结果：清掉 5454 个零引用选项，`tags` 属性 651,632 → 44,441 bytes，
 选项 5859 → 405 个（全部仍被页面引用）；中途 277 个页面的标签被连带清掉，已用备份
-全部补回，逐页校验缺失 0 条。
+全部补回，逐页校验缺失 0 条。随后完整抓取 run `42926440829` 成功：68 条新文章写入
+Notion，`写入 Notion 失败` / `maximum size` / `去掉标签后重试` 均为 0；再次 `apply`
+复跑时的「清理 → 自动恢复」逐页校验也显示全部标签值完好。
 
 ## HotorNot / 首页收录口径
 
