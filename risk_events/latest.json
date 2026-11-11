@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-11T09:09:28+00:00",
-  "count": 49,
+  "generated_at": "2026-11-11T17:29:26+00:00",
+  "count": 51,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -488,6 +488,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "ddd224c291",
+      "dedup_key": "673e94239706",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1139374",
+      "title": "捷荣技术：控股股东及实控人收行政处罚事先告知书",
+      "title_cn": "捷荣技术：控股股东及实控人收行政处罚事先告知书",
+      "published_at": "2026-11-11T13:17:07.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-11T17:27:21",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "捷荣技术(JieRong Technology)",
+      "site": "深圳",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.1,
+      "affected_products": [],
+      "occurred_at": "2026-11-07",
+      "sources": [
+        {
+          "post_id": "ddd224c291",
+          "url": "https://laoyaoba.com/n/1139374",
+          "title": "捷荣技术：控股股东及实控人收行政处罚事先告知书",
+          "title_cn": "捷荣技术：控股股东及实控人收行政处罚事先告知书",
+          "source": "aijiwei",
+          "published_at": "2026-11-11T13:17:07.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "093f2892ed",
@@ -1266,6 +1304,44 @@
       ],
       "primary_event_type": "capacity_disruption",
       "source_count": 2
+    },
+    {
+      "post_id": "f9bb3bcffc",
+      "dedup_key": "66541b7ad902",
+      "source": "https://rss.etnews.com/06.xml",
+      "url": "https://www.etnews.com/20261111000159",
+      "title": "미국발 불확실성에 삼성 AI 인프라 현지 전략도 '주춤'…美 비스트라, 헬릭스 자금납입 연기",
+      "title_cn": "美国不确定性导致三星AI基础设施当地战略“放缓”……美国Vistra推迟Helix资金注入",
+      "published_at": "2026-11-11T06:59:58.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-11T16:56:14",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "market",
+      "entity": "三星(Samsung), 维斯特拉(Vistra), 希力克斯数字基础设施(Helix Digital Infrastructure)",
+      "site": "美国",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "f9bb3bcffc",
+          "url": "https://www.etnews.com/20261111000159",
+          "title": "미국발 불확실성에 삼성 AI 인프라 현지 전략도 '주춤'…美 비스트라, 헬릭스 자금납입 연기",
+          "title_cn": "美国不确定性导致三星AI基础设施当地战略“放缓”……美国Vistra推迟Helix资金注入",
+          "source": "https://rss.etnews.com/06.xml",
+          "published_at": "2026-11-11T06:59:58.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
     },
     {
       "post_id": "bb775a2649",
