@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-10T20:48:59+00:00",
-  "count": 41,
+  "generated_at": "2026-11-11T00:21:36+00:00",
+  "count": 46,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -647,6 +647,46 @@
       "primary_event_type": "capacity_disruption"
     },
     {
+      "post_id": "c344684260",
+      "dedup_key": "1503077256db",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+      "url": "https://www.bloomberg.com/news/articles/2026-11-05/micron-pauses-work-on-4-5-billion-taiwan-plant-after-labor-spat",
+      "title": "Micron Pauses Work on $4.5 Billion Taiwan Plant After Labor Spat",
+      "title_cn": "美光科技(Micron)因劳资纠纷暂停在台湾的45亿美元工厂项目",
+      "published_at": "2026-11-05T08:54:25.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-11T00:02:37",
+      "is_risk_event": true,
+      "event_type": "labor_dispute",
+      "hazard_class": "operational",
+      "entity": "美光科技(Micron)",
+      "site": "台湾",
+      "country_region": "中国台湾",
+      "lat": null,
+      "lon": null,
+      "severity": 0.6,
+      "affected_products": [
+        "DRAM"
+      ],
+      "occurred_at": "2026-11-05",
+      "sources": [
+        {
+          "post_id": "c344684260",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-05/micron-pauses-work-on-4-5-billion-taiwan-plant-after-labor-spat",
+          "title": "Micron Pauses Work on $4.5 Billion Taiwan Plant After Labor Spat",
+          "title_cn": "美光科技(Micron)因劳资纠纷暂停在台湾的45亿美元工厂项目",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+          "published_at": "2026-11-05T08:54:25.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "labor_dispute"
+      ],
+      "source_count": 1,
+      "primary_event_type": "labor_dispute"
+    },
+    {
       "post_id": "bb53de48f4",
       "source": "https://www.theinformation.com/feed",
       "url": "https://www.theinformation.com/briefings/lyft-growth-slows-8-q3",
@@ -919,6 +959,74 @@
       "primary_event_type": "capacity_disruption"
     },
     {
+      "post_id": "670335a07c",
+      "dedup_key": "0fd7b75a60dc",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+      "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+      "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
+      "published_at": "2026-11-08T12:59:54.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-08T17:51:02",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": "美国",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "670335a07c",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+          "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+          "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-08T12:59:54.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "db92d38fc0",
+          "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-ceo-jensen-huang-admits-to-having-an-affair-with-suspected-chinese-spy-jensen-apologizes-in-letter-to-staff-company-board-forms-independent-committee-to-investigate",
+          "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
+          "title_cn": "英伟达CEO黄仁勋承认与疑似中国间谍存在婚外情",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-08T21:27:23.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "dab7fe82b7",
+          "url": "https://www.tomshardware.com/tech-industry/big-tech/law-firm-files-class-action-lawsuit-against-nvidia-after-ceo-jensen-huang-confirms-affair-with-alleged-chinese-spy-more-to-come-as-multiple-other-law-firms-investigate-securities-fraud-following-stock-drop",
+          "title": "Law firm files class-action lawsuit against Nvidia after CEO Jensen Huang confirms affair with alleged Chinese spy",
+          "title_cn": "律师事务所对英伟达提起集体诉讼，CEO黄仁勋确认与涉嫌中国间谍人士有染",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-10T00:03:07.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "d4c70ff2f2",
+          "url": "https://www.tomshardware.com/tech-industry/policy/president-trump-says-the-fbi-is-investigating-jensen-huangs-affair-nvidia-also-accused-of-intervening-in-megaspeed-chip-smuggling-investigation",
+          "title": "President Trump says the FBI is investigating Jensen Huang’s affair",
+          "title_cn": "美国总统特朗普称 FBI 正在调查黄仁勋的婚外情",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-10T12:33:16.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control",
+        "litigation"
+      ],
+      "source_count": 4,
+      "primary_event_type": "export_control"
+    },
+    {
       "post_id": "8c09a017a2",
       "dedup_key": "21029bdfa20c",
       "source": "https://www.electronicsweekly.com/feed/",
@@ -996,65 +1104,6 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
-    },
-    {
-      "post_id": "670335a07c",
-      "dedup_key": "0fd7b75a60dc",
-      "source": "https://www.tomshardware.com/feeds.xml",
-      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
-      "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
-      "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
-      "published_at": "2026-11-08T12:59:54.000Z",
-      "llm": "gemini:gemini-3.1-flash-lite",
-      "ingested_at": "2026-11-08T17:51:02",
-      "is_risk_event": true,
-      "event_type": "export_control",
-      "hazard_class": "regulatory",
-      "entity": "英伟达(NVIDIA)",
-      "site": null,
-      "country_region": "中国",
-      "lat": null,
-      "lon": null,
-      "severity": 0.4,
-      "affected_products": [
-        "GPU"
-      ],
-      "occurred_at": "2026-11",
-      "sources": [
-        {
-          "post_id": "670335a07c",
-          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
-          "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
-          "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-08T12:59:54.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        },
-        {
-          "post_id": "db92d38fc0",
-          "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-ceo-jensen-huang-admits-to-having-an-affair-with-suspected-chinese-spy-jensen-apologizes-in-letter-to-staff-company-board-forms-independent-committee-to-investigate",
-          "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
-          "title_cn": "英伟达CEO黄仁勋承认与疑似中国间谍存在婚外情",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-08T21:27:23.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        },
-        {
-          "post_id": "dab7fe82b7",
-          "url": "https://www.tomshardware.com/tech-industry/big-tech/law-firm-files-class-action-lawsuit-against-nvidia-after-ceo-jensen-huang-confirms-affair-with-alleged-chinese-spy-more-to-come-as-multiple-other-law-firms-investigate-securities-fraud-following-stock-drop",
-          "title": "Law firm files class-action lawsuit against Nvidia after CEO Jensen Huang confirms affair with alleged Chinese spy",
-          "title_cn": "律师事务所对英伟达提起集体诉讼，CEO黄仁勋确认与涉嫌中国间谍人士有染",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-10T00:03:07.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        }
-      ],
-      "event_types": [
-        "export_control",
-        "litigation"
-      ],
-      "source_count": 3,
-      "primary_event_type": "export_control"
     },
     {
       "post_id": "0af83a8396",
@@ -1187,6 +1236,84 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "6444ad05e2",
+      "dedup_key": "cd5ecc973008",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-21/tsmc-suspends-some-construction-after-deadly-accident-kills-four",
+      "title": "TSMC Slows Taiwan Construction After Accident Kills Four",
+      "title_cn": "台积电因事故致四人死亡放缓在台建设进度",
+      "published_at": "2026-10-21T03:51:32.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-11T00:03:05",
+      "is_risk_event": true,
+      "event_type": "fire_explosion",
+      "hazard_class": "operational",
+      "entity": "台积电(TSMC)",
+      "site": "台湾",
+      "country_region": "中国台湾",
+      "lat": null,
+      "lon": null,
+      "severity": 0.6,
+      "affected_products": [],
+      "occurred_at": "2026-10-21",
+      "sources": [
+        {
+          "post_id": "6444ad05e2",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-21/tsmc-suspends-some-construction-after-deadly-accident-kills-four",
+          "title": "TSMC Slows Taiwan Construction After Accident Kills Four",
+          "title_cn": "台积电因事故致四人死亡放缓在台建设进度",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+          "published_at": "2026-10-21T03:51:32.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "fire_explosion"
+      ],
+      "source_count": 1,
+      "primary_event_type": "fire_explosion"
+    },
+    {
+      "post_id": "079d83e710",
+      "dedup_key": "dd4daf3e0b43",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+      "url": "https://www.bloomberg.com/news/articles/2026-10-16/taiwan-to-curb-ai-chip-exports-to-china-as-part-of-us-trade-deal",
+      "title": "Taiwan to Curb AI Chip Exports to China as Part of US Trade Deal",
+      "title_cn": "作为美台贸易协议的一部分，中国台湾将限制向中国大陆出口人工智能芯片",
+      "published_at": "2026-10-16T05:49:53.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-11T00:03:10",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "中国台湾经济部",
+      "site": "中国台湾",
+      "country_region": "中国台湾",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": "2026-10-16",
+      "sources": [
+        {
+          "post_id": "079d83e710",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-16/taiwan-to-curb-ai-chip-exports-to-china-as-part-of-us-trade-deal",
+          "title": "Taiwan to Curb AI Chip Exports to China as Part of US Trade Deal",
+          "title_cn": "作为美台贸易协议的一部分，中国台湾将限制向中国大陆出口人工智能芯片",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+          "published_at": "2026-10-16T05:49:53.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "111d718e1e",
@@ -1449,6 +1576,87 @@
       ],
       "source_count": 1,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "c1ecfc4373",
+      "dedup_key": "2c31315994e1",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1138821",
+      "title": "安世半导体CEO：公司仍有可能与中国业务重新合并",
+      "title_cn": "安世半导体CEO：公司仍有可能与中国业务重新合并",
+      "published_at": "2026-11-10T23:18:35.000Z",
+      "llm": "gemini:gemini-3.5-flash-lite",
+      "ingested_at": "2026-11-11T00:18:38",
+      "is_risk_event": true,
+      "event_type": "geopolitical",
+      "hazard_class": "regulatory",
+      "entity": "安世半导体(Nexperia), 闻泰科技(Wingtech)",
+      "site": null,
+      "country_region": "荷兰",
+      "lat": null,
+      "lon": null,
+      "severity": 0.6,
+      "affected_products": [
+        "成熟制程"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "c1ecfc4373",
+          "url": "https://laoyaoba.com/n/1138821",
+          "title": "安世半导体CEO：公司仍有可能与中国业务重新合并",
+          "title_cn": "安世半导体CEO：公司仍有可能与中国业务重新合并",
+          "source": "aijiwei",
+          "published_at": "2026-11-10T23:18:35.000Z",
+          "llm": "gemini:gemini-3.5-flash-lite"
+        }
+      ],
+      "event_types": [
+        "geopolitical"
+      ],
+      "source_count": 1,
+      "primary_event_type": "geopolitical"
+    },
+    {
+      "post_id": "6b576b133a",
+      "dedup_key": "55f14c10201a",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1138813",
+      "title": "买新手机也可能用到旧芯片明年最高9%采回收存储芯片",
+      "title_cn": "买新手机也可能用到旧芯片：明年最高9%采用回收存储芯片",
+      "published_at": "2026-11-10T23:18:35.000Z",
+      "llm": "gemini:gemini-3.5-flash-lite",
+      "ingested_at": "2026-11-11T00:19:41",
+      "is_risk_event": true,
+      "event_type": "supply_shortage",
+      "hazard_class": "market",
+      "entity": "三星电子(Samsung Electronics),SK海力士(SK Hynix)",
+      "site": null,
+      "country_region": "韩国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "DRAM",
+        "memory"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "6b576b133a",
+          "url": "https://laoyaoba.com/n/1138813",
+          "title": "买新手机也可能用到旧芯片明年最高9%采回收存储芯片",
+          "title_cn": "买新手机也可能用到旧芯片：明年最高9%采用回收存储芯片",
+          "source": "aijiwei",
+          "published_at": "2026-11-10T23:18:35.000Z",
+          "llm": "gemini:gemini-3.5-flash-lite"
+        }
+      ],
+      "event_types": [
+        "supply_shortage"
+      ],
+      "source_count": 1,
+      "primary_event_type": "supply_shortage"
     },
     {
       "post_id": "dd9ac9e304",
