@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-11T23:33:12+00:00",
-  "count": 53,
+  "generated_at": "2026-11-11T23:46:48+00:00",
+  "count": 54,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -1217,6 +1217,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "0b785b578d",
+      "dedup_key": "eb494472054c",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1139469",
+      "title": "【头条】250+！2026中国半导体并购大年；",
+      "title_cn": "【头条】250+！2026中国半导体并购大年",
+      "published_at": "2026-11-11T23:14:57.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-11T23:46:18",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "微软(Microsoft)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "光通讯器件"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "0b785b578d",
+          "url": "https://laoyaoba.com/n/1139469",
+          "title": "【头条】250+！2026中国半导体并购大年；",
+          "title_cn": "【头条】250+！2026中国半导体并购大年",
+          "source": "aijiwei",
+          "published_at": "2026-11-11T23:14:57.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "c2f537a55d",
