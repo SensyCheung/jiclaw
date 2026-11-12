@@ -61,6 +61,7 @@ _JUNK = re.compile(
     r"qrcode|qr_code|advert|banner|gravatar|spinner|loading|1x1|sprite|"
     r"subscribe|newsletter|promo|widget|sidebar|related|recommend|copyright|"
     r"watermark|node-list-|(?<!\w)look(?!\w)|view[-_]?count|hit[-_]?count|"
+    r"share|social|/plugins/|/themes/|\.svg(?:$|\?)|"
     r"(?:^|[/_\-.])ad(?:s)?(?=[/_\-.\d]|$)",
     re.I,
 )

@@ -2136,6 +2136,14 @@ def _process_items(
             # 没抓过正文的源不会额外发请求，这里是 0。
             item["image_count"] = fetch_image_count(link)
 
+        # 公众号贴图候选：读抓正文时缓存的配图数，零额外请求、与 Notion 配置无关。
+        # 阈值与站点白名单在 wechat_post_config.json，未命中直接跳过。
+        try:
+            from jiclaw_wechat_queue import record_candidate
+            record_candidate(link, title, fetch_image_count(link))
+        except Exception as e:
+            print(f"贴图候选登记失败（不影响正文与入库）：{str(e)[:100]}")
+
         # --- Debug 代码开始 ---
         try:
             with open("debug_content.txt", "w", encoding="utf-8") as f:

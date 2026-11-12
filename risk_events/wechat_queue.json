@@ -1,0 +1,14 @@
+{
+  "_note": "由 jiclaw_wechat_queue.py 自动生成；status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
+  "schema_version": 1,
+  "generated_at": "2026-11-12T07:07:11+00:00",
+  "count": 0,
+  "config_snapshot": {
+    "publish_enabled": false,
+    "min_image_count": 4,
+    "sites": [
+      "semiwiki.com"
+    ]
+  },
+  "items": []
+}
