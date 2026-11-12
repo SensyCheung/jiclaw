@@ -628,7 +628,9 @@ GET https://seismiq-api.jijibot.workers.dev/api/webhook/runs?limit=20
 
 ## 公众号贴图候选队列（WorkBuddy 消费）
 
-jiclaw 抓正文时会顺手数正文配图（`jiclaw_article_images.py`），把「配图够多」的文章登记成待写的公众号贴图稿。jiclaw 只负责登记，真正写稿与发布由 WorkBuddy 每小时轮询完成。
+jiclaw 抓正文时会顺手数正文配图（`jiclaw_article_images.py`），把命中的文章登记成待写的公众号贴图稿。jiclaw 只负责登记，真正写稿与发布由 WorkBuddy 每小时轮询完成。
+
+两条入队路径：**普通站点**（SemiWiki）要求正文配图数达到 `min_image_count`；**免图站点**（`always_collect_sites`，目前是 imec-int.com）不看图片数、也不受 `max_per_run` 限制，所有新文章一律入队，由 WorkBuddy 按纯文字结构化解读成稿。imec 由 `scraper:imec` 收录（该站无 RSS，走 Drupal `/api/page` JSON 接口），覆盖 `/en/press/` 与 `/en/articles/` 路径。
 
 **配置**：`wechat_post_config.json`（人写、程序只读，改完需 commit + push）
 
@@ -636,10 +638,11 @@ jiclaw 抓正文时会顺手数正文配图（`jiclaw_article_images.py`），�
 |---|---|---|
 | `collect_enabled` | jiclaw 是否登记候选 | `true` |
 | `publish_enabled` | WorkBuddy 是否真的建稿发布；授权未恢复时保持 `false` | `false` |
-| `min_image_count` | 配图数阈值，**`>=` 语义**；`4` 等价于「图片数 > 3」 | `4` |
-| `sites` | 站点白名单，按域名匹配（含子域） | `["semiwiki.com"]` |
-| `max_per_run` | 单次抓取最多新增几条候选 | `2` |
-| `max_items` | 队列最多保留多少条，超出留最新 | `200` |
+| `min_image_count` | 普通站点的配图数阈值，**`>=` 语义**；`4` 等价于「图片数 > 3」 | `4` |
+| `sites` | 站点白名单，按域名匹配（含子域） | `["semiwiki.com", "imec-int.com"]` |
+| `always_collect_sites` | 免图站点：不看图片数、不受 `max_per_run` 限制，所有新文章一律入队 | `["imec-int.com"]` |
+| `max_per_run` | 单次抓取最多新增几条**普通**候选（免图站点不计入） | `2` |
+| `max_items` | 队列最多保留多少条，超出留最新 | `300` |
 
 **队列**：`risk_events/wechat_queue.json`，由 `jiclaw_wechat_queue.py` 生成。workflow 的 `git add risk_events/` 会把它自动 commit 回仓库。
 
@@ -654,11 +657,13 @@ https://raw.githubusercontent.com/SensyCheung/jiclaw/main/risk_events/wechat_que
 
 > 若要给 `semivoice.com` 换成别的域名或自建 Worker，只需在 `functions/api/wechat-queue.ts` 顶部改 `RAW_BASE` / `MIRROR_BASE`，消费端地址不变。
 
-`items[]` 每条含 `url / title / image_count / site / status / discovered_at`。`status` 恒为 `pending`：仓库侧不回写状态，WorkBuddy 用自己的本地 `processed.json` 按 URL 去重，避免重复发稿。`config_snapshot` 只是配置快照，判断开关时**以 `wechat_post_config.json` 为准**（配置改了要等下一次 Actions 才刷新快照）。
+`items[]` 每条含 `url / title / image_count / site / always_publish / status / discovered_at`。`always_publish=true` 表示这是免图站点条目，下游不得因为「没有配图」而跳过。`status` 恒为 `pending`：仓库侧不回写状态，WorkBuddy 用自己的本地 `processed.json` 按 URL 去重，避免重复发稿。去重前需归一化 URL（忽略 scheme、`www.`、末尾斜杠、fragment），否则 `https://www.imec-int.com/...` 与 `https://imec-int.com/...` 会被当成两篇。`config_snapshot` 只是配置快照，判断开关时**以 `wechat_post_config.json` 为准**（配置改了要等下一次 Actions 才刷新快照）。
 
 **计数口径**：只数正文容器（`entry-content` 等）里的内容图，排除 logo / 广告 / 社交分享图标 / `.svg` / 懒加载占位，并按 URL 去重。2026-11-12 修过一个实测 bug：SemiWiki 正文里内嵌 4 个 `share_*.svg`，旧口径让每篇恒定多算 4 张，1 张图的文章也会误判成 5 张。SemiWiki 的题图（og:image）在正文容器外，不算正文配图：实测曲线 OPC 6 图、电源完整性 1 图、SOI 正文 2 图（另有一张题图）。
 
-**接入点**：`jiclaw_core.py` 在取到 `image_count` 后调用 `record_candidate()`，零额外网络请求；没抓过正文的源是 `image_count=0`，自然不命中阈值。登记失败只打印日志，不影响正文、摘要与 Notion 入库。配置缺失时用默认值，损坏时本轮跳过登记。
+**接入点**：`jiclaw_core.py` 在取到 `image_count` 后调用 `record_candidate()`，零额外网络请求；没抓过正文的源是 `image_count=0`，普通站点不命中阈值，免图站点不受影响。登记失败只打印日志，不影响正文、摘要与 Notion 入库。配置缺失时用默认值，损坏时本轮跳过登记。
+
+**为什么免图站点要豁免 `max_per_run`**：`_process_items` 里「已存在于 Notion 的文章」会被直接 `continue`，只有第一次见到的新文章才会走到 `record_candidate()`。如果免图站点的新文章被单次上限挡住，它本轮仍会写入 Notion，下一轮就再也不会被登记 —— 属于永久漏稿，而不是延迟。所以免图站点不受上限约束；消费端每小时处理条数造成的只是延迟，不会漏。
 
 ## 功能特点
 

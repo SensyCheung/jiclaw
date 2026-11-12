@@ -1,12 +1,20 @@
-"""jiclaw_wechat_queue.py - 把「正文配图够多」的文章登记成公众号贴图候选。
+"""jiclaw_wechat_queue.py - 把文章登记成公众号贴图候选。
 
 配置在 wechat_post_config.json（人写、程序只读），队列在
 risk_events/wechat_queue.json（程序生成，由 workflow 的 commit 步骤回写仓库）。
-WorkBuddy 每小时 GET 仓库 raw URL 消费队列，用本地 processed.json 去重，
-所以队列里的 status 一律是 pending，仓库侧不回写状态。
+WorkBuddy 每小时经 semivoice.com/api/wechat-queue 消费队列，用本地
+processed.json 去重，所以队列里的 status 一律是 pending，仓库侧不回写状态。
+
+两条入队路径：
+1. 普通站点：正文配图数 >= min_image_count 且命中 sites 白名单，
+   受 max_per_run 单次新增上限约束。
+2. always_collect_sites：不看图片数，所有新文章一律入队，也不受
+   max_per_run 约束。这条豁免是必要的——_process_items 里已存在于
+   Notion 的文章会被直接 continue，本轮没登记的文章下一轮不会再出现，
+   一旦被上限挡住就永久漏稿。
 
 这里不发任何网络请求：配图数来自抓正文时缓存的 image_count，
-没抓过正文的源是 0，自然不满足阈值。
+没抓过正文的源是 0，但 always_collect_sites 不受影响。
 """
 
 import json
@@ -23,6 +31,7 @@ DEFAULT_CONFIG = {
     "publish_enabled": False,
     "min_image_count": 4,
     "sites": ["semiwiki.com"],
+    "always_collect_sites": [],
     "max_per_run": 2,
     "max_items": 200,
 }
@@ -60,6 +69,17 @@ def _site_allowed(host, sites):
     return bool(host) and any(host == s or host.endswith("." + s) for s in allowed)
 
 
+def _canon(url):
+    """URL 去重键：忽略 scheme、www.、末尾斜杠与 fragment，保留 path/query。
+
+    imec 抓取器产出 https://www.imec-int.com/...，人工登记或下游回写的
+    可能是 https://imec-int.com/...；不做归一化会把同一篇登记两次。
+    """
+    p = urlparse(url or "")
+    path = (p.path or "/").rstrip("/") or "/"
+    return _host(url) + path + (("?" + p.query) if p.query else "")
+
+
 def _load_queue(path):
     try:
         with open(path, encoding="utf-8") as f:
@@ -73,7 +93,11 @@ def _load_queue(path):
 
 def record_candidate(url, title, image_count,
                      config_path=CONFIG_PATH, queue_path=QUEUE_PATH):
-    """命中「站点白名单 + 图片数 >= 阈值」就往队列追加一条；按 URL 去重。"""
+    """命中站点白名单就往队列追加一条；按 URL 去重。
+
+    普通站点还要求图片数 >= min_image_count；always_collect_sites 里的站点
+    免图片数、也免 max_per_run 限制，队列条目会带 always_publish 标记。
+    """
     global _ADDED_THIS_RUN
 
     cfg = load_config(config_path)
@@ -88,17 +112,23 @@ def record_candidate(url, title, image_count,
     except (TypeError, ValueError):
         return False
 
-    if min_n <= 0 or n < min_n:
-        return False
     host = _host(url)
     if not _site_allowed(host, cfg.get("sites")):
         return False
-    if max_run > 0 and _ADDED_THIS_RUN >= max_run:
-        return False
+
+    # 免图站点：不看图片数，也不占用普通候选的 max_per_run 名额。
+    # 必须豁免上限——Notion 去重会让本轮没登记的文章永远不再出现。
+    always = _site_allowed(host, cfg.get("always_collect_sites"))
+    if not always:
+        if min_n <= 0 or n < min_n:
+            return False
+        if max_run > 0 and _ADDED_THIS_RUN >= max_run:
+            return False
 
     data = _load_queue(queue_path)
     items = data["items"]
-    if any(isinstance(i, dict) and i.get("url") == url for i in items):
+    key = _canon(url)
+    if any(isinstance(i, dict) and _canon(i.get("url")) == key for i in items):
         return False
 
     items.append({
@@ -106,6 +136,7 @@ def record_candidate(url, title, image_count,
         "title": str(title or "")[:200],
         "image_count": n,
         "site": host,
+        "always_publish": always,
         "status": "pending",
         "discovered_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     })
@@ -120,6 +151,7 @@ def record_candidate(url, title, image_count,
         "publish_enabled": bool(cfg.get("publish_enabled")),
         "min_image_count": min_n,
         "sites": cfg.get("sites"),
+        "always_collect_sites": cfg.get("always_collect_sites"),
     }
 
     os.makedirs(os.path.dirname(queue_path) or ".", exist_ok=True)
@@ -129,6 +161,8 @@ def record_candidate(url, title, image_count,
         f.write("\n")
     os.replace(tmp, queue_path)
 
-    _ADDED_THIS_RUN += 1
-    print(f"[贴图队列] 登记候选：{n} 图 · {str(title)[:40]}")
+    if not always:
+        _ADDED_THIS_RUN += 1
+    tag = "免图全量" if always else f"{n} 图"
+    print(f"[贴图队列] 登记候选：{tag} · {str(title)[:40]}")
     return True

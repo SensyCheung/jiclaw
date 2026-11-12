@@ -1,11 +1,15 @@
 {
-  "_note": "公众号贴图自动化的唯一配置源。collect_enabled 控制 jiclaw 是否登记候选；publish_enabled 控制 WorkBuddy 是否真的建稿发布。min_image_count 用 >= 语义，4 等价于「图片数量 > 3」。改完需 commit 并 push，下一次 Actions 运行生效。",
+  "_note": "公众号贴图自动化的唯一配置源。collect_enabled 控制 jiclaw 是否登记候选；publish_enabled 控制 WorkBuddy 是否真的建稿发布。min_image_count 用 >= 语义，4 等价于「图片数量 > 3」，只对普通站点生效。always_collect_sites 里的站点不看图片数、也不受 max_per_run 限制，所有新文章一律入队（WorkBuddy 端按纯文字结构化解读发稿，不要求有配图）。改完需 commit 并 push，下一次 Actions 运行生效。",
   "collect_enabled": true,
   "publish_enabled": true,
   "min_image_count": 4,
   "sites": [
-    "semiwiki.com"
+    "semiwiki.com",
+    "imec-int.com"
+  ],
+  "always_collect_sites": [
+    "imec-int.com"
   ],
   "max_per_run": 2,
-  "max_items": 200
+  "max_items": 300
 }
