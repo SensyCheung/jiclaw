@@ -1,7 +1,7 @@
 {
   "_note": "公众号贴图自动化的唯一配置源。collect_enabled 控制 jiclaw 是否登记候选；publish_enabled 控制 WorkBuddy 是否真的建稿发布。min_image_count 用 >= 语义，4 等价于「图片数量 > 3」。改完需 commit 并 push，下一次 Actions 运行生效。",
   "collect_enabled": true,
-  "publish_enabled": false,
+  "publish_enabled": true,
   "min_image_count": 4,
   "sites": [
     "semiwiki.com"
