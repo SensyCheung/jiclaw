@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-13T10:49:19+00:00",
-  "count": 67,
+  "generated_at": "2026-11-13T18:47:14+00:00",
+  "count": 69,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -99,6 +99,15 @@
           "source": "https://www.theinformation.com/feed",
           "published_at": "2026-11-13T01:01:12.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "eefbdddfd6",
+          "url": "https://semiwiki.com/semiconductor-manufacturers/376254-jensen-huang-and-the-accountability-crisis-at-nvidia/",
+          "title": "Jensen Huang and the Cost of Unchecked Influence",
+          "title_cn": "黄仁勋与不受约束的影响力所带来的代价",
+          "source": "https://semiwiki.com/feed/",
+          "published_at": "2026-11-13T13:00:14.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -106,7 +115,7 @@
         "other"
       ],
       "primary_event_type": "earnings",
-      "source_count": 3
+      "source_count": 4
     },
     {
       "post_id": "69e44c539d",
@@ -1447,12 +1456,22 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-11T23:44:58.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "e734eb03ab",
+          "url": "https://www.tomshardware.com/tech-industry/broken-and-shattered-nvidia-ceo-jensen-huang-surrendered-during-resignation-meeting-report-claims-thousands-of-employees-rally-calling-for-reinstatement-on-internal-forum",
+          "title": "‘Broken and shattered’ Nvidia CEO Jensen Huang surrendered during resignation meeting, report claims",
+          "title_cn": "报告称英伟达首席执行官黄仁勋在辞职会议上表现得“心碎且崩溃”",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-13T13:16:12.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
-        "earnings"
+        "earnings",
+        "other"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "earnings"
     },
     {
@@ -1554,13 +1573,22 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-10T12:33:16.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "187a584918",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/malaysia-and-singapore-step-up-nvidia-ai-chip-probes-as-charges-brought-against-chinese-national-over-917-smuggled-servers-firm-at-center-of-jensen-huang-controversy-announces-inventory-audit-to-account-for-all-restricted-gpus",
+          "title": "Malaysia and Singapore step up Nvidia AI chip probes amidst Jensen Huang controversy",
+          "title_cn": "马来西亚与新加坡加大对英伟达人工智能芯片调查，黄仁勋离职争议引发关注",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-13T16:15:24.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "export_control",
         "litigation"
       ],
-      "source_count": 4,
+      "source_count": 5,
       "primary_event_type": "export_control"
     },
     {
@@ -2305,6 +2333,46 @@
       "primary_event_type": "earnings"
     },
     {
+      "post_id": "8a429aeabf",
+      "dedup_key": "598af83ca4ef",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/mass-smuggling-of-nvidia-ai-gpus-could-be-the-underlying-cause-of-jensen-huangs-departure-analysts-claim-more-than-1-5-gigawatts-of-banned-chips-tracked-to-china-despite-export-controls",
+      "title": "Mass smuggling of up to 1.5 million Nvidia AI GPUs could be the underlying cause of Jensen Huang's departure, analysts claim",
+      "title_cn": "分析师称：多达 150 万颗英伟达 AI GPU 的大规模走私可能是黄仁勋离职的根本原因",
+      "published_at": "2026-11-13T10:59:56.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-13T18:32:53",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA), 超微电脑(Supermicro), 阿里巴巴(Alibaba)",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2026-03",
+      "sources": [
+        {
+          "post_id": "8a429aeabf",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/mass-smuggling-of-nvidia-ai-gpus-could-be-the-underlying-cause-of-jensen-huangs-departure-analysts-claim-more-than-1-5-gigawatts-of-banned-chips-tracked-to-china-despite-export-controls",
+          "title": "Mass smuggling of up to 1.5 million Nvidia AI GPUs could be the underlying cause of Jensen Huang's departure, analysts claim",
+          "title_cn": "分析师称：多达 150 万颗英伟达 AI GPU 的大规模走私可能是黄仁勋离职的根本原因",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-13T10:59:56.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
       "post_id": "d148be8030",
       "dedup_key": "d1f3ad99a468",
       "source": "https://www.tomshardware.com/feeds.xml",
@@ -2341,6 +2409,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "other"
+    },
+    {
+      "post_id": "3b56eead25",
+      "dedup_key": "7cad038541a0",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/how-shanghai-fund-manager-kang-wei-introduced-his-wife-alice-huang-to-jensen-and-built-usd7-5-billion-nvidia-ai-gpu-smuggling-operation-mistresss-husband-joked-she-was-the-ceos-personal-assistant",
+      "title": "How Shanghai fund manager Kang Wei introduced his wife Alice Huang to Jensen and built $7.5 billion Nvidia AI GPU smuggling operation",
+      "title_cn": "上海基金经理康威如何将妻子爱丽丝·黄引荐给黄仁勋并建立75亿美元英伟达AI GPU走私网络",
+      "published_at": "2026-11-13T10:59:56.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-13T18:33:01",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "NVIDIA",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2023-01",
+      "sources": [
+        {
+          "post_id": "3b56eead25",
+          "url": "https://www.tomshardware.com/tech-industry/how-shanghai-fund-manager-kang-wei-introduced-his-wife-alice-huang-to-jensen-and-built-usd7-5-billion-nvidia-ai-gpu-smuggling-operation-mistresss-husband-joked-she-was-the-ceos-personal-assistant",
+          "title": "How Shanghai fund manager Kang Wei introduced his wife Alice Huang to Jensen and built $7.5 billion Nvidia AI GPU smuggling operation",
+          "title_cn": "上海基金经理康威如何将妻子爱丽丝·黄引荐给黄仁勋并建立75亿美元英伟达AI GPU走私网络",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-13T10:59:56.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "012db1f0c2",
