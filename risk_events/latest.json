@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-12T22:00:43+00:00",
-  "count": 63,
+  "generated_at": "2026-11-13T10:49:19+00:00",
+  "count": 67,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,44 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "96298e0e6f",
+      "dedup_key": "f593ddf27345",
+      "source": "https://rss.etnews.com/06.xml",
+      "url": "https://www.etnews.com/20261113000229",
+      "title": "삼성전자, 이달에만 제6·제7노조 연이어 설립 추진",
+      "title_cn": "三星电子本月接连推进设立第6、第7个工会",
+      "published_at": "2026-11-13T06:02:42.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-13T10:37:38",
+      "is_risk_event": true,
+      "event_type": "labor_dispute",
+      "hazard_class": "operational",
+      "entity": "三星电子(Samsung Electronics)",
+      "site": "光州工厂",
+      "country_region": "韩国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-13",
+      "sources": [
+        {
+          "post_id": "96298e0e6f",
+          "url": "https://www.etnews.com/20261113000229",
+          "title": "삼성전자, 이달에만 제6·제7노조 연이어 설립 추진",
+          "title_cn": "三星电子本月接连推进设立第6、第7个工会",
+          "source": "https://rss.etnews.com/06.xml",
+          "published_at": "2026-11-13T06:02:42.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "labor_dispute"
+      ],
+      "source_count": 1,
+      "primary_event_type": "labor_dispute"
+    },
     {
       "post_id": "ac27951260",
       "dedup_key": "6b2967e43f6a",
@@ -21,10 +59,10 @@
       "llm": "gemini:gemini-3.1-flash-lite",
       "ingested_at": "2026-11-12T21:45:41",
       "is_risk_event": true,
-      "event_type": "other",
+      "event_type": "earnings",
       "hazard_class": "operational",
       "entity": "英伟达(NVIDIA)",
-      "site": null,
+      "site": "美国",
       "country_region": "美国",
       "lat": null,
       "lon": null,
@@ -52,13 +90,23 @@
           "source": "aijiwei",
           "published_at": "2026-11-12T14:59:15.000Z",
           "llm": "gemini:gemini-flash-lite-latest"
+        },
+        {
+          "post_id": "e1c0b7be64",
+          "url": "https://info-reader-production.herokuapp.com/articles/abrupt-end-nvidias-jensen-drama-leaves-unanswered-questions",
+          "title": "Abrupt End to Nvidia’s Jensen Drama Leaves Unanswered Questions",
+          "title_cn": "英伟达黄仁勋离职风波戛然而止，留下诸多未解之谜",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-13T01:01:12.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
+        "earnings",
         "other"
       ],
-      "source_count": 2,
-      "primary_event_type": "other"
+      "primary_event_type": "earnings",
+      "source_count": 3
     },
     {
       "post_id": "69e44c539d",
@@ -1596,6 +1644,44 @@
       "primary_event_type": "export_control"
     },
     {
+      "post_id": "db5bb20bb9",
+      "dedup_key": "e8e7b5b96555",
+      "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+      "url": "https://seekingalpha.com/article/4967180-broadcom-jensen-huang-resignation-a-game-changer?source=feed",
+      "title": "Broadcom: Jensen Huang's Resignation Is A $2 Trillion Game Changer",
+      "title_cn": "博通：黄仁勋辞职是一个价值2万亿美元的游戏规则改变者",
+      "published_at": "2026-11-12T17:37:29.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-13T10:40:21",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "other",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "db5bb20bb9",
+          "url": "https://seekingalpha.com/article/4967180-broadcom-jensen-huang-resignation-a-game-changer?source=feed",
+          "title": "Broadcom: Jensen Huang's Resignation Is A $2 Trillion Game Changer",
+          "title_cn": "博通：黄仁勋辞职是一个价值2万亿美元的游戏规则改变者",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-12T17:37:29.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
+    },
+    {
       "post_id": "c2f537a55d",
       "source": "aijiwei",
       "url": "https://laoyaoba.com/n/1136325",
@@ -1759,6 +1845,44 @@
       "primary_event_type": "litigation"
     },
     {
+      "post_id": "a5adb31f39",
+      "dedup_key": "240f28210e51",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1140425",
+      "title": "艾为电子首笔并购：模拟整合潮行至中场，强链“协同账”怎么算",
+      "title_cn": "艾为电子首笔并购：模拟整合潮行至中场，强链“协同账”怎么算",
+      "published_at": "2026-11-13T10:35:11.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-13T10:48:29",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "market",
+      "entity": "艾为电子(Awinic), 钰泰半导体(Silergy)",
+      "site": "中国上海, 中国南通",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "a5adb31f39",
+          "url": "https://laoyaoba.com/n/1140425",
+          "title": "艾为电子首笔并购：模拟整合潮行至中场，强链“协同账”怎么算",
+          "title_cn": "艾为电子首笔并购：模拟整合潮行至中场，强链“协同账”怎么算",
+          "source": "aijiwei",
+          "published_at": "2026-11-13T10:35:11.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
       "post_id": "19b409e537",
       "dedup_key": "c1307503634e",
       "source": "https://www.tomshardware.com/feeds.xml",
@@ -1795,6 +1919,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "litigation"
+    },
+    {
+      "post_id": "b863d71b9a",
+      "dedup_key": "a7baee70ed9b",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1140428",
+      "title": "【产业资本快讯】国内电子级多晶硅龙头鑫华半导体上交所IPO终止",
+      "title_cn": "【产业资本快讯】国内电子级多晶硅龙头鑫华半导体上交所IPO终止",
+      "published_at": "2026-11-13T10:27:11.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-13T10:48:51",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "financial",
+      "entity": "鑫华半导体",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "b863d71b9a",
+          "url": "https://laoyaoba.com/n/1140428",
+          "title": "【产业资本快讯】国内电子级多晶硅龙头鑫华半导体上交所IPO终止",
+          "title_cn": "【产业资本快讯】国内电子级多晶硅龙头鑫华半导体上交所IPO终止",
+          "source": "aijiwei",
+          "published_at": "2026-11-13T10:27:11.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
     },
     {
       "post_id": "bb775a2649",
