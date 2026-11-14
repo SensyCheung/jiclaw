@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-14T00:32:45+00:00",
-  "count": 69,
+  "generated_at": "2026-11-14T14:29:30+00:00",
+  "count": 71,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -116,6 +116,47 @@
       ],
       "primary_event_type": "earnings",
       "source_count": 4
+    },
+    {
+      "post_id": "917201068e",
+      "dedup_key": "c8a59f4a91fa",
+      "source": "https://newsletter.semianalysis.com/feed",
+      "url": "https://newsletter.semianalysis.com/p/nvidia-and-the-world-without-jensen",
+      "title": "Nvidia and the World Without Jensen",
+      "title_cn": "英伟达与没有黄仁勋的世界",
+      "published_at": "2026-11-12T18:06:23.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-14T14:25:49",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(Nvidia), 超微电脑(Supermicro)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "GPU",
+        "HBM"
+      ],
+      "occurred_at": "2026-11-12",
+      "sources": [
+        {
+          "post_id": "917201068e",
+          "url": "https://newsletter.semianalysis.com/p/nvidia-and-the-world-without-jensen",
+          "title": "Nvidia and the World Without Jensen",
+          "title_cn": "英伟达与没有黄仁勋的世界",
+          "source": "https://newsletter.semianalysis.com/feed",
+          "published_at": "2026-11-12T18:06:23.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "69e44c539d",
@@ -2349,6 +2390,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "earnings"
+    },
+    {
+      "post_id": "97a7b8e55c",
+      "dedup_key": "f1250757102d",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/pentagon-struggles-to-account-for-usd31-billion-in-missing-f-35-aircraft-parts-weeks-after-shipment-was-swiped-by-china-tracking-of-estimated-26-million-parts-is-outdated-inaccurate-and-incomplete-says-watchdog",
+      "title": "Pentagon ‘struggles to account for’ $31 billion in missing F-35 aircraft parts, weeks after shipment was swiped by China",
+      "title_cn": "五角大楼在310亿美元F-35飞机零件失踪问题上“难以交代”，此前数周一批货物被中国截获",
+      "published_at": "2026-11-14T13:59:55.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-14T14:20:08",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "other",
+      "entity": "美国国防部(Department of Defense)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": "2026-09",
+      "sources": [
+        {
+          "post_id": "97a7b8e55c",
+          "url": "https://www.tomshardware.com/tech-industry/pentagon-struggles-to-account-for-usd31-billion-in-missing-f-35-aircraft-parts-weeks-after-shipment-was-swiped-by-china-tracking-of-estimated-26-million-parts-is-outdated-inaccurate-and-incomplete-says-watchdog",
+          "title": "Pentagon ‘struggles to account for’ $31 billion in missing F-35 aircraft parts, weeks after shipment was swiped by China",
+          "title_cn": "五角大楼在310亿美元F-35飞机零件失踪问题上“难以交代”，此前数周一批货物被中国截获",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-14T13:59:55.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
     },
     {
       "post_id": "8a429aeabf",
