@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-13T18:47:14+00:00",
+  "generated_at": "2026-11-14T00:32:45+00:00",
   "count": 69,
   "feed": {
     "max_age_days": 90,
@@ -1465,13 +1465,31 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-13T13:16:12.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "a110fa03a1",
+          "url": "https://www.electronicsweekly.com/blogs/electro-ramblings/latest-news/most-read-electronica-2026-7nm-fdsoi-3d-dram-2026-11/",
+          "title": "Most Read – Electronica 2026, 7nm FDSOI, 3D DRAM",
+          "title_cn": "最受欢迎文章 – 慕尼黑电子展 2026、7nm FDSOI 与 3D DRAM",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-13T10:05:49.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "f87fef1a47",
+          "url": "https://seekingalpha.com/article/4967912-nvidia-jensen-huang-could-return-as-ceo?source=feed",
+          "title": "Nvidia: Jensen Huang Could Return As CEO",
+          "title_cn": "英伟达：黄仁勋可能重返 CEO 岗位",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-13T18:00:32.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "earnings",
         "other"
       ],
-      "source_count": 2,
+      "source_count": 4,
       "primary_event_type": "earnings"
     },
     {
