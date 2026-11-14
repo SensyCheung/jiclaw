@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-14T14:29:30+00:00",
-  "count": 71,
+  "generated_at": "2026-11-14T14:55:47+00:00",
+  "count": 72,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -47,6 +47,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "labor_dispute"
+    },
+    {
+      "post_id": "d4caf6cf06",
+      "dedup_key": "6c8b9eb7013a",
+      "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+      "url": "https://seekingalpha.com/article/4967951-nvidia-one-of-best-opportunities-in-market-after-jensen-resignation?source=feed",
+      "title": "Nvidia: One Of The Best Opportunities In The Market After Jensen's Resignation",
+      "title_cn": "英伟达：黄仁勋辞职后市场展现出的最佳机遇之一",
+      "published_at": "2026-11-13T19:31:48.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-14T14:48:25",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "other",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-13",
+      "sources": [
+        {
+          "post_id": "d4caf6cf06",
+          "url": "https://seekingalpha.com/article/4967951-nvidia-one-of-best-opportunities-in-market-after-jensen-resignation?source=feed",
+          "title": "Nvidia: One Of The Best Opportunities In The Market After Jensen's Resignation",
+          "title_cn": "英伟达：黄仁勋辞职后市场展现出的最佳机遇之一",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-13T19:31:48.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
     },
     {
       "post_id": "ac27951260",
