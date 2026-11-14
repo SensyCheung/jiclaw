@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-14T14:55:47+00:00",
-  "count": 72,
+  "generated_at": "2026-11-14T20:02:29+00:00",
+  "count": 75,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,44 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "dce2199824",
+      "dedup_key": "4e85f21f6168",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1140922",
+      "title": "Meta被机构罚款8.07亿欧元",
+      "title_cn": "Meta被机构罚款8.07亿欧元",
+      "published_at": "2026-11-14T14:57:50.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-14T20:01:27",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "Meta",
+      "site": null,
+      "country_region": "意大利",
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": "2026-11-14",
+      "sources": [
+        {
+          "post_id": "dce2199824",
+          "url": "https://laoyaoba.com/n/1140922",
+          "title": "Meta被机构罚款8.07亿欧元",
+          "title_cn": "Meta被机构罚款8.07亿欧元",
+          "source": "aijiwei",
+          "published_at": "2026-11-14T14:57:50.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
     {
       "post_id": "96298e0e6f",
       "dedup_key": "f593ddf27345",
@@ -2084,6 +2122,44 @@
       "primary_event_type": "other"
     },
     {
+      "post_id": "00d1db4900",
+      "dedup_key": "010e8df2e4a5",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1140919",
+      "title": "兆易创新（603986.SH）取得深圳市芯茂微电子 75.56% 股权",
+      "title_cn": "兆易创新（603986.SH）取得深圳市芯茂微电子 75.56% 股权",
+      "published_at": "2026-11-14T13:57:50.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-14T20:01:41",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "financial",
+      "entity": "兆易创新(GigaDevice), 深圳市芯茂微电子(Chip-Microelectronics)",
+      "site": "中国深圳",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "00d1db4900",
+          "url": "https://laoyaoba.com/n/1140919",
+          "title": "兆易创新（603986.SH）取得深圳市芯茂微电子 75.56% 股权",
+          "title_cn": "兆易创新（603986.SH）取得深圳市芯茂微电子 75.56% 股权",
+          "source": "aijiwei",
+          "published_at": "2026-11-14T13:57:50.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
       "post_id": "bb775a2649",
       "dedup_key": "7e2a7f4e6f23",
       "source": "aijiwei",
@@ -2863,6 +2939,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "labor_dispute"
+    },
+    {
+      "post_id": "c36222380e",
+      "dedup_key": "a881f79eef68",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1140232",
+      "title": "【一周IC快报】黄仁勋辞职，英伟达CFO出任临时CEO；中芯国际Q3营收达31.9亿美元；艾为电子拟收购钰泰；安世半导体CEO最新发声",
+      "title_cn": "【一周IC快报】黄仁勋辞职，英伟达CFO出任临时CEO；中芯国际Q3营收达31.9亿美元；艾为电子拟收购钰泰；安世半导体CEO最新发声",
+      "published_at": "2026-11-14T10:57:50.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-14T20:02:17",
+      "is_risk_event": true,
+      "event_type": "other",
+      "hazard_class": "operational",
+      "entity": "台积电(TSMC)",
+      "site": null,
+      "country_region": "中国台湾",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "c36222380e",
+          "url": "https://laoyaoba.com/n/1140232",
+          "title": "【一周IC快报】黄仁勋辞职，英伟达CFO出任临时CEO；中芯国际Q3营收达31.9亿美元；艾为电子拟收购钰泰；安世半导体CEO最新发声",
+          "title_cn": "【一周IC快报】黄仁勋辞职，英伟达CFO出任临时CEO；中芯国际Q3营收达31.9亿美元；艾为电子拟收购钰泰；安世半导体CEO最新发声",
+          "source": "aijiwei",
+          "published_at": "2026-11-14T10:57:50.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "other"
+      ],
+      "source_count": 1,
+      "primary_event_type": "other"
     },
     {
       "post_id": "8d93d8f57c",

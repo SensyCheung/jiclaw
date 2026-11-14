@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-14T14:48:31+00:00",
-  "count": 3,
+  "generated_at": "2026-11-14T19:48:30+00:00",
+  "count": 6,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -102,6 +102,42 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-14T14:48:31+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/amd-launches-epyc-embedded-9006-venice-gets-an-early-start-in-embedded/",
+      "title": "AMD Launches EPYC Embedded 9006: Venice Gets an Early Start in Embedded",
+      "image_count": 9,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-14T19:44:17+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/samsungs-1tb-990-ssd-drops-to-19-cents-per-gb-amid-the-memory-crisis-grab-it-for-usd40-off",
+      "title": "Samsung's 1TB 990 SSD drops to 19 cents per GB amid the memory crisis — grab it for $40 off",
+      "image_count": 8,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-14T19:46:50+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/u-s-treasury-secretary-questions-whether-nvidia-knowingly-sold-ai-gpus-to-shell-companies-says-company-itself-is-responsible-i-think-it-is-important-that-anyone-at-the-company-there-be-held-accountable-for-that",
+      "title": "U.S. Treasury Secretary questions whether Nvidia knowingly sold AI GPUs to shell companies, says company itself is responsible",
+      "image_count": 3,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-14T19:48:30+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
       "auto_publish": true
