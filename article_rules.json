@@ -1,0 +1,547 @@
+{
+  "schema_version": 2,
+  "updated_at": "2026-11-14",
+  "_note": "海外文章 → 公众号的单一权威规则文件。WorkBuddy 自动化与 jiclaw 队列都读它：本地在 D:\\API\\2026-11-10-22-36-45\\.workbuddy\\wechat-queue\\article_rules.json，云端副本在 jiclaw 仓库根目录 article_rules.json（经 semivoice.com/api/wechat-queue 的 rules 字段返回）。改规则只改这一份，然后同步到 jiclaw 仓库并 push。",
+
+  "global": {
+    "hard_limits": {
+      "title_max_chars": 30,
+      "abstract_max_chars": 100,
+      "cover_img": "可空；空则公众号用默认封面",
+      "blocks_must_be_objects": true,
+      "image_upload": "每张图先 get_upload_channel 换一次性 ticket（5 分钟有效、一次只能传 1 张），再用 file_path 回填；不得复用旧 ticket 或旧地址",
+      "image_compress": {
+        "max_width_px": 1000,
+        "body_max_bytes": 1048576,
+        "cover_max_bytes": 2097152,
+        "format": "JPEG",
+        "note": "超大原图（如 8333×8333 webp）先设 PIL.Image.MAX_IMAGE_PIXELS=None 再缩放"
+      },
+      "async_publish": "正文图 > 2 张时 publish_article 返回 async=true/status=0，无查询接口；只能如实报「已提交、待后台确认」，不得虚报成功。同步 status=1 且有 media_id 才算确认"
+    },
+    "universal_rules": [
+      "所有技术结论、数字、时间、金额、比例只能来自原文，不添加原文没有的量化数据；折算值必须写明是按哪两个数折算",
+      "引述为中文转述，不用引号冒充原话直译；专有名词（机构名、人名、项目缩写、产品型号）必须与原文逐字一致",
+      "术语首次出现保留英文原名，如「物理规则检查（physics rule check）」",
+      "不自行绘制示意图、不用 AI 生成配图、不引用站外图片（唯一例外见 T5_official_gallery 的 allow_official_product）",
+      "每张图必须先看图再写图注，图注描述画面里实际有的文字与元素，不能凭标题猜",
+      "文末必须有「出处与说明」：原文标题、发布方/作者、日期、原文链接、版权归属、配图来源；本刊判断必须单独标为「本刊观察」并注明不是原文内容",
+      "长稿先在本地 JSON 里定稿并校验字数与结构，再调建稿工具；言序没有改稿接口，写错只能整篇重建"
+    ],
+    "forbidden": [
+      "把相关阅读卡片图、社交分享图标、logo、广告当成正文配图",
+      "把付费墙内容的全文或图表搬进稿件",
+      "使用 workbuddy_sites_deploy（会覆盖已发布的 curvilinear-opc-post 应用）",
+      "在言序/活页 auth-required 时反复弹授权或重试；应跳过发布、保留稿件文件并在报告里写明",
+      "草稿未确认提交就写进 processed.json"
+    ],
+    "file_layout": {
+      "dir": "D:\\API\\2026-11-10-22-36-45\\<文章短名>-post\\",
+      "files": [
+        "index.html（微信风格内联排版、手机适配）",
+        "贴文正文.md",
+        "yanxu-payload.json（建稿结构化稿）"
+      ],
+      "images": "同目录 images\\ 下放本地压缩图，index.html 引图床绝对地址以便活页发布"
+    },
+    "publish_pipeline": {
+      "account": "SiPunk / 4020261110908124071554974720",
+      "theme": "cobalt（电光靛蓝）",
+      "steps": [
+        "言序 create_article → publish_article 推草稿箱",
+        "活页 publish(action=file, files=[{path:'index.html',content:...}]) 生成微信可点开的链接",
+        "确认提交成功后才把原始 URL 追加进 processed.json"
+      ],
+      "visibility": "活页默认 private（仅自己），外发前需改成口令可看或任何人可看"
+    },
+    "style": {
+      "header_bg": "#12224a",
+      "accent": "#2f6bd8",
+      "body_bg": "#eef2f7",
+      "layout": "深蓝标题栏 + 白色正文卡片 + 手机适配 max-width 677px",
+      "components": ["lead 导语条", "sec 章节（左侧蓝色竖线标题）", "img + cap 图注", "stats 数据卡", "quote 引述块", "note 观察/说明块", "end 出处与版权"],
+      "reference": "wechat-post/index.html、soi-post/index.html、ew-lego-post/index.html",
+      "skeleton": "templates/skeleton.html"
+    }
+  },
+
+  "decision_tree": [
+    { "if": "URL host 命中某 profile 且 profile.auto_publish=false", "then": "只生成稿件文件，不发布；报告里注明需人工确认" },
+    { "if": "profile.id=product_catalog 或 URL 是产品页/资料页", "then": "T5_official_gallery" },
+    { "if": "profile.id=semiwiki 且正文配图数 >= min_image_count(4)", "then": "T1_image_walkthrough" },
+    { "if": "profile.id=semiwiki 且正文配图数 < 4", "then": "T2_text_analysis" },
+    { "if": "标题/正文含 Interview、Q&A、CEO 访谈特征", "then": "T2_text_analysis" },
+    { "if": "profile.id=imec（不看图片数）", "then": "T3_press_release；无可用配图也照发" },
+    { "if": "来源是企业新闻室/通稿/联合发布，含双方引述或金额+时间表", "then": "T3_press_release" },
+    { "if": "正文以份额/价格/出货量/预测数据为主", "then": "T6_data_digest" },
+    { "if": "来源是评测/硬件媒体，含规格、跑分、价格对比", "then": "T7_review_spec" },
+    { "if": "来源是大学/科研/学术转述，含方法与结果", "then": "T9_research_note" },
+    { "if": "来源在付费墙/财经观点白名单", "then": "T8_paywall_brief，且默认不自动发布" },
+    { "if": "文章是 <800 字的行业短讯", "then": "T4_news_brief" },
+    { "if": "以上都不命中", "then": "T4_news_brief 兜底 + 只用原文配图" }
+  ],
+
+  "templates": {
+    "T1_image_walkthrough": {
+      "name": "逐图贴图稿",
+      "applies_to": "正文配图 >= 4 的技术长文；SemiWiki 主力模板",
+      "image_policy": "strict_original",
+      "image_count": { "min": 4, "max": 8 },
+      "target_chars": [1200, 2600],
+      "tone": "克制、只解释图中所见，不扩写成原创长文",
+      "intro_rule": "一句话说明原文主题 + 本篇是逐图解读 + 配图全部来自原文",
+      "chapter_skeleton": [
+        { "title": "原文讲了什么", "blocks": ["paragraph ×1~2"] },
+        { "title": "图 1：<按图内容起小标题>", "blocks": ["image", "paragraph 图注", "paragraph 中文说明"] },
+        { "title": "图 2…图 N：同上，一图一章", "blocks": ["image", "paragraph 图注", "paragraph 中文说明"] },
+        { "title": "出处与说明", "blocks": ["paragraph 原文信息", "paragraph 版权"] }
+      ],
+      "ending_rule": "标注原文标题、作者、日期、链接、版权归属",
+      "example_dir": "wechat-post/（曲线 OPC 6 图）、soi-post/（SOI 3 图）"
+    },
+    "T2_text_analysis": {
+      "name": "结构化精读",
+      "applies_to": "配图 <= 2 的深度稿、CEO 访谈、图少但信息密度高的长文",
+      "image_policy": "og_image_only",
+      "image_count": { "min": 0, "max": 2 },
+      "target_chars": [2500, 4200],
+      "tone": "按原文顺序拆段，把数字、边界、判断单独拎出来；不堆形容词",
+      "intro_rule": "明确写出「原文只有 N 张配图，所以不做一图一说明，改成结构化精读」，并说明按什么顺序拆",
+      "chapter_skeleton": [
+        { "title": "一句话：<主体 + 关键数字/结论>", "blocks": ["image（可选题图）", "paragraph ×2"] },
+        { "title": "起点 / 背景", "blocks": ["paragraph ×2"] },
+        { "title": "痛点 / 问题", "blocks": ["paragraph ×2~3"] },
+        { "title": "技术差异 / 为什么难", "blocks": ["paragraph ×2~4"] },
+        { "title": "实测数据 / 项目结果", "blocks": ["paragraph ×2~3", "可选 stats 数据卡（数字必须来自原文）"] },
+        { "title": "能力边界 / 不适用场景", "blocks": ["paragraph ×2"] },
+        { "title": "团队 / 生态位 / 商业模式（按原文取舍）", "blocks": ["paragraph ×2~3"] },
+        { "title": "这篇为什么不做贴图稿", "blocks": ["paragraph ×1"] },
+        { "title": "出处与说明", "blocks": ["paragraph ×2"] }
+      ],
+      "ending_rule": "逐项列出文中用到的数字来自原文，第三方结论注明「原文转述，非本刊实测」",
+      "example_dir": "quilter-post/（Quilter 访谈，1 图、11 章）"
+    },
+    "T3_press_release": {
+      "name": "机构/企业新闻稿解读",
+      "applies_to": "imec、企业新闻室、Business Wire 通稿、联合发布",
+      "image_policy": "strict_original_capped",
+      "image_count": { "min": 0, "max": 3 },
+      "target_chars": [1200, 2600],
+      "tone": "事实优先，引述转述，专有名词逐字核对；不替发布方做价值判断",
+      "intro_rule": "一句话写清谁 + 做了什么 + 关键金额/时间",
+      "chapter_skeleton": [
+        { "title": "一句话：<who + what + 金额/时间>", "blocks": ["paragraph ×2"] },
+        { "title": "背景 / 为什么是现在", "blocks": ["paragraph ×2"] },
+        { "title": "内容 / 钱花在哪 / 交付物", "blocks": ["paragraph ×2", "可选 list"] },
+        { "title": "关键数据 / 时间表", "blocks": ["list 或 stats", "paragraph"] },
+        { "title": "双方怎么说", "blocks": ["quote ×1~2（中文转述 + 姓名职务）"] },
+        { "title": "边界 / 还没回答的问题", "blocks": ["paragraph ×1~2"] },
+        { "title": "本刊观察（可选，必须标注）", "blocks": ["note ×1"] },
+        { "title": "出处与说明", "blocks": ["paragraph ×2"] }
+      ],
+      "ending_rule": "联合发布要写全发布方；无图时 cover_img 留空，绝不凑图",
+      "example_dir": "imec-asra-post/（2 图）、ew-lego-post/（初版无图）"
+    },
+    "T4_news_brief": {
+      "name": "短讯拆解",
+      "applies_to": "Electronics Weekly 等 <800 字行业短讯、亚洲产业媒体快讯",
+      "image_policy": "no_image",
+      "image_count": { "min": 0, "max": 1 },
+      "target_chars": [1200, 2200],
+      "tone": "把短讯拆成「钱/人/时间/口径」，不注水；允许一段标注清楚的本刊观察",
+      "intro_rule": "说明原文无配图（页面仅有作者头像），改成把短讯拆开读",
+      "chapter_skeleton": [
+        { "title": "一句话：<金额/事件 + 年限 + 对象>", "blocks": ["paragraph ×2"] },
+        { "title": "为什么是现在", "blocks": ["paragraph ×2"] },
+        { "title": "钱花在哪 / 具体内容", "blocks": ["paragraph ×2"] },
+        { "title": "关键数据", "blocks": ["list 或 stats", "paragraph 口径说明"] },
+        { "title": "谁怎么说", "blocks": ["quote ×1~2"] },
+        { "title": "时间表 / 下一步", "blocks": ["paragraph ×2"] },
+        { "title": "本刊观察（必须标注不是原文）", "blocks": ["note", "paragraph"] },
+        { "title": "出处与说明", "blocks": ["paragraph ×2"] }
+      ],
+      "ending_rule": "注明数据来自原文引用的调研，折算值写明算法",
+      "example_dir": "ew-lego-post/index-v1-nopic.html.bak（Lam × LEGO 初版）"
+    },
+    "T5_official_gallery": {
+      "name": "官方图集 + 参数 + 视频",
+      "applies_to": "产品页/资料页（teaching.com.au 等），或原文无图但有官方产品页可补",
+      "image_policy": "allow_official_product",
+      "image_count": { "min": 3, "max": 8 },
+      "target_chars": [2500, 4200],
+      "tone": "逐图说明画面里的文字与元件，参数只抄产品页；不做营销式吹捧",
+      "intro_rule": "必须写清两套来源：新闻事实来自 A，产品图与参数来自 B；配图是官方产品图、不是新闻现场照片",
+      "chapter_skeleton": [
+        { "title": "一句话：<新闻事件 + 对应到哪个产品>", "blocks": ["image", "paragraph 图注"] },
+        { "title": "这笔钱 / 这件事买的是哪套东西", "blocks": ["paragraph", "image", "paragraph 图注"] },
+        { "title": "盒子里有什么 / 参数清单", "blocks": ["image", "list", "paragraph"] },
+        { "title": "怎么用 / 课堂或场景", "blocks": ["image ×1~3 + 逐图图注", "paragraph"] },
+        { "title": "软件 / 隐私 / 服务端（按产品页取舍）", "blocks": ["image", "paragraph ×2"] },
+        { "title": "视频（若产品页嵌了视频）", "blocks": ["paragraph 地址 + 平台 + 是否已核验"] },
+        { "title": "出处与说明", "blocks": ["paragraph 新闻出处", "paragraph 图片与参数出处 + 版权", "paragraph 配图性质声明"] }
+      ],
+      "ending_rule": "双来源分别标注；图片版权归品牌方/经销商；视频未能核验就必须写明「未核验、不描述画面」",
+      "caveats": [
+        "产品图常藏在页面内嵌 JSON 的 images 数组；550×550 是缩略图，zoom/ 目录才是原图",
+        "YouTube 在国内常不可达，公众号只给地址，活页可内嵌 youtube-nocookie",
+        "这是唯一允许「非原文配图」的模板，且必须是同一产品的官方产品页"
+      ],
+      "example_dir": "ew-lego-post/（8 张 LEGO 官方产品图 + 产品视频）"
+    },
+    "T6_data_digest": {
+      "name": "市场数据要点",
+      "applies_to": "TrendForce、Digitimes 等以份额/价格/出货量/预测为主的稿件",
+      "image_policy": "no_charts",
+      "image_count": { "min": 0, "max": 0 },
+      "target_chars": [900, 1800],
+      "tone": "数据 + 口径 + 时间范围三件套，不把预测写成事实",
+      "intro_rule": "说明数据发布方与统计区间",
+      "chapter_skeleton": [
+        { "title": "一句话：<指标 + 变化 + 期间>", "blocks": ["paragraph"] },
+        { "title": "数据清单", "blocks": ["list（每条带口径与单位）", "paragraph"] },
+        { "title": "驱动因素 / 结构变化", "blocks": ["paragraph ×2"] },
+        { "title": "预测与口径说明", "blocks": ["paragraph ×2"] },
+        { "title": "出处与说明", "blocks": ["paragraph ×2", "paragraph 版权：图表不转载"] }
+      ],
+      "ending_rule": "明确「数据为发布方估算/预测，非本刊测算」，不转载原图表（版权）",
+      "example_dir": null
+    },
+    "T7_review_spec": {
+      "name": "评测 / 规格精读",
+      "applies_to": "Tom's Hardware、ServeTheHome、TweakTown 等硬件评测",
+      "image_policy": "strict_original",
+      "image_count": { "min": 1, "max": 4 },
+      "target_chars": [1500, 3000],
+      "tone": "结论前置，规格与跑分照抄，价格与上市时间写清地区",
+      "intro_rule": "一句话结论 + 评测对象",
+      "chapter_skeleton": [
+        { "title": "结论先行", "blocks": ["paragraph ×2"] },
+        { "title": "规格 / 关键参数", "blocks": ["image（可选）", "list 或 table"] },
+        { "title": "逐项对比 / 实测", "blocks": ["paragraph ×2~4", "可选 stats"] },
+        { "title": "价格与上市", "blocks": ["paragraph ×1~2"] },
+        { "title": "出处与说明", "blocks": ["paragraph ×2"] }
+      ],
+      "ending_rule": "跑分注明测试条件；价格注明币种与地区",
+      "example_dir": null
+    },
+    "T8_paywall_brief": {
+      "name": "付费墙 / 财经观点简讯",
+      "applies_to": "Bloomberg、The Information、Seeking Alpha、Barron's 等",
+      "image_policy": "no_image",
+      "image_count": { "min": 0, "max": 0 },
+      "target_chars": [250, 400],
+      "tone": "只写摘要里确有的事实，不推测、不补充、不搬运图表",
+      "auto_publish": false,
+      "intro_rule": "注明「原文需订阅，以下仅基于公开摘要」",
+      "chapter_skeleton": [
+        { "title": "一句话", "blocks": ["paragraph"] },
+        { "title": "公开摘要里的要点", "blocks": ["list ×3"] },
+        { "title": "出处与说明", "blocks": ["paragraph 原文链接 + 版权声明"] }
+      ],
+      "ending_rule": "必须写「全文与图表版权归原刊，本文不转载」",
+      "example_dir": null
+    },
+    "T9_research_note": {
+      "name": "研究要点",
+      "applies_to": "MIT News、AzoNano、IDW 等大学/科研机构成果转述",
+      "image_policy": "og_image_optional",
+      "image_count": { "min": 0, "max": 2 },
+      "target_chars": [1200, 2200],
+      "tone": "区分「论文结论」与「新闻稿表述」，数字带单位",
+      "intro_rule": "一句话写明谁做了什么、发表在何处（若原文有）",
+      "chapter_skeleton": [
+        { "title": "做了什么", "blocks": ["paragraph ×2"] },
+        { "title": "方法 / 材料 / 实验设计", "blocks": ["paragraph ×2"] },
+        { "title": "关键结果", "blocks": ["list 或 stats（数字带单位）", "paragraph"] },
+        { "title": "意义与局限（仅限原文提到的）", "blocks": ["paragraph ×2"] },
+        { "title": "出处与说明", "blocks": ["paragraph ×2", "paragraph 论文/机构链接"] }
+      ],
+      "ending_rule": "注明「结果为原文转述，非本刊复现」",
+      "example_dir": null
+    }
+  },
+
+  "profiles": [
+    {
+      "id": "semiwiki",
+      "display_name": "SemiWiki",
+      "hosts": ["semiwiki.com"],
+      "language": "en",
+      "genre": "EDA / 半导体技术长文、厂商投稿、CEO 访谈",
+      "traits": ["作者署名固定（如 Daniel Nenni）", "正文配图数量差异极大：技术稿 5~6 张、访谈稿仅 1 张", "术语密集，数字多为厂商实测或报价", "正文里嵌 4 个社交分享图标"],
+      "fetch": { "method": "curl_html", "entry": "div.entry-content", "fallback": "WebFetch" },
+      "image_rules": {
+        "path_allow": ["/wp-content/uploads/"],
+        "exclude": ["share_*.svg", "社交分享图标", "logo", "广告", "-300x169 等尺寸变体", ".svg"],
+        "dedupe_by_url": true
+      },
+      "image_policy": "strict_original",
+      "template": "T1_image_walkthrough",
+      "template_fallback": "T2_text_analysis",
+      "routing": { "image_count_gte": 4, "then": "T1_image_walkthrough", "else": "T2_text_analysis", "interview_keywords": ["Interview", "CEO", "Q&A"], "interview_template": "T2_text_analysis" },
+      "queue": {
+        "enabled": true,
+        "mode": "image_threshold",
+        "min_image_count": 4,
+        "low_image_override": {
+          "_note": "访谈稿正文通常只有 1 张封面，但仍要生成 T2 结构化精读；按标题关键词放宽阈值，避免这类稿子永远漏掉",
+          "title_keywords": ["Interview", "CEO", "Q&A", "Conversation with"],
+          "min_image_count": 1,
+          "template": "T2_text_analysis"
+        }
+      },
+      "auto_publish": true,
+      "copyright": "SemiWiki 及原作者",
+      "caveats": ["count_content_images 必须过滤 share_*.svg，否则每篇凭空多算 4 张"],
+      "example_dir": "wechat-post/、soi-post/、power-post/、quilter-post/"
+    },
+    {
+      "id": "imec",
+      "display_name": "imec",
+      "hosts": ["imec-int.com", "drupal.imec-int.com"],
+      "language": "en",
+      "genre": "研究机构新闻稿、联合发布、技术进展",
+      "traits": ["无 RSS，Next.js + Drupal /api/page", "联合发布常见，机构名/项目缩写多", "引述与时间线密集", "原图可能 7MB / 11603×15016"],
+      "fetch": { "method": "curl_html_or_webfetch", "image_src": "srcSet 中 /_next/image?url=... 解码到 drupal.imec-int.com/sites/default/files/", "fallback": "og:image" },
+      "image_rules": {
+        "max": 3,
+        "exclude": ["页面底部相关阅读卡片（alt 形如 PR NanoIC interconnects / ACP architecture / Automotive chiplets / PR ASRA / ACF Fall 2025）"],
+        "note": "拿不准就不放图"
+      },
+      "image_policy": "strict_original_capped",
+      "template": "T3_press_release",
+      "template_fallback": "T9_research_note",
+      "routing": { "ignore_image_count": true },
+      "queue": { "enabled": true, "mode": "all", "exempt_max_per_run": true },
+      "auto_publish": true,
+      "copyright": "imec 及联合发布方",
+      "caveats": ["用户明确要求：后续 imec 所有文章都生成公众号文章，不管有没有图片", "专有名词建稿前先在本地 JSON 定稿核对，言序无改稿接口"],
+      "example_dir": "imec-asra-post/"
+    },
+    {
+      "id": "trade_news_uk",
+      "display_name": "Electronics Weekly 等英国行业短讯",
+      "hosts": ["electronicsweekly.com"],
+      "language": "en",
+      "genre": "产业短讯、公司动态、产品发布快讯",
+      "traits": ["篇幅短（常 <600 字）", "正文通常无配图，页面上只有作者头像", "事实/金额/比例密集", "Cloudflare 对 curl 返回 403"],
+      "fetch": { "method": "WebFetch", "why": "直连 curl 403；allorigins / codetabs / r.jina.ai 代理均失败过", "dont": "不要再折腾代理" },
+      "image_rules": { "max": 1, "exclude": ["作者 gravatar 头像"] },
+      "image_policy": "no_image",
+      "template": "T4_news_brief",
+      "template_fallback": "T3_press_release",
+      "routing": { "if_press_release_with_quotes": "T3_press_release" },
+      "queue": { "enabled": true, "mode": "all", "exempt_max_per_run": false },
+      "auto_publish": true,
+      "copyright": "Electronics Weekly 及原作者",
+      "caveats": ["若正文确实无图，cover_img 留空，不要为了凑图自绘或引用站外图"],
+      "example_dir": "ew-lego-post/"
+    },
+    {
+      "id": "product_catalog",
+      "display_name": "产品页 / 官方资料页",
+      "hosts": ["teaching.com.au", "media.teaching.com.au"],
+      "language": "en",
+      "genre": "商品详情页、官方产品图集与参数表",
+      "traits": ["不是新闻，没有作者与发布日期", "图集藏在页面内嵌 JSON 的 images 数组", "zoom/ 目录是 8333×8333 原图，550×550 是缩略图", "常嵌 YouTube 产品视频"],
+      "fetch": { "method": "curl_html", "parse": "正则取 \"images\":[{\"path\":\"uploads/...\"}]，逐个拼 https://media.teaching.com.au/ + path 的 zoom 版本", "video": "productVideo 字段（youtube.com/embed/<id>）" },
+      "image_rules": { "max": 8, "prefer": "zoom/ 原图缩到 1000px JPG", "exclude": ["站点 logo", "促销横幅"], "dedupe_by_url": true },
+      "image_policy": "allow_official_product",
+      "template": "T5_official_gallery",
+      "template_fallback": "T4_news_brief",
+      "routing": { "always": "T5_official_gallery" },
+      "queue": { "enabled": false, "mode": "manual" },
+      "auto_publish": false,
+      "copyright": "品牌方及经销商（如 LEGO Education / Modern Teaching Aids）",
+      "caveats": ["必须双来源标注：新闻事实 vs 产品图与参数", "paths.txt 在 Windows 写入有 \\r，喂给 curl 会报 Malformed input，改用 Python urllib", "YouTube 常不可达，未能核验就必须写明"],
+      "example_dir": "ew-lego-post/lego-kit/"
+    },
+    {
+      "id": "corporate_newsroom",
+      "display_name": "企业新闻室 / 新闻通稿",
+      "hosts": ["newsroom.lamresearch.com", "nvidianews.nvidia.com", "newsroom.intel.com", "qualcomm.com", "broadcom.com", "coherent.com", "lumentum.com", "ir.appliedmaterials.com", "entegrisinc.gcs-web.com", "businesswire.com", "globenewswire.com"],
+      "language": "en",
+      "genre": "产品发布、合作、财报、投资者关系公告",
+      "traits": ["标准新闻稿结构：地点+日期开头、引述、About、Forward-looking statements", "规格与金额密集", "通常只有 1 张 og:image", "部分站点是 SPA（Qualcomm 走 sitemap）"],
+      "fetch": { "method": "curl_html", "fallback": "WebFetch / sitemap + og:title" },
+      "image_rules": { "max": 2, "prefer": "og:image", "exclude": ["logo", "分析师头像", "相关新闻缩略图"] },
+      "image_policy": "strict_original_capped",
+      "template": "T3_press_release",
+      "template_fallback": "T6_data_digest",
+      "routing": { "if_earnings_or_market_numbers": "T6_data_digest" },
+      "queue": { "enabled": true, "mode": "image_threshold", "min_image_count": 2 },
+      "auto_publish": true,
+      "copyright": "发布企业 / 通稿发布方",
+      "caveats": ["财报稿要区分 GAAP 与 non-GAAP，口径照抄原文", "Forward-looking statements 不写成承诺"],
+      "example_dir": null
+    },
+    {
+      "id": "vendor_tech_blog",
+      "display_name": "厂商技术博客 / 工程设计媒体",
+      "hosts": ["developer.nvidia.com", "electronicdesign.com", "anysilicon.com", "bits-chips.com", "semiengineering.com", "eetimes.com", "edn.com", "eejournal.com", "3dincites.com", "semiconductor-digest.com"],
+      "language": "en",
+      "genre": "技术教程、设计方法、工程实践、行业分析",
+      "traits": ["含代码块、电路图、波形图、架构图", "篇幅长、章节结构清晰", "配图数量中等偏多", "部分站点对 curl 403（electronicdesign.com 实测 403）"],
+      "fetch": { "method": "curl_html", "fallback": "WebFetch" },
+      "image_rules": { "max": 6, "exclude": ["广告位", "作者头像", "站点 logo", "相关文章卡片"] },
+      "image_policy": "strict_original",
+      "template": "T1_image_walkthrough",
+      "template_fallback": "T2_text_analysis",
+      "routing": { "image_count_gte": 4, "then": "T1_image_walkthrough", "else": "T2_text_analysis" },
+      "queue": { "enabled": true, "mode": "image_threshold", "min_image_count": 4 },
+      "auto_publish": true,
+      "copyright": "原作者及原刊",
+      "caveats": ["图表里的英文标注在图注里要解释，但不重绘图表"],
+      "example_dir": null
+    },
+    {
+      "id": "market_research",
+      "display_name": "市场研究 / 产业数据",
+      "hosts": ["trendforce.com", "digitimes.com", "counterpointresearch.com", "omdia.tech.informa.com", "semi.org"],
+      "language": "en",
+      "genre": "份额、价格、出货量、产能与预测",
+      "traits": ["数字密集、口径（季度/YoY/预测）是关键", "图表版权敏感", "标题常含百分比"],
+      "fetch": { "method": "curl_html", "fallback": "WebFetch" },
+      "image_rules": { "max": 0, "note": "不转载原图表" },
+      "image_policy": "no_charts",
+      "template": "T6_data_digest",
+      "template_fallback": "T4_news_brief",
+      "routing": { "always": "T6_data_digest" },
+      "queue": { "enabled": true, "mode": "image_threshold", "min_image_count": 99 },
+      "auto_publish": false,
+      "copyright": "数据发布方",
+      "caveats": ["auto_publish=false：数据稿需人工确认口径后才发", "把 min_image_count 设为 99 等于只登记不自动发布"],
+      "example_dir": null
+    },
+    {
+      "id": "asia_industry",
+      "display_name": "亚洲产业媒体",
+      "hosts": ["etnews.com", "rss.etnews.com", "thelec.net"],
+      "language": "ko / zh / en",
+      "genre": "供应链、面板、存储、代工快讯",
+      "traits": ["短讯为主", "常含未具名消息源表述", "标题数字多"],
+      "fetch": { "method": "curl_xml", "fallback": "WebFetch" },
+      "image_rules": { "max": 1 },
+      "image_policy": "no_image",
+      "template": "T4_news_brief",
+      "template_fallback": "T6_data_digest",
+      "routing": { "if_data_heavy": "T6_data_digest" },
+      "queue": { "enabled": true, "mode": "image_threshold", "min_image_count": 3 },
+      "auto_publish": false,
+      "copyright": "原刊及原作者",
+      "caveats": ["「据消息人士」必须保留消息源属性，不能写成已确认事实", "thelec.net RSS 实测 404，需走爬虫或换 feed"],
+      "example_dir": null
+    },
+    {
+      "id": "consumer_review",
+      "display_name": "硬件评测 / 消费科技媒体",
+      "hosts": ["tomshardware.com", "servethehome.com", "tweaktown.com", "feedburner.com"],
+      "language": "en",
+      "genre": "评测、跑分、规格对比、选购建议",
+      "traits": ["规格表与跑分图多", "结论前置", "价格与地区强相关", "图片数量多"],
+      "fetch": { "method": "curl_html", "fallback": "WebFetch" },
+      "image_rules": { "max": 4, "exclude": ["电商广告图", "站点 logo", "推荐商品卡片"] },
+      "image_policy": "strict_original",
+      "template": "T7_review_spec",
+      "template_fallback": "T1_image_walkthrough",
+      "routing": { "always": "T7_review_spec" },
+      "queue": { "enabled": true, "mode": "image_threshold", "min_image_count": 3 },
+      "auto_publish": true,
+      "copyright": "原刊及原作者",
+      "caveats": ["跑分必须注明测试条件；价格注明币种与地区"],
+      "example_dir": null
+    },
+    {
+      "id": "research_university",
+      "display_name": "大学 / 科研机构新闻",
+      "hosts": ["news.mit.edu", "azonano.com", "idw-online.de", "phys.org", "eurekalert.org"],
+      "language": "en / de",
+      "genre": "研究成果转述、论文发布",
+      "traits": ["机构名与资助方多", "结果数字带单位", "常附论文 DOI / 期刊链接", "新闻稿措辞比论文结论更强"],
+      "fetch": { "method": "curl_html", "fallback": "WebFetch" },
+      "image_rules": { "max": 2, "prefer": "og:image" },
+      "image_policy": "og_image_optional",
+      "template": "T9_research_note",
+      "template_fallback": "T4_news_brief",
+      "routing": { "always": "T9_research_note" },
+      "queue": { "enabled": true, "mode": "image_threshold", "min_image_count": 2 },
+      "auto_publish": true,
+      "copyright": "发布机构及原作者",
+      "caveats": ["区分「论文结论」与「新闻稿表述」，不把新闻稿的强表述写成论文结论", "idw-online.de 偶发 SSL EOF，失败跳过即可"],
+      "example_dir": null
+    },
+    {
+      "id": "paywall_finance",
+      "display_name": "付费墙 / 财经观点媒体",
+      "hosts": ["bloomberg.com", "rsshub-demo.cautious-menu.workers.dev", "theinformation.com", "seekingalpha.com", "barrons.com", "semianalysis.com"],
+      "language": "en",
+      "genre": "独家报道、投资观点、深度分析（订阅制）",
+      "traits": ["RSS 常只有摘要或经 RSSHub 注入全文", "版权风险高", "观点与事实混合", "图表有独立版权"],
+      "fetch": { "method": "rss_summary_only", "dont": "不要抓正文、不要绕付费墙" },
+      "image_rules": { "max": 0 },
+      "image_policy": "no_image",
+      "template": "T8_paywall_brief",
+      "template_fallback": null,
+      "routing": { "always": "T8_paywall_brief" },
+      "queue": { "enabled": false, "mode": "manual" },
+      "auto_publish": false,
+      "copyright": "原刊；全文与图表不转载",
+      "caveats": ["只写公开摘要里确有的事实，<=400 字", "不搬运图表、不推测、不补数字"],
+      "example_dir": null
+    },
+    {
+      "id": "cn_aggregator",
+      "display_name": "中文产业聚合源",
+      "hosts": ["semi-insights.com", "icsmart.cn", "laoyaoba.com", "iccsz.com", "usbdev.ru"],
+      "language": "zh / ru",
+      "genre": "二次编译、行业动态、更新日志",
+      "traits": ["多为二次编译，原始出处常不明确", "usbdev.ru 只有更新日志表格、无正文", "部分站点按 IP 放行，境外 403"],
+      "fetch": { "method": "scraper_config", "note": "走 jiclaw scraper_config.py 的选择器" },
+      "image_rules": { "max": 0 },
+      "image_policy": "no_image",
+      "template": "T4_news_brief",
+      "template_fallback": null,
+      "routing": { "always": "T4_news_brief" },
+      "queue": { "enabled": false, "mode": "manual" },
+      "auto_publish": false,
+      "copyright": "原刊及原始出处",
+      "caveats": ["中文源不属于「海外原文改写」链路，默认只登记不发布", "二次编译稿要回溯原始出处，找不到就不发"],
+      "example_dir": null
+    },
+    {
+      "id": "default",
+      "display_name": "未登记来源（兜底）",
+      "hosts": ["*"],
+      "language": "any",
+      "genre": "用户手工给 URL 的任意海外文章",
+      "traits": ["未知版式与陷阱"],
+      "fetch": { "method": "WebFetch_first", "fallback": "curl_html + 人工看正文" },
+      "image_rules": { "max": 3, "exclude": ["logo", "广告", "社交图标", "相关阅读卡片"] },
+      "image_policy": "strict_original_capped",
+      "template": "T4_news_brief",
+      "template_fallback": "T2_text_analysis",
+      "routing": { "image_count_gte": 4, "then": "T1_image_walkthrough", "else": "T4_news_brief" },
+      "queue": { "enabled": false, "mode": "manual" },
+      "auto_publish": true,
+      "copyright": "原作者及原刊",
+      "caveats": ["先人工确认正文边界与配图归属，再套模板", "拿不准就按 T4 短讯处理，不要硬凑长文"],
+      "example_dir": null
+    }
+  ],
+
+  "queue_contract": {
+    "_note": "jiclaw 的 record_candidate 按 profile 给队列条目补字段；WorkBuddy 消费时优先读这些字段，读不到再按 host 反查本文件",
+    "item_fields": ["url", "title", "image_count", "site", "status", "discovered_at", "always_publish", "profile_id", "template", "auto_publish"],
+    "url_canonicalization": "忽略 scheme、去掉 www.、去掉末尾斜杠、去掉 fragment 与 utm_* 参数",
+    "modes": {
+      "all": "不看图片数，所有新文章入队；exempt_max_per_run=true 时不受单次上限约束（imec 专用）",
+      "image_threshold": "正文配图数 >= min_image_count 才入队",
+      "manual": "不自动入队，只在用户直接给 URL 时生成"
+    }
+  },
+
+  "change_log": [
+    { "date": "2026-11-10", "note": "最初只有 SemiWiki 贴图稿一种形式" },
+    { "date": "2026-11-14", "note": "用户要求按海外来源的内容特色分化模板；建立 9 模板 + 13 来源画像的规则体系，覆盖 jiclaw 全部 21 RSS + 17 爬虫源" }
+  ]
+}
