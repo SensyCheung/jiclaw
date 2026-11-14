@@ -131,6 +131,27 @@ link:    https://www.usbdev.ru/news/#2026-10-31   ← 按天去重
 - 未配置时代码会打印 `HTTP 403：该站只允许俄罗斯 IP 访问` 后返回空列表，不影响其他源
 - 代理是 MITM 证书时可用 `USBDEV_INSECURE=1` 关闭校验（默认校验）
 
+### 1.2 SemiAnalysis（必须订阅 newsletter 子域的 feed）
+
+订阅地址是 **`https://newsletter.semianalysis.com/feed`**，不要写主站的 `https://semianalysis.com/feed/`：
+
+| 地址 | 状态 |
+|---|---|
+| `semianalysis.com/feed/` | HTTP 200，但停更在 **2025-09-16**（`wp-json/wp/v2/posts` 同样停在那天），是旧的 WordPress 存档 |
+| `newsletter.semianalysis.com/feed` | 20 篇、约 7 周跨度，最新 2026-11-12，约 2 篇/周，`<content:encoded>` 含全文 |
+
+- 主域名走 Automattic CDN，中国大陆 IP 一律 403（`wordpress.com` 也一样，属 CDN 层面按地域拦，
+  非本站反爬）；**GitHub Actions 的美国 runner 为 200**。`newsletter.` 子域没有这个限制，本地直连也能拿到。
+- 文章链接形如 `https://newsletter.semianalysis.com/p/<slug>`，`fetch_article_content()` 实测能拿到
+  **1.2 万–9.2 万字符**的正文（付费墙之后的部分本来就不在 HTML 里，不涉及绕墙）。
+  故该源**不要**加进 `USE_RSS_SUMMARY_FEEDS`：feed 的 `<description>` 只有 20–190 字符的副标题，
+  只用摘要会让模型瞎编。
+- `FEED_POLICIES`（`jiclaw_core.py`）给这个源单独设了两条口径：
+  `max_age_days=7`（首次接入不要把 7 周存档一次性灌进 Notion/Telegram）、
+  `content_max_chars=24000`（长文截断后再送免费档模型）。其他 feed 行为不变。
+- Notion 的站点名映射为 `SemiAnalysis`；`article_rules.json` 的 `paywall_finance` 画像按 host 后缀
+  命中 `newsletter.semianalysis.com`，因此**不进公众号贴图队列、不自动发布**（`queue.enabled=false`）。
+
 ### 2. Twitter 账号配置
 
 编辑 `twitter_config.py` 添加新账号：

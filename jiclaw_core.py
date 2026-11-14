@@ -98,6 +98,29 @@ USE_RSS_SUMMARY_FEEDS = [
 ]
 
 
+# 单个 feed 的特殊口径，按域名匹配（key 是 feed URL 里的一段）。
+# 只影响名单里的源，其他 feed 行为不变。
+FEED_POLICIES = {
+    # SemiAnalysis 的 Substack feed 一次给 20 篇、跨度约 7 周，且长文正文可达 9 万字符。
+    # 首次接入若照单全收，会一次性把两个月旧闻灌进 Notion/Telegram；
+    # 免费档模型也没必要读整篇 benchmark 长文。该站更新节奏约 2 篇/周，7 天窗口足够。
+    "newsletter.semianalysis.com": {
+        "max_age_days": 7,
+        "content_max_chars": 24000,
+    },
+}
+
+
+def _feed_policy(feed_url: str) -> dict:
+    """按 feed URL 取该源的特殊口径，未命中返回空 dict。"""
+    if not feed_url:
+        return {}
+    for domain, policy in FEED_POLICIES.items():
+        if domain in feed_url:
+            return policy
+    return {}
+
+
 # feedparser.parse(url) 走 urllib，未显式给 timeout 时用 socket 默认超时（None = 无限等）。
 # 自定义 RSSHub 的作者源串行抓全文约 60-65s，偶发不响应会让整轮 GitHub Actions 永久挂住，
 # 所以给所有 feed 抓取设一个宽松上限（正常源秒回，不受影响）。
@@ -193,6 +216,9 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
         return []
 
     items: list[dict] = []
+    policy = _feed_policy(feed_url)
+    max_age_days = policy.get("max_age_days")
+    skipped_old = 0
 
     for entry in feed.entries[:limit]:
         title = entry.get("title", "无标题")
@@ -203,6 +229,17 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
         published_parsed = entry.get("published_parsed") or entry.get(
             "updated_parsed"
         )
+
+        # 有些 feed 一次给好几周存档，按该源口径只取最近几天的（feedparser 给的是 UTC）
+        if max_age_days and published_parsed:
+            try:
+                pub_dt = datetime(*published_parsed[:6])
+                if (datetime.utcnow() - pub_dt).days > max_age_days:
+                    skipped_old += 1
+                    continue
+            except Exception:
+                pass  # 日期异常就当作新条目，不要因此丢文章
+
         published_date = None
         if published_parsed:
             try:
@@ -229,6 +266,8 @@ def get_feed_items(feed_url: str, limit: int = 10) -> list[dict]:
             }
         )
 
+    if skipped_old:
+        print(f"按该源口径跳过 {skipped_old} 篇超过 {max_age_days} 天的旧文章")
     return items
 
 
@@ -1618,6 +1657,9 @@ def get_website_name(feed_url: str) -> str:
         "imec-int.com": "imec",
         "qualcomm.com": "Qualcomm",
         "theinformation.com": "The Information",
+        # 主站 semianalysis.com 的 feed 停在 2025-09，真正在更新的是 newsletter 子域
+        "newsletter.semianalysis.com": "SemiAnalysis",
+        "semianalysis.com": "SemiAnalysis",
     }
 
     # 自定义 RSSHub：域名本身没有辨识度，按路由前缀还原真实媒体名
@@ -2128,6 +2170,15 @@ def _process_items(
 
         if not content:
             content = summary
+
+        # 超长正文按源口径截断：免费档模型没必要读整篇几万字的 benchmark 长文
+        content_max_chars = (
+            _feed_policy(source).get("content_max_chars", 0)
+            if source.startswith("http") else 0
+        )
+        if content_max_chars and len(content) > content_max_chars:
+            print(f"  正文 {len(content)} 字符，截断到 {content_max_chars} 字符后送模型")
+            content = content[:content_max_chars]
 
         # 分享封面：正文抓取时已缓存的直接用，没抓过正文的源单独取一次头部。
         # 未配置 Notion 时不必浪费这次请求；抓不到也不影响正文与入库。
