@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-14T19:48:30+00:00",
-  "count": 6,
+  "generated_at": "2026-11-15T07:37:03+00:00",
+  "count": 7,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -141,6 +141,18 @@
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
       "auto_publish": true
+    },
+    {
+      "url": "https://www.etnews.com/20261113000051",
+      "title": "中 TCL, 중저가 넘어 고효율 TV '진격'…에너지 1등급 비율 삼성전자 추월",
+      "image_count": 3,
+      "site": "etnews.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-15T07:37:03+00:00",
+      "profile_id": "asia_industry",
+      "template": "T4_news_brief",
+      "auto_publish": false
     }
   ]
 }
