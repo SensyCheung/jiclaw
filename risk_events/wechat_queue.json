@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-15T12:42:01+00:00",
-  "count": 8,
+  "generated_at": "2026-11-15T19:19:54+00:00",
+  "count": 11,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -162,6 +162,42 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-15T12:42:01+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://semiwiki.com/ceo-interviews/376079-ceo-interview-with-daisuke-okanohara-of-matlantis/",
+      "title": "CEO Interview with Daisuke Okanohara of Matlantis",
+      "image_count": 1,
+      "site": "semiwiki.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-15T19:16:39+00:00",
+      "profile_id": "semiwiki",
+      "template": "T2_text_analysis",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/peripherals/controllers-gamepads/cockpit-simulator-737x-cdu-v2-review-an-essential-component-for-flight-sim-enthusiasts",
+      "title": "Cockpit-Simulator 737X CDU (v2) Review: An Essential Component for Flight Sim Enthusiasts",
+      "image_count": 9,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-15T19:18:52+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-rtx-5090-stock-returns-to-newegg-with-21-models-but-scarcity-pricing-keeps-the-cheapest-air-cooled-cards-at-least-three-times-msrp",
+      "title": "Nvidia RTX 5090 stock returns to Newegg with 21 models",
+      "image_count": 3,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-15T19:19:54+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
       "auto_publish": true

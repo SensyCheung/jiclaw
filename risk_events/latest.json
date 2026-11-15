@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-15T12:51:17+00:00",
-  "count": 78,
+  "generated_at": "2026-11-15T19:31:05+00:00",
+  "count": 80,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -47,6 +47,47 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
+    },
+    {
+      "post_id": "5cba460651",
+      "dedup_key": "ee567e18aa68",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1141024",
+      "title": "三星、SK 海力士、美光撤诉申请遭驳回，被诉人为制造 DRAM 短缺",
+      "title_cn": "三星、SK海力士、美光撤诉申请遭驳回，被诉人为制造DRAM短缺",
+      "published_at": "2026-11-15T14:30:30.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-15T19:30:39",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "三星(Samsung), SK海力士(SK Hynix), 美光科技(Micron)",
+      "site": "美国",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "DRAM",
+        "HBM"
+      ],
+      "occurred_at": "2026-11-14",
+      "sources": [
+        {
+          "post_id": "5cba460651",
+          "url": "https://laoyaoba.com/n/1141024",
+          "title": "三星、SK 海力士、美光撤诉申请遭驳回，被诉人为制造 DRAM 短缺",
+          "title_cn": "三星、SK海力士、美光撤诉申请遭驳回，被诉人为制造DRAM短缺",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T14:30:30.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "dce2199824",
@@ -222,6 +263,15 @@
           "source": "https://semiwiki.com/feed/",
           "published_at": "2026-11-13T13:00:14.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "362d7ca6d7",
+          "url": "https://semiwiki.com/semiconductor-manufacturers/376352-after-jensen-a-window-for-nvidias-rivals-a-problem-for-its-suppliers/",
+          "title": "After Jensen: A Window for Nvidia’s Rivals, a Problem for Its Suppliers",
+          "title_cn": "黄仁勋之后：英伟达竞争对手的窗口期，及其供应商的难题",
+          "source": "https://semiwiki.com/feed/",
+          "published_at": "2026-11-15T14:00:52.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -229,7 +279,7 @@
         "other"
       ],
       "primary_event_type": "earnings",
-      "source_count": 4
+      "source_count": 5
     },
     {
       "post_id": "917201068e",
@@ -1906,7 +1956,7 @@
       "event_type": "export_control",
       "hazard_class": "regulatory",
       "entity": "微软(Microsoft)",
-      "site": null,
+      "site": "美国",
       "country_region": "美国",
       "lat": null,
       "lon": null,
@@ -1924,12 +1974,22 @@
           "source": "aijiwei",
           "published_at": "2026-11-11T23:14:57.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "06535f205a",
+          "url": "https://laoyaoba.com/n/1141023",
+          "title": "AI数据中心：美国38地通过禁令喊停扩建",
+          "title_cn": "AI数据中心：美国38地通过禁令喊停扩建",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T13:30:30.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
-        "export_control"
+        "export_control",
+        "other"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "export_control"
     },
     {
@@ -2170,6 +2230,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
+    },
+    {
+      "post_id": "5d036594fd",
+      "dedup_key": "39995084a968",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/big-tech/judge-denies-motion-to-dismiss-dram-price-fixing-lawsuit-against-micron-samsung-and-sk-hynix-says-chipmakers-acted-like-hawks-flying-in-formation-finds-evidence-of-dram-collusion-plausible-after-500-percent-price-surge",
+      "title": "Judge denies motion to dismiss DRAM price-fixing lawsuit against Micron, Samsung, and SK hynix, finds evidence of DRAM collusion plausible after 500% price surge",
+      "title_cn": "法官驳回美光、三星和SK海力士驳回DRAM价格垄断诉讼的请求，称在价格暴涨500%后合谋证据具有合理性",
+      "published_at": "2026-11-15T15:09:44.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-15T19:21:29",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "美光科技(Micron),三星(Samsung),SK海力士(SK Hynix)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [
+        "DRAM"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "5d036594fd",
+          "url": "https://www.tomshardware.com/tech-industry/big-tech/judge-denies-motion-to-dismiss-dram-price-fixing-lawsuit-against-micron-samsung-and-sk-hynix-says-chipmakers-acted-like-hawks-flying-in-formation-finds-evidence-of-dram-collusion-plausible-after-500-percent-price-surge",
+          "title": "Judge denies motion to dismiss DRAM price-fixing lawsuit against Micron, Samsung, and SK hynix, finds evidence of DRAM collusion plausible after 500% price surge",
+          "title_cn": "法官驳回美光、三星和SK海力士驳回DRAM价格垄断诉讼的请求，称在价格暴涨500%后合谋证据具有合理性",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-15T15:09:44.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "19b409e537",
