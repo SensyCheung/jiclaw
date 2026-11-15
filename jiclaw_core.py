@@ -1639,6 +1639,8 @@ def get_website_name(feed_url: str) -> str:
         "nvidianews.nvidia.com": "Nvidia News",
         "developer.nvidia.com": "Nvidia Developer",
         "newsroom.intel.com": "Intel Newsroom",
+        # Arm 官方新闻室：/news 是新闻稿、/blog 是技术博客，同一个 host
+        "newsroom.arm.com": "Arm Newsroom",
         "www.coherent.com": "Coherent",
         "coherent.com": "Coherent",
         "www.iccsz.com": "讯石光通讯",

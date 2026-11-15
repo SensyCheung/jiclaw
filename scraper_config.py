@@ -157,6 +157,19 @@ SCRAPER_CONFIG = {
         # 站点按 IP 归属放行，境外直连 403；出口代理从该环境变量读（GitHub Secrets/Variables 注入）
         "proxy_env": "USBDEV_PROXY",
     },
+    "arm": {
+        "name": "Arm Newsroom",
+        "url": "https://newsroom.arm.com/news",
+        # WordPress REST API（与 RSSHub 的 /arm/news、/arm/blog 路由读的是同一组接口）：
+        # news = 官方新闻稿/公告（财报、产品、合作），posts = 技术博客，两者都带全量 HTML 正文。
+        # 直接读接口而不订阅 RSSHub：本地与 Actions 都能直连，不依赖自建实例的路由版本。
+        "endpoints": {
+            "news": "https://newsroom.arm.com/wp-json/wp/v2/news",
+            "blog": "https://newsroom.arm.com/wp-json/wp/v2/posts",
+        },
+        "per_page": 20,  # 每个板块单次最多取多少条，两个板块合并后再按时间截到 limit
+        "date_format": "iso",  # 日期格式：2026-11-13T10:33:53（date_gmt，本身就是 UTC）
+    },
     "qualcomm": {
         "name": "Qualcomm News",
         "url": "https://www.qualcomm.com/news/releases",

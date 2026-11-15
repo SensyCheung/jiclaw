@@ -152,6 +152,33 @@ link:    https://www.usbdev.ru/news/#2026-10-31   ← 按天去重
 - Notion 的站点名映射为 `SemiAnalysis`；`article_rules.json` 的 `paywall_finance` 画像按 host 后缀
   命中 `newsletter.semianalysis.com`，因此**不进公众号贴图队列、不自动发布**（`queue.enabled=false`）。
 
+### 1.3 Arm Newsroom（新闻稿 + 技术博客）
+
+`scraper:arm` 抓 <https://newsroom.arm.com>，两个板块合在一起，按日期取最新 10 条：
+
+| 板块 | 接口 | 内容 | 体量 |
+|---|---|---|---|
+| 新闻稿 | `/wp-json/wp/v2/news` | 财报、产品发布、合作公告 | 330 篇 |
+| 博客 | `/wp-json/wp/v2/posts` | 技术解读（CSS、PC、物理 AI…） | 567 篇 |
+
+**为什么不订阅 RSSHub**：RSSHub 的 `/arm/news`、`/arm/blog` 路由 **2026-11-13 才合入 master**，
+自建实例部署在这之前，实测 `/arm/*` 一律 404（返回 RSSHub 欢迎页）；`rsshub.app` 公共实例
+则返回 403「会逐步限制 feed reader 访问，仅供测试」。而 `newsroom.arm.com` 本身
+在中国大陆、GitHub Actions 都能直连（实测 0.5s），所以直接读它和 RSSHub 相同的 WP REST 接口。
+
+- 条目字段：`title`（REST 的 `title.rendered` 去标签）、`link`、`summary`（`excerpt.rendered` 纯文本）、
+  `published`（`date_gmt`，本身就是 UTC）、`published_date`
+- 正文照常抓：`fetch_article_content()` 实测 news 约 1.0 万字符、blog 约 1.3 万字符
+- Notion 站点名映射为 `Arm Newsroom`
+- 公众号队列：host 未登记在 `article_rules.json`，落到 `default` 画像（`queue.enabled=false`），
+  **不进贴图队列、不自动发布**。想让它进队列，在 `article_rules.json` 加画像并登记 `newsroom.arm.com`
+- 只看某个专题（如 `silicon`）：在 `scraper_config.py` 的 `arm` 里加 `"topics": [<专题 id>]`，
+  专题 id 可从 `https://newsroom.arm.com/wp-json/wp/v2/topics?slug=silicon` 取
+
+> 自建实例以后升级到 ≥ 2026-11-13 的版本后，也可以把工作流里的 `scraper:arm` 换成
+> `https://<实例>/arm/news` 与 `https://<实例>/arm/blog` 两条 URL。**二选一**，
+> 不要同时开——两边读的是同一批文章，会重复调模型。
+
 ### 2. Twitter 账号配置
 
 编辑 `twitter_config.py` 添加新账号：

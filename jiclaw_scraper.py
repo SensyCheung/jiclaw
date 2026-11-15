@@ -2302,6 +2302,108 @@ def scrape_usbdev(url: str, limit: int = 10) -> list[dict]:
     return results
 
 
+_ARM_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json",
+}
+_ARM_FIELDS = "id,date_gmt,link,title,excerpt,featured_media"
+
+
+def _arm_text(html: str) -> str:
+    """把 WP REST 的 rendered HTML 转成纯文本（标题/摘要里带 &amp; 和零宽字符）。"""
+    text = BeautifulSoup(html or "", "html.parser").get_text(" ", strip=True)
+    text = re.sub(r"[\u200b-\u200d\ufeff]", "", text).replace("\u00a0", " ")
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def scrape_arm(url: str, limit: int = 10) -> list[dict]:
+    """爬取 Arm Newsroom 的官方新闻稿与博客（newsroom.arm.com）。
+
+    走 WordPress REST API，和 RSSHub 的 /arm/news、/arm/blog 两条路由读的是同一组接口：
+    - news → /wp-json/wp/v2/news（官方新闻稿：财报、产品、合作）
+    - blog → /wp-json/wp/v2/posts（技术博客）
+    两个板块各自取最新若干条，按日期合并后再截到 limit。
+
+    之所以不订阅 RSSHub：该路由 2026-11-13 才合入 RSSHub master，自建实例的版本更早
+    （/arm/* 返回 404）；而 newsroom.arm.com 本身在中国大陆和 Actions 都能直连。
+    实例升级后也可以换回 RSSHub 的两条 URL，二选一即可，别同时开（会重复处理）。
+    """
+    cfg = SCRAPER_CONFIG.get("arm", {})
+    endpoints = cfg.get("endpoints") or {}
+    if not endpoints:
+        print("  arm 配置缺少 endpoints，跳过")
+        return []
+
+    per_page = max(1, min(int(cfg.get("per_page") or 20), 100))
+    topics = cfg.get("topics") or []  # 可选：WP 专题 id 列表，留空=全部专题
+
+    results = []
+    seen = set()
+
+    for section, api in endpoints.items():
+        params = {
+            "per_page": min(per_page, max(limit, 10)),
+            "_fields": _ARM_FIELDS,
+        }
+        if topics:
+            params["topics"] = ",".join(str(t) for t in topics)
+
+        try:
+            resp = requests.get(
+                api,
+                headers=_ARM_HEADERS,
+                params=params,
+                timeout=30,
+                proxies={"http": None, "https": None},
+            )
+        except Exception as e:
+            print(f"  [{section}] 请求失败：{type(e).__name__}: {str(e)[:100]}")
+            continue
+
+        if resp.status_code != 200:
+            print(f"  [{section}] HTTP {resp.status_code}：{resp.text[:120]}")
+            continue
+
+        try:
+            posts = resp.json()
+        except Exception:
+            print(f"  [{section}] 返回不是 JSON，接口可能已变")
+            continue
+
+        print(f"  [{section}] 接口返回 {len(posts)} 条")
+
+        for post in posts:
+            link = (post.get("link") or "").strip()
+            if not link or link in seen:
+                continue
+            title = _arm_text((post.get("title") or {}).get("rendered"))
+            if not title:
+                continue
+            seen.add(link)
+            summary = _arm_text((post.get("excerpt") or {}).get("rendered"))
+            date_gmt = (post.get("date_gmt") or "").strip()
+            results.append(
+                {
+                    "title": title,
+                    "link": link,
+                    "summary": summary or title,
+                    "published": date_gmt,
+                    "published_date": normalize_date(date_gmt),
+                }
+            )
+
+    if not results:
+        print("  未获取到任何条目")
+        return []
+
+    results.sort(key=lambda i: i.get("published_date") or "", reverse=True)
+    print(f"  合并去重后 {len(results)} 条，取最新 {min(limit, len(results))} 条")
+    return results[:limit]
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -2322,6 +2424,7 @@ SCRAPER_FUNCTIONS = {
     "imec": scrape_imec,
     "qualcomm": scrape_qualcomm,
     "usbdev": scrape_usbdev,
+    "arm": scrape_arm,
 }
 
 
