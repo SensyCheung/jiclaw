@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-15T07:37:03+00:00",
-  "count": 7,
+  "generated_at": "2026-11-15T12:42:01+00:00",
+  "count": 8,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -153,6 +153,18 @@
       "profile_id": "asia_industry",
       "template": "T4_news_brief",
       "auto_publish": false
+    },
+    {
+      "url": "https://www.tomshardware.com/video-games/xbox/the-original-xbox-was-released-25-years-ago-today-microsofts-pentium-iii-and-nvidia-gpu-powered-console-did-surprisingly-well-in-a-ps2-dominated-era",
+      "title": "The original Xbox was released 25 years ago today",
+      "image_count": 8,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-15T12:42:01+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-15T05:07:45+00:00",
-  "count": 77,
+  "generated_at": "2026-11-15T12:51:17+00:00",
+  "count": 78,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -482,6 +482,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
+    },
+    {
+      "post_id": "fbba6f109f",
+      "dedup_key": "e6cb0930076d",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1141018",
+      "title": "荷兰企业法庭作出临时措施裁定，闻泰科技：将上诉",
+      "title_cn": "荷兰企业法庭作出临时措施裁定，闻泰科技：将上诉",
+      "published_at": "2026-11-15T12:27:03.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-15T12:50:25",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "闻泰科技",
+      "site": "荷兰阿姆斯特丹",
+      "country_region": "荷兰",
+      "lat": 52.3676,
+      "lon": 4.9041,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-11",
+      "sources": [
+        {
+          "post_id": "fbba6f109f",
+          "url": "https://laoyaoba.com/n/1141018",
+          "title": "荷兰企业法庭作出临时措施裁定，闻泰科技：将上诉",
+          "title_cn": "荷兰企业法庭作出临时措施裁定，闻泰科技：将上诉",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T12:27:03.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "62aa84e01a",
@@ -1534,6 +1572,93 @@
       "primary_event_type": "mna"
     },
     {
+      "post_id": "670335a07c",
+      "dedup_key": "0fd7b75a60dc",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+      "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+      "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
+      "published_at": "2026-11-08T12:59:54.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-08T17:51:02",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": "美国",
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "670335a07c",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+          "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+          "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-08T12:59:54.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "db92d38fc0",
+          "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-ceo-jensen-huang-admits-to-having-an-affair-with-suspected-chinese-spy-jensen-apologizes-in-letter-to-staff-company-board-forms-independent-committee-to-investigate",
+          "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
+          "title_cn": "英伟达CEO黄仁勋承认与疑似中国间谍存在婚外情",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-08T21:27:23.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "dab7fe82b7",
+          "url": "https://www.tomshardware.com/tech-industry/big-tech/law-firm-files-class-action-lawsuit-against-nvidia-after-ceo-jensen-huang-confirms-affair-with-alleged-chinese-spy-more-to-come-as-multiple-other-law-firms-investigate-securities-fraud-following-stock-drop",
+          "title": "Law firm files class-action lawsuit against Nvidia after CEO Jensen Huang confirms affair with alleged Chinese spy",
+          "title_cn": "律师事务所对英伟达提起集体诉讼，CEO黄仁勋确认与涉嫌中国间谍人士有染",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-10T00:03:07.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "d4c70ff2f2",
+          "url": "https://www.tomshardware.com/tech-industry/policy/president-trump-says-the-fbi-is-investigating-jensen-huangs-affair-nvidia-also-accused-of-intervening-in-megaspeed-chip-smuggling-investigation",
+          "title": "President Trump says the FBI is investigating Jensen Huang’s affair",
+          "title_cn": "美国总统特朗普称 FBI 正在调查黄仁勋的婚外情",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-10T12:33:16.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "187a584918",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/malaysia-and-singapore-step-up-nvidia-ai-chip-probes-as-charges-brought-against-chinese-national-over-917-smuggled-servers-firm-at-center-of-jensen-huang-controversy-announces-inventory-audit-to-account-for-all-restricted-gpus",
+          "title": "Malaysia and Singapore step up Nvidia AI chip probes amidst Jensen Huang controversy",
+          "title_cn": "马来西亚与新加坡加大对英伟达人工智能芯片调查，黄仁勋离职争议引发关注",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-13T16:15:24.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "25ef49503a",
+          "url": "https://www.tomshardware.com/tech-industry/elon-musk-signs-petition-to-reinstate-jensen-huang-as-nvidia-ceo-over-130-000-sign-online-petition-but-not-all-nvidians-support-jensens-return",
+          "title": "Elon Musk signs petition to reinstate Jensen Huang as Nvidia CEO — over 130,000 sign online petition, but not all Nvidians support Jensen's return",
+          "title_cn": "埃隆·马斯克签署请愿书要求恢复黄仁勋的英伟达 CEO 职位——超 13 万人在线请愿，但并非所有英伟达员工都支持其回归",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-15T11:59:54.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control",
+        "litigation",
+        "other"
+      ],
+      "source_count": 6,
+      "primary_event_type": "export_control"
+    },
+    {
       "post_id": "b6cab54de4",
       "dedup_key": "34b05d4be049",
       "source": "https://www.theinformation.com/feed",
@@ -1726,83 +1851,6 @@
       ],
       "source_count": 1,
       "primary_event_type": "capacity_disruption"
-    },
-    {
-      "post_id": "670335a07c",
-      "dedup_key": "0fd7b75a60dc",
-      "source": "https://www.tomshardware.com/feeds.xml",
-      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
-      "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
-      "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
-      "published_at": "2026-11-08T12:59:54.000Z",
-      "llm": "gemini:gemini-3.1-flash-lite",
-      "ingested_at": "2026-11-08T17:51:02",
-      "is_risk_event": true,
-      "event_type": "export_control",
-      "hazard_class": "regulatory",
-      "entity": "英伟达(NVIDIA)",
-      "site": "美国",
-      "country_region": "中国",
-      "lat": null,
-      "lon": null,
-      "severity": 0.5,
-      "affected_products": [
-        "GPU"
-      ],
-      "occurred_at": "2026-11",
-      "sources": [
-        {
-          "post_id": "670335a07c",
-          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
-          "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
-          "title_cn": "两家获准购买被禁英伟达AI芯片的中国公司被曝办公室空置且地址不明",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-08T12:59:54.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        },
-        {
-          "post_id": "db92d38fc0",
-          "url": "https://www.tomshardware.com/pc-components/gpus/nvidia-ceo-jensen-huang-admits-to-having-an-affair-with-suspected-chinese-spy-jensen-apologizes-in-letter-to-staff-company-board-forms-independent-committee-to-investigate",
-          "title": "Nvidia CEO Jensen Huang admits to having an affair with suspected Chinese spy",
-          "title_cn": "英伟达CEO黄仁勋承认与疑似中国间谍存在婚外情",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-08T21:27:23.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        },
-        {
-          "post_id": "dab7fe82b7",
-          "url": "https://www.tomshardware.com/tech-industry/big-tech/law-firm-files-class-action-lawsuit-against-nvidia-after-ceo-jensen-huang-confirms-affair-with-alleged-chinese-spy-more-to-come-as-multiple-other-law-firms-investigate-securities-fraud-following-stock-drop",
-          "title": "Law firm files class-action lawsuit against Nvidia after CEO Jensen Huang confirms affair with alleged Chinese spy",
-          "title_cn": "律师事务所对英伟达提起集体诉讼，CEO黄仁勋确认与涉嫌中国间谍人士有染",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-10T00:03:07.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        },
-        {
-          "post_id": "d4c70ff2f2",
-          "url": "https://www.tomshardware.com/tech-industry/policy/president-trump-says-the-fbi-is-investigating-jensen-huangs-affair-nvidia-also-accused-of-intervening-in-megaspeed-chip-smuggling-investigation",
-          "title": "President Trump says the FBI is investigating Jensen Huang’s affair",
-          "title_cn": "美国总统特朗普称 FBI 正在调查黄仁勋的婚外情",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-10T12:33:16.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        },
-        {
-          "post_id": "187a584918",
-          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/malaysia-and-singapore-step-up-nvidia-ai-chip-probes-as-charges-brought-against-chinese-national-over-917-smuggled-servers-firm-at-center-of-jensen-huang-controversy-announces-inventory-audit-to-account-for-all-restricted-gpus",
-          "title": "Malaysia and Singapore step up Nvidia AI chip probes amidst Jensen Huang controversy",
-          "title_cn": "马来西亚与新加坡加大对英伟达人工智能芯片调查，黄仁勋离职争议引发关注",
-          "source": "https://www.tomshardware.com/feeds.xml",
-          "published_at": "2026-11-13T16:15:24.000Z",
-          "llm": "gemini:gemini-3.1-flash-lite"
-        }
-      ],
-      "event_types": [
-        "export_control",
-        "litigation"
-      ],
-      "source_count": 5,
-      "primary_event_type": "export_control"
     },
     {
       "post_id": "8c09a017a2",
