@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-15T19:31:05+00:00",
-  "count": 80,
+  "generated_at": "2026-11-16T00:01:28+00:00",
+  "count": 81,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -40,6 +40,44 @@
           "source": "aijiwei",
           "published_at": "2026-11-15T00:06:48.000Z",
           "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
+      "post_id": "0b3a5094a3",
+      "dedup_key": "eb9f27ab79a6",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1141030",
+      "title": "【收购】利扬芯片突发收购，切入光通信；",
+      "title_cn": "【收购】利扬芯片突发收购，切入光通信",
+      "published_at": "2026-11-15T23:10:32.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-16T00:01:05",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "financial",
+      "entity": "利扬芯片, 众望达光电",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-15",
+      "sources": [
+        {
+          "post_id": "0b3a5094a3",
+          "url": "https://laoyaoba.com/n/1141030",
+          "title": "【收购】利扬芯片突发收购，切入光通信；",
+          "title_cn": "【收购】利扬芯片突发收购，切入光通信",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T23:10:32.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -272,6 +310,15 @@
           "source": "https://semiwiki.com/feed/",
           "published_at": "2026-11-15T14:00:52.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "2150de60c6",
+          "url": "https://laoyaoba.com/n/1140987",
+          "title": "黄仁勋复职联署破13万人！逾7.1万名股东声援马斯克、张一鸣都在列",
+          "title_cn": "黄仁勋复职联署破13万人！逾7.1万名股东声援，马斯克、张一鸣都在列",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T23:10:32.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -279,7 +326,7 @@
         "other"
       ],
       "primary_event_type": "earnings",
-      "source_count": 5
+      "source_count": 6
     },
     {
       "post_id": "917201068e",
@@ -456,7 +503,7 @@
       "event_type": "mna",
       "hazard_class": "operational",
       "entity": "英伟达(Nvidia)",
-      "site": null,
+      "site": "美国",
       "country_region": "美国",
       "lat": null,
       "lon": null,
@@ -484,6 +531,15 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-12T16:16:51.000Z",
           "llm": "gemini:gemini-flash-lite-latest"
+        },
+        {
+          "post_id": "553277a985",
+          "url": "https://www.theinformation.com/briefings/huang-weighs-nvidia-comeback-bessent-pushes-board-look-outside",
+          "title": "Huang Allies Encourage Nvidia Comeback as Bessent Pushes Board to Look Outside",
+          "title_cn": "黄仁勋盟友鼓励其重返英伟达，贝森特敦促董事会物色外部人选",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-15T20:19:18.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -491,7 +547,7 @@
         "other"
       ],
       "primary_event_type": "mna",
-      "source_count": 2
+      "source_count": 3
     },
     {
       "post_id": "8fd9f9c3e5",
@@ -551,7 +607,7 @@
       "country_region": "荷兰",
       "lat": 52.3676,
       "lon": 4.9041,
-      "severity": 0.3,
+      "severity": 0.7,
       "affected_products": [],
       "occurred_at": "2026-11-11",
       "sources": [
@@ -563,12 +619,21 @@
           "source": "aijiwei",
           "published_at": "2026-11-15T12:27:03.000Z",
           "llm": "zhipu:GLM-4.7-Flash"
+        },
+        {
+          "post_id": "0adf49473c",
+          "url": "https://laoyaoba.com/n/1141033",
+          "title": "【热点】荷兰企业法庭作出临时措施裁定，闻泰科技：将上诉；",
+          "title_cn": "荷兰企业法庭作出临时措施裁定，闻泰科技：将上诉",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T23:10:32.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "litigation"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "litigation"
     },
     {
@@ -1853,13 +1918,22 @@
           "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
           "published_at": "2026-11-13T18:00:32.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "2bb38d8276",
+          "url": "https://laoyaoba.com/n/1141036",
+          "title": "【头条】黄仁勋复职联署破13万人，马斯克、张一鸣在列！",
+          "title_cn": "【头条】黄仁勋复职联署破13万人，马斯克、张一鸣在列！AI长周期重塑硅片产业格局，中环领先加速跻身全球第一梯队；台积电、友达合攻先进封装",
+          "source": "aijiwei",
+          "published_at": "2026-11-15T23:10:32.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "earnings",
         "other"
       ],
-      "source_count": 4,
+      "source_count": 5,
       "primary_event_type": "earnings"
     },
     {
