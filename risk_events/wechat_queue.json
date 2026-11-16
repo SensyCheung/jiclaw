@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-15T19:19:54+00:00",
-  "count": 11,
+  "generated_at": "2026-11-16T05:06:12+00:00",
+  "count": 13,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 3,
+    "min_image_count": 4,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -200,6 +200,30 @@
       "discovered_at": "2026-11-15T19:19:54+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/ed-eyes-a-glamorous-chinese-spy-2026-11/",
+      "title": "Ed Eyes A Glamorous Chinese Spy",
+      "image_count": 9,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-16T04:58:31+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.imec-int.com/en/press/imec-sets-rd-activities-hokkaido-strengthen-japans-next-generation-semiconductor-and",
+      "title": "Imec sets up R&D activities in Hokkaido to strengthen Japan's next-generation semiconductor and photonics ecosystem",
+      "image_count": 14,
+      "site": "imec-int.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-16T05:06:12+00:00",
+      "profile_id": "imec",
+      "template": "T3_press_release",
       "auto_publish": true
     }
   ]
