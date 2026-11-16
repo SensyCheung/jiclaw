@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-16T00:01:28+00:00",
-  "count": 81,
+  "generated_at": "2026-11-16T23:33:13+00:00",
+  "count": 84,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,96 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "de25725ccf",
+      "dedup_key": "09d4055c66d0",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/new-us-rules-aim-to-restrict-remote-access-to-ai-servers-and-infrastructure-seeks-to-combat-cloud-rental-workarounds-to-gpu-export-controls",
+      "title": "New US rules aim to restrict Chinese firms’ remote access to AI servers and infrastructure",
+      "title_cn": "美国发布新规，旨在限制中国企业远程访问 AI 服务器及基础设施",
+      "published_at": "2026-11-16T21:50:00.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-16T23:19:44",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": "2026-11-16",
+      "sources": [
+        {
+          "post_id": "de25725ccf",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/new-us-rules-aim-to-restrict-remote-access-to-ai-servers-and-infrastructure-seeks-to-combat-cloud-rental-workarounds-to-gpu-export-controls",
+          "title": "New US rules aim to restrict Chinese firms’ remote access to AI servers and infrastructure",
+          "title_cn": "美国发布新规，旨在限制中国企业远程访问 AI 服务器及基础设施",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-16T21:50:00.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "b04965acaf",
+      "dedup_key": "f7cf228d5876",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/briefings/commerce-department-releases-remote-access-rule",
+      "title": "Commerce Department Releases Remote Access Rule",
+      "title_cn": "美国商务部发布远程访问规则",
+      "published_at": "2026-11-16T18:13:40.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-16T23:20:45",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "美国商务部工业与安全局(BIS)",
+      "site": "美国",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "AI chip",
+        "HPC"
+      ],
+      "occurred_at": "2026-11-16",
+      "sources": [
+        {
+          "post_id": "b04965acaf",
+          "url": "https://www.theinformation.com/briefings/commerce-department-releases-remote-access-rule",
+          "title": "Commerce Department Releases Remote Access Rule",
+          "title_cn": "美国商务部发布远程访问规则",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-16T18:13:40.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "fb77b60a79",
+          "url": "https://laoyaoba.com/n/1141649",
+          "title": "美国公布新规，进一步限制中国获取人工智能芯片",
+          "title_cn": "美国公布新规，进一步限制中国获取人工智能芯片",
+          "source": "aijiwei",
+          "published_at": "2026-11-16T23:11:47.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 2,
+      "primary_event_type": "export_control"
+    },
     {
       "post_id": "acc319a8e4",
       "dedup_key": "976ab62e10ed",
@@ -90,16 +180,16 @@
       "post_id": "5cba460651",
       "dedup_key": "ee567e18aa68",
       "source": "aijiwei",
-      "url": "https://laoyaoba.com/n/1141024",
+      "url": "https://laoyaoba.com/n/1141647",
       "title": "三星、SK 海力士、美光撤诉申请遭驳回，被诉人为制造 DRAM 短缺",
-      "title_cn": "三星、SK海力士、美光撤诉申请遭驳回，被诉人为制造DRAM短缺",
+      "title_cn": "美法院驳回三星、SK海力士与美光撤诉动议，DRAM反垄断案续审",
       "published_at": "2026-11-15T14:30:30.000Z",
       "llm": "gemini:gemini-3.1-flash-lite",
       "ingested_at": "2026-11-15T19:30:39",
       "is_risk_event": true,
       "event_type": "litigation",
       "hazard_class": "regulatory",
-      "entity": "三星(Samsung), SK海力士(SK Hynix), 美光科技(Micron)",
+      "entity": "三星电子(Samsung Electronics), SK海力士(SK Hynix), 美光科技(Micron)",
       "site": "美国",
       "country_region": "美国",
       "lat": null,
@@ -119,12 +209,21 @@
           "source": "aijiwei",
           "published_at": "2026-11-15T14:30:30.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "b5307aae9c",
+          "url": "https://laoyaoba.com/n/1141647",
+          "title": "美法院驳回三星、SK海力士与美光撤诉动议DRAM反垄断案续审",
+          "title_cn": "美法院驳回三星、SK海力士与美光撤诉动议，DRAM反垄断案续审",
+          "source": "aijiwei",
+          "published_at": "2026-11-16T23:11:47.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "litigation"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "litigation"
     },
     {
@@ -1704,7 +1803,7 @@
       "country_region": "中国",
       "lat": null,
       "lon": null,
-      "severity": 0.7,
+      "severity": 0.8,
       "affected_products": [
         "GPU"
       ],
@@ -1763,6 +1862,24 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-15T11:59:54.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "b380dfe95e",
+          "url": "https://www.tomshardware.com/tech-industry/trump-calls-for-jensen-huang-reinstatement-as-nvidia-ceo-nvidia-board-reportedly-refuses-to-reinstate-disgraced-ceo-due-to-ongoing-national-security-investigation-into-jensen",
+          "title": "Trump calls for Jensen Huang reinstatement as Nvidia CEO",
+          "title_cn": "特朗普呼吁让黄仁勋复任英伟达CEO",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-16T18:24:40.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "7f6f65e552",
+          "url": "https://laoyaoba.com/n/1141655",
+          "title": "【头条】美国公布新规，进一步限制中国获取人工智能芯片",
+          "title_cn": "美国公布新规，进一步限制中国获取人工智能芯片",
+          "source": "aijiwei",
+          "published_at": "2026-11-16T23:16:47.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -1770,7 +1887,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 6,
+      "source_count": 8,
       "primary_event_type": "export_control"
     },
     {
@@ -2450,6 +2567,44 @@
           "title_cn": "兆易创新（603986.SH）取得深圳市芯茂微电子 75.56% 股权",
           "source": "aijiwei",
           "published_at": "2026-11-14T13:57:50.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
+      "post_id": "07ef26681f",
+      "dedup_key": "3f17f86310f9",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/quantum-computing/intel-bets-on-classiq-acquisition-to-turn-quantum-efforts-into-commercially-viable-business-deal-positions-company-as-leading-vendor-of-qubit-chips-acquisition-to-close-by-the-first-half-of-2027",
+      "title": "Intel bets on Classiq acquisition to turn Quantum efforts into commercially viable business",
+      "title_cn": "英特尔押注收购 Classiq，旨在将量子计算研究转化为商业化业务",
+      "published_at": "2026-11-16T16:30:00.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-16T23:20:12",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "market",
+      "entity": "英特尔(Intel), Classiq",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "07ef26681f",
+          "url": "https://www.tomshardware.com/tech-industry/quantum-computing/intel-bets-on-classiq-acquisition-to-turn-quantum-efforts-into-commercially-viable-business-deal-positions-company-as-leading-vendor-of-qubit-chips-acquisition-to-close-by-the-first-half-of-2027",
+          "title": "Intel bets on Classiq acquisition to turn Quantum efforts into commercially viable business",
+          "title_cn": "英特尔押注收购 Classiq，旨在将量子计算研究转化为商业化业务",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-16T16:30:00.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],

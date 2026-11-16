@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-16T05:06:12+00:00",
-  "count": 13,
+  "generated_at": "2026-11-16T23:15:52+00:00",
+  "count": 16,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -224,6 +224,42 @@
       "discovered_at": "2026-11-16T05:06:12+00:00",
       "profile_id": "imec",
       "template": "T3_press_release",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news880960",
+      "title": "SUSTAIN-6G Public Webinar to Explore How Sustainability Can Shape the Design of Future 6G Systems",
+      "image_count": 4,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-16T23:14:54+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/machine-learning/article/55419309/chipagents-why-ai-driven-chip-design-requires-physics-aware-co-optimization",
+      "title": "Why AI-Driven Chip Design Requires Physics-Aware Co-Optimization",
+      "image_count": 7,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-16T23:15:28+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/article/55419235/sitime-evolution-of-timekeeping-from-pendulum-clocks-to-mems-oscillators",
+      "title": "Evolution of Timekeeping: From Pendulum Clocks to MEMS Oscillators",
+      "image_count": 8,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-16T23:15:52+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]
