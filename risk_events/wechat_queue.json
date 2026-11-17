@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-16T23:15:52+00:00",
-  "count": 16,
+  "generated_at": "2026-11-17T16:57:33+00:00",
+  "count": 19,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -258,6 +258,42 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-16T23:15:52+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881003",
+      "title": "Turning grid plans into data:  Introducing gridAhead to improve the accessibility of power grid data",
+      "image_count": 6,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-17T16:48:24+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news880999",
+      "title": "Jürgen Jasperneite ranks among the world's most highly cited researchers in his field",
+      "image_count": 2,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-17T16:48:44+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/blog/inside-electronics/podcast/55419489/electronic-design-celebrating-71-years-of-ideas-for-design",
+      "title": "Celebrating 71 Years of Ideas for Design",
+      "image_count": 13,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-17T16:57:33+00:00",
       "profile_id": "vendor_tech_blog",
       "template": "T1_image_walkthrough",
       "auto_publish": true
