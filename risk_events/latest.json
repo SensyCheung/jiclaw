@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-16T23:33:13+00:00",
+  "generated_at": "2026-11-17T06:56:27+00:00",
   "count": 84,
   "feed": {
     "max_age_days": 90,
@@ -2044,13 +2044,22 @@
           "source": "aijiwei",
           "published_at": "2026-11-15T23:10:32.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "94826ef6c9",
+          "url": "https://seekingalpha.com/article/4968710-nvidia-buying-before-the-dust-settles-and-selling-after?source=feed",
+          "title": "Nvidia: Buying Before The Dust Settles And Selling After (Rating Upgrade)",
+          "title_cn": "英伟达：在尘埃落定前买入，落定后卖出（评级上调）",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-16T19:03:05.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "earnings",
         "other"
       ],
-      "source_count": 5,
+      "source_count": 6,
       "primary_event_type": "earnings"
     },
     {
