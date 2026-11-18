@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-18T06:15:15+00:00",
-  "count": 88,
+  "generated_at": "2026-11-18T13:51:07+00:00",
+  "count": 91,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,126 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "8a2685ec94",
+      "dedup_key": "0bc58eacb85a",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+      "url": "https://www.bloomberg.com/news/articles/2026-11-18/tencent-says-us-chip-curbs-to-slow-chinese-ai-in-the-short-run",
+      "title": "Tencent Says US Chip Curbs to Slow Chinese AI in the Short Run",
+      "title_cn": "腾讯称美国芯片禁令将在短期内拖慢中国 AI 发展",
+      "published_at": "2026-11-18T13:19:24.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-18T13:43:58",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "腾讯(Tencent)",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "AI chip",
+        "GPU",
+        "CPU"
+      ],
+      "occurred_at": "2026-11-18",
+      "sources": [
+        {
+          "post_id": "8a2685ec94",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-18/tencent-says-us-chip-curbs-to-slow-chinese-ai-in-the-short-run",
+          "title": "Tencent Says US Chip Curbs to Slow Chinese AI in the Short Run",
+          "title_cn": "腾讯称美国芯片禁令将在短期内拖慢中国 AI 发展",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
+          "published_at": "2026-11-18T13:19:24.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "aabd77b5ce",
+      "dedup_key": "c919fc0079c4",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/siemens-buys-breker-verification-systems-2026-11/",
+      "title": "Siemens buys Breker Verification Systems",
+      "title_cn": "西门子收购 Breker Verification Systems",
+      "published_at": "2026-11-18T06:12:19.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-18T13:35:34",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "market",
+      "entity": "西门子(Siemens), Breker Verification Systems",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.0,
+      "affected_products": [],
+      "occurred_at": "2026-11-18",
+      "sources": [
+        {
+          "post_id": "aabd77b5ce",
+          "url": "https://www.electronicsweekly.com/news/business/siemens-buys-breker-verification-systems-2026-11/",
+          "title": "Siemens buys Breker Verification Systems",
+          "title_cn": "西门子收购 Breker Verification Systems",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-18T06:12:19.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
+      "post_id": "a57d55122b",
+      "dedup_key": "1ad72271d9ff",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/pc-components/gpus/china-threatens-countermeasures-on-the-face-of-new-ai-gpu-rental-and-export-restrictions-beijing-threatens-retaliation-ahead-of-thursdays-xi-jinping-meeting-sino-american-trade-war-may-be-renewed-for-a-new-season",
+      "title": "China threatens 'countermeasures' in the face of new AI GPU rental and export restrictions — Beijing threatens retaliation ahead of Thursday's Xi Jinping meeting, Sino-American trade war may be renewed for a new season",
+      "title_cn": "面对新的AI GPU租赁和出口限制，中国威胁采取“反制措施”——北京在习近平主席周四会晤前威胁报复，中美贸易战可能迎来新篇章",
+      "published_at": "2026-11-18T10:59:58.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-18T13:40:06",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "NVIDIA",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": "2026-11-17",
+      "sources": [
+        {
+          "post_id": "a57d55122b",
+          "url": "https://www.tomshardware.com/pc-components/gpus/china-threatens-countermeasures-on-the-face-of-new-ai-gpu-rental-and-export-restrictions-beijing-threatens-retaliation-ahead-of-thursdays-xi-jinping-meeting-sino-american-trade-war-may-be-renewed-for-a-new-season",
+          "title": "China threatens 'countermeasures' in the face of new AI GPU rental and export restrictions — Beijing threatens retaliation ahead of Thursday's Xi Jinping meeting, Sino-American trade war may be renewed for a new season",
+          "title_cn": "面对新的AI GPU租赁和出口限制，中国威胁采取“反制措施”——北京在习近平主席周四会晤前威胁报复，中美贸易战可能迎来新篇章",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-18T10:59:58.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
     {
       "post_id": "2e95727914",
       "dedup_key": "e4f3f22cf9f9",
@@ -1974,6 +2094,24 @@
           "source": "https://www.theinformation.com/feed",
           "published_at": "2026-11-18T00:33:55.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "4e7369e157",
+          "url": "https://www.tomshardware.com/tech-industry/data-centers/nvidia-board-faction-angling-for-jensen-huang-return-as-ceo-report-claims-company-defiant-at-earnings-calls-says-no-possibility-of-reinstatement",
+          "title": "Nvidia board faction angling for Jensen Huang return as CEO, report claims",
+          "title_cn": "报道称英伟达董事会派系正争取黄仁勋回归担任首席执行官",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-18T13:29:58.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "082a0b3ce7",
+          "url": "https://www.tomshardware.com/tech-industry/the-downfall-of-jensen-huang-a-timeline-of-allegations-and-scandals-that-brought-down-the-king-of-ai-infrastructure",
+          "title": "The Downfall of Jensen Huang — a timeline of allegations and scandals that brought down the king of AI infrastructure",
+          "title_cn": "黄仁勋的陨落——导致这位 AI 基础设施之王倒台的指控与丑闻时间线",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-18T10:29:58.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -1981,7 +2119,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 10,
+      "source_count": 12,
       "primary_event_type": "export_control"
     },
     {
@@ -2167,13 +2305,22 @@
           "source": "bits-chips",
           "published_at": "2026-11-17T00:13:25.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "fc04254979",
+          "url": "https://seekingalpha.com/article/4969357-nvidia-the-668-billion-problem-nobody-is-talking-about?source=feed",
+          "title": "Nvidia: The $668 Billion Problem Nobody Is Talking About",
+          "title_cn": "英伟达：那个没人讨论的 6680 亿美元问题",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-18T01:00:01.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "earnings",
         "other"
       ],
-      "source_count": 8,
+      "source_count": 9,
       "primary_event_type": "earnings"
     },
     {

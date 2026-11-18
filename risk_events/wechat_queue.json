@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-18T06:04:12+00:00",
-  "count": 23,
+  "generated_at": "2026-11-18T13:34:51+00:00",
+  "count": 26,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -342,6 +342,42 @@
       "always_publish": true,
       "status": "pending",
       "discovered_at": "2026-11-18T06:04:12+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/finance/micron-backs-space-computing-startup-in-series-b-funding-2026-11/",
+      "title": "Micron backs space computing startup in Series B funding round",
+      "image_count": 1,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T13:34:38+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/elektra-awards-news/announcing-the-host-for-the-elektra-awards-2026-2026-11/",
+      "title": "Announcing the host for the Elektra Awards 2026…",
+      "image_count": 1,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T13:34:47+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/nvidia-q3-sparkles-chairman-says-no-return-for-jensen-2026-11/",
+      "title": "Nvidia Q3 sparkles. Chairman says no return for Jensen",
+      "image_count": 11,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T13:34:51+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
       "auto_publish": true
