@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-18T16:32:54+00:00",
-  "count": 30,
+  "generated_at": "2026-11-18T23:19:26+00:00",
+  "count": 33,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -428,6 +428,42 @@
       "discovered_at": "2026-11-18T16:32:54+00:00",
       "profile_id": "imec",
       "template": "T3_press_release",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/bull-shows-intel-xeon-diamond-rapids-package-at-sc26/",
+      "title": "Bull Shows Intel Xeon Diamond Rapids Package at SC26",
+      "image_count": 11,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-18T23:18:42+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/industrial/article/55419966/sabic-protecting-power-distribution-in-ai-data-centers",
+      "title": "Protecting Power Distribution in AI Data Centers",
+      "image_count": 12,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-18T23:18:59+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://semiwiki.com/3dic/376374-physics-over-probability-how-agentic-ai-solves-electronic-systems-verification/",
+      "title": "Physics Over Probability: How Agentic AI Solves Electronic Systems Verification",
+      "image_count": 4,
+      "site": "semiwiki.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-18T23:19:26+00:00",
+      "profile_id": "semiwiki",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]

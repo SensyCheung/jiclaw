@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-18T16:38:46+00:00",
-  "count": 92,
+  "generated_at": "2026-11-18T23:39:13+00:00",
+  "count": 93,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -100,6 +100,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "10a18ae650",
+      "dedup_key": "498a2b9e33e9",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/briefings/meta-pauses-new-stock-plan-amid-legal-challenge",
+      "title": "Meta Pauses New Stock Plan Amid Legal Challenge",
+      "title_cn": "Meta 在法律挑战下暂停新股发行计划",
+      "published_at": "2026-11-18T23:01:02.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-18T23:23:18",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "Meta Platforms",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": "2026-11-18",
+      "sources": [
+        {
+          "post_id": "10a18ae650",
+          "url": "https://www.theinformation.com/briefings/meta-pauses-new-stock-plan-amid-legal-challenge",
+          "title": "Meta Pauses New Stock Plan Amid Legal Challenge",
+          "title_cn": "Meta 在法律挑战下暂停新股发行计划",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-18T23:01:02.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "aabd77b5ce",
