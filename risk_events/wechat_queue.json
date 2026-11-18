@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-17T23:48:22+00:00",
-  "count": 22,
+  "generated_at": "2026-11-18T06:04:12+00:00",
+  "count": 23,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -332,6 +332,18 @@
       "discovered_at": "2026-11-17T23:48:22+00:00",
       "profile_id": "vendor_tech_blog",
       "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/mannerisms/ten-best/top-ten-less-4-vendors-of-cpus-for-servers-2026-11/",
+      "title": "Top Ten (less 5) Vendors Of Server CPUs",
+      "image_count": 12,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T06:04:12+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
       "auto_publish": true
     }
   ]

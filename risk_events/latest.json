@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-18T00:17:06+00:00",
-  "count": 87,
+  "generated_at": "2026-11-18T06:15:15+00:00",
+  "count": 88,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -1965,6 +1965,15 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-17T13:59:59.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "440e435119",
+          "url": "https://www.theinformation.com/articles/jensen-huangs-right-hand-man-oversaw-chip-customers-including-alice-huang",
+          "title": "Jensen Huang’s Right-Hand Man Oversaw Chip Customers—Including Alice Huang",
+          "title_cn": "黄仁勋的得力助手负责监管芯片客户——其中包括黄艾丽",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-18T00:33:55.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -1972,7 +1981,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 9,
+      "source_count": 10,
       "primary_event_type": "export_control"
     },
     {
@@ -3426,6 +3435,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "geopolitical"
+    },
+    {
+      "post_id": "218842c425",
+      "dedup_key": "cbc8c58d58f6",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/articles/nvidia-introduced-alibaba-alice-huang-workaround-u-s-export-controls",
+      "title": "Nvidia Introduced Alibaba to Alice Huang for Workaround on U.S. Export Controls",
+      "title_cn": "英伟达曾将阿里巴巴介绍给Alice Huang以绕过美国出口管制",
+      "published_at": "2026-11-18T03:05:44.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-18T06:04:55",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA), 阿里巴巴",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "218842c425",
+          "url": "https://www.theinformation.com/articles/nvidia-introduced-alibaba-alice-huang-workaround-u-s-export-controls",
+          "title": "Nvidia Introduced Alibaba to Alice Huang for Workaround on U.S. Export Controls",
+          "title_cn": "英伟达曾将阿里巴巴介绍给Alice Huang以绕过美国出口管制",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-18T03:05:44.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "dd9ac9e304",
