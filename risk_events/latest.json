@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-18T13:51:07+00:00",
-  "count": 91,
+  "generated_at": "2026-11-18T16:38:46+00:00",
+  "count": 92,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -43,6 +43,55 @@
           "title_cn": "腾讯称美国芯片禁令将在短期内拖慢中国 AI 发展",
           "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/ATjxWD012Wk/debby-wu/rss",
           "published_at": "2026-11-18T13:19:24.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        },
+        {
+          "post_id": "4831f77876",
+          "url": "https://www.theinformation.com/briefings/tencent-president-new-u-s-chip-rule-sets-everyone-back-china",
+          "title": "Tencent President: New U.S. Chip Rule “Sets Everyone Back in China”",
+          "title_cn": "腾讯总裁：美国新芯片规则“让中国所有人都倒退了”",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-18T14:40:52.000Z",
+          "llm": "gemini:gemini-3.5-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 2,
+      "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "13ea2c2d08",
+      "dedup_key": "c98f7ee26204",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/briefings/u-s-banks-seek-loan-protections-chip-smuggling-southeast-asian-data-center-operator",
+      "title": "U.S. Banks Seek Loan Protections Against Chip Smuggling with Southeast Asian Data Center Operator",
+      "title_cn": "美国银行寻求针对芯片走私的贷款保护，对象为东南亚数据中心运营商",
+      "published_at": "2026-11-18T15:12:45.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-18T16:23:55",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "JPMorgan, Citigroup, Bridge Data Centres",
+      "site": "新加坡",
+      "country_region": "新加坡",
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [
+        "Semiconductors"
+      ],
+      "occurred_at": "2026-11-18",
+      "sources": [
+        {
+          "post_id": "13ea2c2d08",
+          "url": "https://www.theinformation.com/briefings/u-s-banks-seek-loan-protections-chip-smuggling-southeast-asian-data-center-operator",
+          "title": "U.S. Banks Seek Loan Protections Against Chip Smuggling with Southeast Asian Data Center Operator",
+          "title_cn": "美国银行寻求针对芯片走私的贷款保护，对象为东南亚数据中心运营商",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-18T15:12:45.000Z",
           "llm": "zhipu:GLM-4.7-Flash"
         }
       ],
@@ -547,7 +596,7 @@
       "llm": "gemini:gemini-3.1-flash-lite",
       "ingested_at": "2026-11-12T21:45:41",
       "is_risk_event": true,
-      "event_type": "earnings",
+      "event_type": "capacity_disruption",
       "hazard_class": "operational",
       "entity": "英伟达(NVIDIA)",
       "site": "美国",
@@ -614,14 +663,24 @@
           "source": "aijiwei",
           "published_at": "2026-11-15T23:10:32.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "e388753f59",
+          "url": "https://www.tomshardware.com/tech-industry/the-downfall-of-jensen-huang",
+          "title": "The Downfall of Jensen Huang — a timeline of allegations and scandals that brought down the king of AI infrastructure",
+          "title_cn": "黄仁勋的陨落——将AI基础设施之王拉下马的指控与丑闻时间线",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-18T14:10:30.000Z",
+          "llm": "gemini:gemini-3.5-flash-lite"
         }
       ],
       "event_types": [
+        "capacity_disruption",
         "earnings",
         "other"
       ],
-      "primary_event_type": "earnings",
-      "source_count": 6
+      "primary_event_type": "capacity_disruption",
+      "source_count": 7
     },
     {
       "post_id": "917201068e",

@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-18T13:34:51+00:00",
-  "count": 26,
+  "generated_at": "2026-11-18T16:32:54+00:00",
+  "count": 30,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -380,6 +380,54 @@
       "discovered_at": "2026-11-18T13:34:51+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/blogs/altembedded/article/55417124/electronic-design-celebrating-71-years-of-ideas-of-design",
+      "title": "Celebrating 71 Years of Ideas of Design",
+      "image_count": 6,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-18T16:14:52+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/gadget-master/picture-of-the-day/picture-of-the-day-space-selfie-looking-at-you-looking-at-me-2026-11/",
+      "title": "Picture of the Day: Space Selfie – A view from you of me!",
+      "image_count": 0,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T16:16:39+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/mannerisms/dilemmas/datacentre-dislike-2026-11/",
+      "title": "Dissing Datacentres",
+      "image_count": 12,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T16:16:51+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.imec-int.com/en/press/imec-finland-espoo-rd-center-opens-accelerate-integrated-photonics-and-optical-system",
+      "title": "Imec Finland, Espoo R&D center, opens to accelerate integrated photonics and optical-system innovation for future AI and computing systems",
+      "image_count": 1,
+      "site": "imec-int.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-18T16:32:54+00:00",
+      "profile_id": "imec",
+      "template": "T3_press_release",
       "auto_publish": true
     }
   ]
