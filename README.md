@@ -587,6 +587,27 @@ gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_hotorn
 `apply` 幂等：已标 `noHome` 的页面会跳过。2026-11-09 首次执行更新 67 条、失败 0 条，
 库内 `noHome` 由 358 条增至 425 条（总 10000 条），复跑预演新增 0 条。
 
+## 标题级非半导体过滤
+
+etnews / kitguru / laoyaoba（爱集微）这三个源里混着大量游戏、家电、美妆、招聘、考试类内容。
+命中规则的条目在**标题阶段**直接跳过：不抓正文、不调模型、不入 Notion、不推送，
+日志打印「标题判定为非半导体内容，跳过收录」，每批结束汇总跳过条数。
+
+按源分两种策略（`jiclaw_core.py` 的 `TITLE_FILTER_SITES`）：
+
+| 站点 | 策略 | 原因 |
+|------|------|------|
+| etnews | whitelist | 实测 `06.xml` 的 50 条里只有 2 条与半导体相关，黑名单列不全 |
+| kitguru | whitelist | 游戏/消费硬件站，同上 |
+| laoyaoba / 爱集微 | blacklist | 半导体专业媒体，只拦明确无关内容，避免误杀产业链新闻 |
+
+- **whitelist**：标题没有半导体强信号就跳过。
+- **blacklist**：命中明确非半导体词（游戏/娱乐/体育/招聘/美食/房价…）才跳过。
+
+强信号优先：标题含 `芯片 / 晶圆 / 制程 / HBM / DRAM / 반도체 / GPU / CPU`，或
+`NVIDIA / RTX / Ryzen / Radeon` 等品牌产品线时一律正常收录，避免「游戏显卡」
+「汽车芯片」这类擦边标题被误杀。纯正则判断，可离线验证，不消耗模型额度。
+
 ## 推送到 SEISMIQ
 
 `push_to_seismiq.py` 把 `latest.json` 推到 `POST https://seismiq-api.jijibot.workers.dev/api/webhook`。

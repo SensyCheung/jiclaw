@@ -121,6 +121,87 @@ def _feed_policy(feed_url: str) -> dict:
     return {}
 
 
+# ---------------------------------------------------------------------------
+# 标题级非半导体过滤（按站启用）
+# ---------------------------------------------------------------------------
+# etnews / kitguru / laoyaoba(爱集微) 都是泛科技或综合媒体，同一份 feed 里混着
+# 游戏、娱乐、体育、招聘、消费外设等内容。这类条目进模型只会消耗额度、污染首页
+# 与电报群，所以在标题阶段直接跳过：不抓正文、不调模型、不入 Notion、不推送。
+#
+# 只判「明确不是半导体」（黑名单），不要求「必须出现半导体词」：产业新闻标题常常
+# 只写公司或产品名（如「三星电子 3 纳米良率」），白名单会大面积误杀。为防擦边误伤
+# （如「游戏显卡」「汽车芯片」），加一条强信号优先规则：标题出现芯片/晶圆/HBM 等
+# 一律正常收录，宁多收不漏收。
+#
+# 但 etnews 06.xml 实测 50 条里只有 2 条与半导体相关（其余是家电、机器人、美妆、
+# 零售、考试），黑名单永远列不全（비데/착즙기/사진극장…），所以按站分两种策略：
+#   blacklist —— 命中明确非半导体才跳过（适合爱集微这类专业媒体，避免误杀产业链新闻）
+#   whitelist —— 标题必须出现半导体强信号才收录（适合家电/游戏类泛媒体）
+TITLE_FILTER_SITES = {
+    "etnews": "whitelist",    # 韩国电子新闻的家电/消费栏目
+    "kitguru": "whitelist",   # 游戏与消费硬件站
+    "laoyaoba": "blacklist",  # 爱集微：半导体专业媒体，只拦明确无关内容
+    "爱集微": "blacklist",
+    "aijiwei": "blacklist",
+}
+
+_STRONG_SEMI_RE = re.compile(
+    r"半导体|芯片|晶圆|晶片|制程|光刻|封装|封测|存储器|内存|闪存|代工|硅片|光罩"
+    r"|蚀刻|沉积|集成电路|微电子"
+    r"|\b(?:semiconductors?|chips?|chipsets?|wafers?|foundry|lithography|packaging"
+    r"|hbm|dram|nand|sram|mram|gaa|euv|duv|tsmc|asml|micron|gpus?|cpus?|apus?"
+    r"|asic|soc|fpga|mcu|eda|fab)\b"
+    # 芯片品牌/产品线：kitguru 的显卡 CPU 评测标题通常只写型号，不写 chip
+    r"|\b(?:nvidia|geforce|rtx|gtx|radeon|ryzen|threadripper|epyc|xeon|arc"
+    r"|snapdragon|dimensity|exynos|tensor|apple silicon)\b"
+    r"|반도체|웨이퍼|파운드리|공정|메모리|낸드|디램|칩",
+    re.IGNORECASE,
+)
+
+_NON_SEMI_TITLE_RE = re.compile(
+    # 中文：游戏 / 娱乐 / 体育 / 招聘 / 生活 / 楼市
+    r"游戏|手游|网游|电竞|电玩|任天堂|主机游戏"
+    r"|娱乐|明星|偶像|综艺|影视|电视剧|电影|音乐|演唱会"
+    r"|体育|足球|棒球|篮球|奥运|世界杯"
+    r"|招聘|校招|社招|求职|宣讲会|美食|旅游|考研|高考"
+    r"|房价|楼市|房地产"
+    # 英文（kitguru 这类硬件/游戏站）：只列明确与半导体无关的主题
+    r"|\b(?:games?|gaming|gamers?|consoles?|playstation|xbox|nintendo|movies?|film"
+    r"|celebrity|keyboards?|mouse|mice|headsets?|sports?|football|baseball"
+    r"|basketball|olympics?)\b"
+    # 韩文（etnews）：게임 游戏 / 연예 演艺 / 스포츠 体育 / 정치 政治 / 사회 社会
+    r"|게임|연예|스포츠|정치|사회|부동산|주식|증시|맛집|여행|채용|드라마|영화|야구|축구|대선|국회",
+    re.IGNORECASE,
+)
+
+
+def _site_key(source: str) -> str:
+    """把 RSS URL 或爬虫 key 归一到站点标识，供按站配置使用。"""
+    if not source:
+        return ""
+    if source.startswith("http"):
+        return get_website_name(source).lower()
+    cfg = SCRAPER_CONFIG.get(source) or {}
+    return str(cfg.get("name") or source).lower()
+
+
+def should_skip_non_semiconductor(title: str, source: str) -> bool:
+    """标题判定为非半导体时返回 True（仅对 TITLE_FILTER_SITES 里的站生效）。
+
+    whitelist 模式：没有半导体强信号就跳过（泛媒体，噪声占九成）
+    blacklist 模式：命中明确非半导体词才跳过（专业媒体，避免误杀）
+    """
+    mode = TITLE_FILTER_SITES.get(_site_key(source))
+    if not mode or not title:
+        return False
+    # 强半导体信号优先：擦边标题（游戏显卡 / 汽车芯片）不跳过
+    if _STRONG_SEMI_RE.search(title):
+        return False
+    if mode == "whitelist":
+        return True
+    return bool(_NON_SEMI_TITLE_RE.search(title))
+
+
 # feedparser.parse(url) 走 urllib，未显式给 timeout 时用 socket 默认超时（None = 无限等）。
 # 自定义 RSSHub 的作者源串行抓全文约 60-65s，偶发不响应会让整轮 GitHub Actions 永久挂住，
 # 所以给所有 feed 抓取设一个宽松上限（正常源秒回，不受影响）。
@@ -2138,6 +2219,7 @@ def _process_items(
         fetch_content = False
 
     _ai_fail_streak = 0  # 连续调用模型失败计数（用于限流时提前收手）
+    _skipped_non_semi = 0  # 标题判定为非半导体而跳过的条数
 
     for item in items:
         title = item["title"]
@@ -2149,6 +2231,13 @@ def _process_items(
         title_safe = title.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')[:50]
         print(f"处理文章：{title_safe}...")
         print(f"链接：{link}")
+
+        # 标题级非半导体过滤（仅 etnews / kitguru / laoyaoba）：
+        # 命中直接跳过——不抓正文、不调模型、不入 Notion、不推送，省额度也省噪声
+        if should_skip_non_semiconductor(title, source):
+            print("标题判定为非半导体内容，跳过收录。")
+            _skipped_non_semi += 1
+            continue
 
         post_id = hashlib.sha1(link.encode("utf-8")).hexdigest()[:10]
 
@@ -2297,3 +2386,7 @@ def _process_items(
                 # 原文语言只认抓取到的原始标题/正文/RSS 摘要，不能用模型生成的中文标题
                 is_chinese_original=is_chinese_original_text(title, content, summary),
             )
+
+    if _skipped_non_semi:
+        print(f"\n本轮按标题跳过 {_skipped_non_semi} 篇非半导体内容"
+              f"（etnews / kitguru / laoyaoba）")
