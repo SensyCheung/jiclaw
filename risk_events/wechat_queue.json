@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-17T16:57:33+00:00",
-  "count": 19,
+  "generated_at": "2026-11-17T23:48:22+00:00",
+  "count": 22,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -294,6 +294,42 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-17T16:57:33+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/nvidia-announces-rubin-hpc-science-focused-server-gpu-to-arrive-in-2028/",
+      "title": "NVIDIA Announces Rubin HPC: Science-Focused Server GPU to Arrive in 2028",
+      "image_count": 4,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-17T23:45:51+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/industrial/motion-control/article/55419666/performance-motion-devices-a-movable-fab-precise-motion-control-for-chip-manufacturing",
+      "title": "A Movable Fab: Precise Motion Control for Chip Manufacturing",
+      "image_count": 17,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-17T23:47:14+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/power/power-supply/news/55419186/electronic-design-huaweis-hybrid-inverter-system-is-fully-powered-by-sic",
+      "title": "Huawei's Hybrid Inverter System is Fully Powered by SiC",
+      "image_count": 5,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-17T23:48:22+00:00",
       "profile_id": "vendor_tech_blog",
       "template": "T1_image_walkthrough",
       "auto_publish": true

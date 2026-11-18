@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-17T06:56:27+00:00",
-  "count": 84,
+  "generated_at": "2026-11-18T00:17:06+00:00",
+  "count": 87,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,82 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "2e95727914",
+      "dedup_key": "e4f3f22cf9f9",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/briefings/nvidia-board-chair-jensen-huangs-personal-behavior-doomed-reinstated",
+      "title": "Nvidia Board Chair: Jensen Huang’s ‘Personal Behavior’ Doomed Him and He Won’t Be Reinstated",
+      "title_cn": "英伟达董事会主席：黄仁勋因“个人行为”辞职，且不会复职",
+      "published_at": "2026-11-17T23:01:42.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-18T00:01:32",
+      "is_risk_event": true,
+      "event_type": "earnings",
+      "hazard_class": "operational",
+      "entity": "英伟达(NVIDIA)",
+      "site": "美国",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": "2026-11-17",
+      "sources": [
+        {
+          "post_id": "2e95727914",
+          "url": "https://www.theinformation.com/briefings/nvidia-board-chair-jensen-huangs-personal-behavior-doomed-reinstated",
+          "title": "Nvidia Board Chair: Jensen Huang’s ‘Personal Behavior’ Doomed Him and He Won’t Be Reinstated",
+          "title_cn": "英伟达董事会主席：黄仁勋因“个人行为”辞职，且不会复职",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-17T23:01:42.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "earnings"
+      ],
+      "source_count": 1,
+      "primary_event_type": "earnings"
+    },
+    {
+      "post_id": "3680f439be",
+      "dedup_key": "dc3bb16ab490",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261117902869/en/Cree-LED-Takes-Legal-Action-to-Enforce-Patent-Rights-Across-LED-Display-Value-Chain/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "Cree LED Takes Legal Action to Enforce Patent Rights Across LED Display Value Chain",
+      "title_cn": "Cree LED 采取法律行动，在 LED 显示产业链中强制执行专利权",
+      "published_at": "2026-11-17T18:59:59.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-17T23:52:37",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "Cree LED, 艾比森光电(Absen), 奥兰多体育控股(Orlando Sports Holdings), Revel Media Group",
+      "site": "美国",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.2,
+      "affected_products": [],
+      "occurred_at": "2026-11-17",
+      "sources": [
+        {
+          "post_id": "3680f439be",
+          "url": "http://www.businesswire.com/news/home/20261117902869/en/Cree-LED-Takes-Legal-Action-to-Enforce-Patent-Rights-Across-LED-Display-Value-Chain/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "Cree LED Takes Legal Action to Enforce Patent Rights Across LED Display Value Chain",
+          "title_cn": "Cree LED 采取法律行动，在 LED 显示产业链中强制执行专利权",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-17T18:59:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
     {
       "post_id": "de25725ccf",
       "dedup_key": "09d4055c66d0",
@@ -1880,6 +1956,15 @@
           "source": "aijiwei",
           "published_at": "2026-11-16T23:16:47.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "a5d715af01",
+          "url": "https://www.tomshardware.com/tech-industry/policy/nvidia-warns-customers-of-new-us-rule-that-could-expose-them-to-lawsuits-for-serving-chinese-clients-commerce-department-releases-interim-regulations-preventing-foreign-actors-from-using-advanced-compute-based-on-american-tech",
+          "title": "Nvidia warns customers of new US rule that could expose them to lawsuits for serving Chinese clients",
+          "title_cn": "英伟达警告客户：美国新规可能使使用其算力服务的中国客户面临法律风险",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-17T13:59:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -1887,7 +1972,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 8,
+      "source_count": 9,
       "primary_event_type": "export_control"
     },
     {
@@ -1997,7 +2082,9 @@
       "lat": null,
       "lon": null,
       "severity": 0.6,
-      "affected_products": [],
+      "affected_products": [
+        "GPU"
+      ],
       "occurred_at": "2026-11",
       "sources": [
         {
@@ -2053,13 +2140,31 @@
           "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
           "published_at": "2026-11-16T19:03:05.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "f8e9566cc8",
+          "url": "https://www.tomshardware.com/tech-industry/big-tech/nvidia-employee-warns-of-irreplaceable-talent-exodus-if-jensen-huang-not-reinstated-cautions-board-and-top-brass-that-talent-at-nvidia-is-now-contemplating-departing",
+          "title": "Nvidia employee warns of 'irreplaceable' talent exodus if Jensen Huang not reinstated",
+          "title_cn": "英伟达员工警告：若黄仁勋不复职，将导致“不可替代的人才”流失",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-17T20:59:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "b1e4731dbd",
+          "url": "https://bits-chips.com/article/ai-is-waiting-for-its-ac-vs-dc-moment/",
+          "title": "AI is waiting for its “AC vs DC” moment",
+          "title_cn": "AI 正在等待它的“交流电对直流电”时刻",
+          "source": "bits-chips",
+          "published_at": "2026-11-17T00:13:25.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
         "earnings",
         "other"
       ],
-      "source_count": 6,
+      "source_count": 8,
       "primary_event_type": "earnings"
     },
     {
@@ -2584,6 +2689,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
+    },
+    {
+      "post_id": "763eb7aac7",
+      "dedup_key": "fbb6648465f1",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/big-tech/taipei-101-lit-up-in-support-of-jensen-huang-skyscraper-adorned-with-messages-of-support-following-resignation-as-nvidia-ceo",
+      "title": "Taipei 101 lit up in support of Jensen Huang",
+      "title_cn": "台北101大楼亮灯支持黄仁勋",
+      "published_at": "2026-11-17T14:59:59.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-18T00:01:03",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "Nvidia, Megaspeed",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "763eb7aac7",
+          "url": "https://www.tomshardware.com/tech-industry/big-tech/taipei-101-lit-up-in-support-of-jensen-huang-skyscraper-adorned-with-messages-of-support-following-resignation-as-nvidia-ceo",
+          "title": "Taipei 101 lit up in support of Jensen Huang",
+          "title_cn": "台北101大楼亮灯支持黄仁勋",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-17T14:59:59.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "07ef26681f",
