@@ -122,57 +122,51 @@ def _feed_policy(feed_url: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 标题级非半导体过滤（按站启用）
+# 标题级非半导体过滤（按站启用，由大模型批量判断）
 # ---------------------------------------------------------------------------
 # etnews / kitguru / laoyaoba(爱集微) 都是泛科技或综合媒体，同一份 feed 里混着
-# 游戏、娱乐、体育、招聘、消费外设等内容。这类条目进模型只会消耗额度、污染首页
-# 与电报群，所以在标题阶段直接跳过：不抓正文、不调模型、不入 Notion、不推送。
+# 游戏、娱乐、体育、招聘、消费外设、家电等内容。这类条目进模型只会消耗额度、
+# 污染首页与电报群，所以在标题阶段直接跳过：不抓正文、不调正文模型、不入 Notion、
+# 不推送。
 #
-# 只判「明确不是半导体」（黑名单），不要求「必须出现半导体词」：产业新闻标题常常
-# 只写公司或产品名（如「三星电子 3 纳米良率」），白名单会大面积误杀。为防擦边误伤
-# （如「游戏显卡」「汽车芯片」），加一条强信号优先规则：标题出现芯片/晶圆/HBM 等
-# 一律正常收录，宁多收不漏收。
+# 判断方式：把整批标题（默认 20 条一批）一次性交给大模型，要求它只返回「不相关」
+# 的序号，因此 etnews 一轮 10 条只花 1 次调用，而不是 10 次。之前用正则白名单/
+# 黑名单粗筛，问题是要么列不全（비데/착즙기/사진극장…），要么误杀擦边标题
+# （「游戏显卡」「汽车芯片」），交给模型判断更稳。
 #
-# 但 etnews 06.xml 实测 50 条里只有 2 条与半导体相关（其余是家电、机器人、美妆、
-# 零售、考试），黑名单永远列不全（비데/착즙기/사진극장…），所以按站分两种策略：
-#   blacklist —— 命中明确非半导体才跳过（适合爱集微这类专业媒体，避免误杀产业链新闻）
-#   whitelist —— 标题必须出现半导体强信号才收录（适合家电/游戏类泛媒体）
-TITLE_FILTER_SITES = {
-    "etnews": "whitelist",    # 韩国电子新闻的家电/消费栏目
-    "kitguru": "whitelist",   # 游戏与消费硬件站
-    "laoyaoba": "blacklist",  # 爱集微：半导体专业媒体，只拦明确无关内容
-    "爱集微": "blacklist",
-    "aijiwei": "blacklist",
-}
+# 降级：模型不可用或输出无法解析时**整批放行**，交给正文级 category 判定兜底——
+# 宁可多花一次正文调用，也不误杀真半导体新闻。
+TITLE_PRESCREEN_SITES = frozenset({
+    "etnews",    # 韩国电子新闻的家电/消费栏目
+    "kitguru",   # 游戏与消费硬件站
+    "laoyaoba",  # 爱集微
+    "爱集微",
+    "aijiwei",
+})
 
-_STRONG_SEMI_RE = re.compile(
-    r"半导体|芯片|晶圆|晶片|制程|光刻|封装|封测|存储器|内存|闪存|代工|硅片|光罩"
-    r"|蚀刻|沉积|集成电路|微电子"
-    r"|\b(?:semiconductors?|chips?|chipsets?|wafers?|foundry|lithography|packaging"
-    r"|hbm|dram|nand|sram|mram|gaa|euv|duv|tsmc|asml|micron|gpus?|cpus?|apus?"
-    r"|asic|soc|fpga|mcu|eda|fab)\b"
-    # 芯片品牌/产品线：kitguru 的显卡 CPU 评测标题通常只写型号，不写 chip
-    r"|\b(?:nvidia|geforce|rtx|gtx|radeon|ryzen|threadripper|epyc|xeon|arc"
-    r"|snapdragon|dimensity|exynos|tensor|apple silicon)\b"
-    r"|반도체|웨이퍼|파운드리|공정|메모리|낸드|디램|칩",
-    re.IGNORECASE,
-)
+_TITLE_PRESCREEN_PROMPT = """判断下面每个新闻标题是否与半导体/芯片产业直接相关。
 
-_NON_SEMI_TITLE_RE = re.compile(
-    # 中文：游戏 / 娱乐 / 体育 / 招聘 / 生活 / 楼市
-    r"游戏|手游|网游|电竞|电玩|任天堂|主机游戏"
-    r"|娱乐|明星|偶像|综艺|影视|电视剧|电影|音乐|演唱会"
-    r"|体育|足球|棒球|篮球|奥运|世界杯"
-    r"|招聘|校招|社招|求职|宣讲会|美食|旅游|考研|高考"
-    r"|房价|楼市|房地产"
-    # 英文（kitguru 这类硬件/游戏站）：只列明确与半导体无关的主题
-    r"|\b(?:games?|gaming|gamers?|consoles?|playstation|xbox|nintendo|movies?|film"
-    r"|celebrity|keyboards?|mouse|mice|headsets?|sports?|football|baseball"
-    r"|basketball|olympics?)\b"
-    # 韩文（etnews）：게임 游戏 / 연예 演艺 / 스포츠 体育 / 정치 政治 / 사회 社会
-    r"|게임|연예|스포츠|정치|사회|부동산|주식|증시|맛집|여행|채용|드라마|영화|야구|축구|대선|국회",
-    re.IGNORECASE,
-)
+判为相关：
+- 芯片/集成电路产业本身：IC 设计、晶圆制造与代工、半导体设备与材料、存储（DRAM/NAND/HBM）、
+  先进封装与测试、EDA/IP、光刻、功率/模拟/射频芯片、传感器芯片、光通讯器件
+- 半导体公司的财报、并购、产能、技术路线、供应链、人事变动
+
+判为不相关：
+- 汽车整车、家电、消费电子整机（手机/笔记本/外设/显示器/扫地机/厨房电器）、游戏、娱乐、体育
+- 政治、社会、招聘、美食、旅游、楼市、考试
+- 纯财经宏观、企业治理公告（组织机构调整、董事会决议、股东大会、关联交易）
+- 与芯片产业无实质关系的普通公司新闻
+- 只提品牌但讲的是整机、服务、渠道、促销
+
+只依据标题文字判断，不要猜测正文内容。拿不准按「不相关」处理。
+
+标题列表（序号|标题）：
+__TITLES__
+
+只输出 JSON，不要任何解释。格式：{"other": [序号, ...]}
+other 里只放判为「不相关」的序号（从 1 开始）；全部相关就输出 {"other": []}。"""
+
+_TITLE_PRESCREEN_BATCH = 20
 
 
 def _site_key(source: str) -> str:
@@ -185,21 +179,98 @@ def _site_key(source: str) -> str:
     return str(cfg.get("name") or source).lower()
 
 
-def should_skip_non_semiconductor(title: str, source: str) -> bool:
-    """标题判定为非半导体时返回 True（仅对 TITLE_FILTER_SITES 里的站生效）。
+def _parse_title_verdicts(text: str, total: int):
+    """解析模型的标题判定结果，返回「判为不相关」的 0-based 序号集合。
 
-    whitelist 模式：没有半导体强信号就跳过（泛媒体，噪声占九成）
-    blacklist 模式：命中明确非半导体词才跳过（专业媒体，避免误杀）
+    容错两种形态：``{"other": [1,3]}`` 与 ``{"results": [{"i":1,"semi":false}]}``。
+    完全解析不出结构时返回 None（调用方据此整批放行，不误杀）。
     """
-    mode = TITLE_FILTER_SITES.get(_site_key(source))
-    if not mode or not title:
-        return False
-    # 强半导体信号优先：擦边标题（游戏显卡 / 汽车芯片）不跳过
-    if _STRONG_SEMI_RE.search(title):
-        return False
-    if mode == "whitelist":
-        return True
-    return bool(_NON_SEMI_TITLE_RE.search(title))
+    data = None
+    try:
+        data = json.loads(text)
+    except (ValueError, TypeError):
+        try:
+            data = _extract_json_object(text)
+        except Exception:
+            return None
+
+    ids = []
+    if isinstance(data, dict):
+        for key in ("other", "not_related", "non_semiconductor", "irrelevant",
+                    "not_semi", "skip"):
+            value = data.get(key)
+            if isinstance(value, list):
+                ids = value
+                break
+        else:
+            for key in ("results", "items", "titles", "data"):
+                value = data.get(key)
+                if isinstance(value, list):
+                    ids = [
+                        x.get("i") for x in value
+                        if isinstance(x, dict) and x.get("semi") is False
+                    ]
+                    break
+    elif isinstance(data, list):
+        ids = [x.get("i") for x in data if isinstance(x, dict) and x.get("semi") is False]
+
+    out = set()
+    for raw in ids:
+        try:
+            n = int(raw)
+        except (TypeError, ValueError):
+            continue
+        if 1 <= n <= total:
+            out.add(n - 1)
+    return out
+
+
+def _classify_titles_batch(titles: list, zhipu_model: str = None) -> set:
+    """批量判断标题是否半导体相关，返回「不相关」的 0-based 下标集合。"""
+    other = set()
+    for start in range(0, len(titles), _TITLE_PRESCREEN_BATCH):
+        chunk = titles[start:start + _TITLE_PRESCREEN_BATCH]
+        numbered = "\n".join(f"{i + 1}|{t}" for i, t in enumerate(chunk))
+        messages = [
+            {"role": "system",
+             "content": "你是半导体产业新闻编辑，只按标题文字做相关性判断，只输出 JSON。"},
+            {"role": "user",
+             "content": _TITLE_PRESCREEN_PROMPT.replace("__TITLES__", numbered)},
+        ]
+        resp, provider, used_model = _chat_with_failover(messages, zhipu_model=zhipu_model)
+        content = (resp.choices[0].message.content or "") if resp.choices else ""
+        verdict = _parse_title_verdicts(content, len(chunk))
+        if verdict is None:
+            raise ValueError(f"标题判定返回无法解析：{content[:120]}")
+        print(f"  标题判定 [{provider}:{used_model}] {len(chunk)} 条 → 不相关 {len(verdict)} 条")
+        other |= {start + i for i in verdict}
+    return other
+
+
+def _prescreen_titles(items: list, source: str, zhipu_model: str = None) -> set:
+    """需要预判的站点，整批标题交给模型判断，返回应跳过的 0-based 下标集合。
+
+    模型失败时返回空集合（全放行），由正文级 category 判定兜底。
+    """
+    site = _site_key(source)
+    if site not in TITLE_PRESCREEN_SITES or not items:
+        return set()
+
+    todo = [(i, (item.get("title") or "").strip()) for i, item in enumerate(items)]
+    todo = [(i, t) for i, t in todo if t]
+    if not todo:
+        return set()
+
+    print(f"\n标题预判（{site}）：{len(todo)} 条标题交模型批量判断…")
+    try:
+        verdict = _classify_titles_batch([t for _, t in todo], zhipu_model=zhipu_model)
+    except Exception as e:
+        print(f"⚠️ 标题预判失败，本批全部放行（交给正文分类兜底）：{e}")
+        return set()
+
+    skipped = {todo[k][0] for k in verdict}
+    print(f"标题预判结果：跳过 {len(skipped)} 条非半导体，放行 {len(todo) - len(skipped)} 条")
+    return skipped
 
 
 # feedparser.parse(url) 走 urllib，未显式给 timeout 时用 socket 默认超时（None = 无限等）。
@@ -2221,7 +2292,12 @@ def _process_items(
     _ai_fail_streak = 0  # 连续调用模型失败计数（用于限流时提前收手）
     _skipped_non_semi = 0  # 标题判定为非半导体而跳过的条数
 
-    for item in items:
+    # 标题级预筛（仅 etnews / kitguru / 爱集微）：
+    # 整批标题一次交给模型判断（不是每篇一次），被判非半导体的不抓正文、不调正文模型、
+    # 不入 Notion、不推送。模型不可用时整批放行，交给正文分类兜底。
+    _skip_idx = _prescreen_titles(items, source, zhipu_model=model)
+
+    for i, item in enumerate(items):
         title = item["title"]
         link = item["link"]
         summary = item.get("summary", "")
@@ -2232,9 +2308,7 @@ def _process_items(
         print(f"处理文章：{title_safe}...")
         print(f"链接：{link}")
 
-        # 标题级非半导体过滤（仅 etnews / kitguru / laoyaoba）：
-        # 命中直接跳过——不抓正文、不调模型、不入 Notion、不推送，省额度也省噪声
-        if should_skip_non_semiconductor(title, source):
+        if i in _skip_idx:
             print("标题判定为非半导体内容，跳过收录。")
             _skipped_non_semi += 1
             continue
