@@ -31,6 +31,11 @@ on:
         required: false
         type: string
         default: ''
+      notion_fix_translation:
+        description: '修正 Notion 标题翻译错误：probe（只读）/ dry-run（预演）/ apply（写入）。映射表在 notion_fix_translation.py'
+        required: false
+        type: string
+        default: ''
       probe_feed:
         description: '探测 RSS 源可达性：空格分隔的 URL 列表（配合 probe_only=true，只读）'
         required: false
@@ -142,6 +147,15 @@ jobs:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python notion_hotornot.py --mode "${{ github.event.inputs.notion_hotornot }}"
+
+      # 按 POSTID 精确修正已写入的标题翻译错误（望文生义 / 串台），只动映射表列出的字段。
+      # 务必先跑 probe / dry-run 确认命中范围，再 apply。
+      - name: Fix Notion translation errors
+        if: github.event.inputs.notion_fix_translation != ''
+        env:
+          NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python notion_fix_translation.py --mode "${{ github.event.inputs.notion_fix_translation }}"
 
       # tags multi_select 选项被 LLM 自造词撑到 ~651KB，导致写入 400。
       # apply 会清理零引用选项并自动恢复页面标签值；执行前先 probe / dry-run。

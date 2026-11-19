@@ -1001,6 +1001,8 @@ def summarize_with_ai(
 "Silicon Motion" : "慧荣科技(SMI)"
 "ZEPHYR": "西风泽弗(ZEPHYR)" 
 "MSI": "微星(MSI)"
+"Moonshot AI" : "月之暗面(Moonshot AI)"(禁止译成"嫦娥/登月"等望文生义的名称)
+"Kimi" : "Kimi"(不翻译，月之暗面旗下模型)
 ---
 你将看到一篇科技/半导体/硬件等方向的文章信息（标题 + RSS 摘要 + 抓取到的正文）。
 请基于完整正文内容完成以下任务，并严格只输出 JSON：
