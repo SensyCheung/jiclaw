@@ -66,7 +66,8 @@ python jiclaw_local.py twitter:paurooteri
 2. （可选）配置 Variables：
    - `RSS_INTERVAL_SECONDS` - 抓取间隔（秒），默认 3600
    - `GEMINI_MODEL` - Gemini 模型名，默认 `gemini-3.1-flash-lite`
-   - `LLM_MODE` - `fallback`（智谱优先、限流才切 Gemini，默认）/ `balance`（两家轮询分摊）
+   - `LLM_MODE` - `fallback`（按 `LLM_PROVIDER_ORDER` 顺序，默认 Gemini 优先、失败/限流才切智谱）/ `balance`（两家轮询分摊）
+   - `LLM_PROVIDER_ORDER` - provider 优先级，默认 `gemini,zhipu,compat`（Gemini 优先）
    - `LLM_REQUEST_INTERVAL` - 每篇之间的主动限速秒数，默认 `1`
 
 3. 推送代码后会自动运行，或手动触发
@@ -204,7 +205,7 @@ TWITTER_ACCOUNTS = {
 | `GEMINI_MODEL` | Gemini 模型名 | 否 | `gemini-3.1-flash-lite` |
 | `ZHIPU_MODEL` | 智谱模型名 | 否 | `GLM-4.7-Flash` |
 | `LLM_MODE` | `fallback` 主备 / `balance` 轮询分摊 | 否 | `fallback` |
-| `LLM_PROVIDER_ORDER` | provider 顺序，如 `gemini,zhipu` | 否 | `zhipu,gemini,compat` |
+| `LLM_PROVIDER_ORDER` | provider 顺序，如 `zhipu,gemini` | 否 | `gemini,zhipu,compat` |
 | `LLM_REQUEST_INTERVAL` | 每篇之间主动限速（秒） | 否 | `1` |
 | `OPENAI_COMPAT_API_KEY` / `OPENAI_COMPAT_BASE_URL` / `OPENAI_COMPAT_MODEL` | 接任意 OpenAI 兼容服务（Groq、硅基流动、OpenRouter 等） | 否 | - |
 | `NOTION_API_KEY` | Notion API 密钥 | 是 | - |
@@ -226,8 +227,10 @@ TWITTER_ACCOUNTS = {
 
 | 模式 | 行为 |
 |---|---|
-| `LLM_MODE=fallback`（默认） | 始终先用智谱，只有它失败才动用 Gemini（省每日额度、风险低）。智谱进入 60 秒冷却期间，文章全部由 Gemini 接手 |
+| `LLM_MODE=fallback`（默认） | 按 `LLM_PROVIDER_ORDER` 顺序逐个尝试，默认 Gemini 优先、失败/限流才切智谱。Gemini 进入 60 秒冷却期间，文章全部由智谱接手 |
 | `LLM_MODE=balance` | 每篇选「最久没用过」的模型，主动把请求摊到两家，吞吐最高；想最大化容量时改成这个 |
+
+> 想切回智谱优先：把仓库 Variable `LLM_PROVIDER_ORDER` 设为 `zhipu,gemini,compat` 即可，无需改代码。
 
 某个 provider 返回 429 / 5xx 会进入 60 秒冷却，Key 无效则冷却 10 分钟；
 Gemini 模型名 404 时会自动降级到 `gemini-flash-latest` 等候选。

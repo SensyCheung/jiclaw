@@ -189,8 +189,10 @@ jobs:
           # 备用免费模型：在 Google AI Studio 申请后填入 Secret；不填则只用智谱
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-flash-lite' }}
-          # fallback=智谱优先、限流才切 Gemini（默认）；balance=两家轮询分摊
+          # fallback=按 LLM_PROVIDER_ORDER 顺序，首选失败/限流才切下一个（默认）；balance=两家轮询分摊
           LLM_MODE: ${{ github.event.inputs.llm_mode || vars.LLM_MODE || 'fallback' }}
+          # provider 优先级：默认 Gemini 优先，失败/限流才切智谱；改仓库变量即可调整
+          LLM_PROVIDER_ORDER: ${{ vars.LLM_PROVIDER_ORDER || 'gemini,zhipu,compat' }}
           LLM_REQUEST_INTERVAL: ${{ vars.LLM_REQUEST_INTERVAL || '1' }}
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}

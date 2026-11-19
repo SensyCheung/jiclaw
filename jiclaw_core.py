@@ -1133,8 +1133,9 @@ affected_products 为 []；event_type 与 hazard_class 的取值必须来自上�
 #
 # 免费档模型都有 RPM / RPD 限制，单靠一家很容易在批量抓取时撞 429。
 # 这里把所有可用模型抽象成 provider：
-#   - fallback 模式（默认）：智谱优先，只有它失败才动用 Gemini（省额度、风险低）
+#   - fallback 模式（默认）：Gemini 优先，只有它失败/限流才动用智谱
 #   - balance 模式：每篇选最久没用过的 provider，主动把请求摊到两家
+# provider 尝试顺序由 LLM_PROVIDER_ORDER 决定，默认 gemini,zhipu,compat（Gemini 优先）。
 # 某个 provider 报错即进入冷却，期间不再打扰它；冷却期内其他 provider 顶上。
 # ---------------------------------------------------------------------------
 
@@ -1215,7 +1216,7 @@ def _build_llm_providers(zhipu_default: str):
             "client": OpenAI(api_key=compat_key, base_url=compat_url, timeout=90, max_retries=0),
         })
 
-    order = os.environ.get("LLM_PROVIDER_ORDER", "zhipu,gemini,compat")
+    order = os.environ.get("LLM_PROVIDER_ORDER", "gemini,zhipu,compat")
     rank = {n.strip(): i for i, n in enumerate(order.split(",")) if n.strip()}
     providers.sort(key=lambda p: rank.get(p["name"], 99))
     return providers
