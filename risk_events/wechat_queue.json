@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-19T06:04:28+00:00",
-  "count": 34,
+  "generated_at": "2026-11-19T10:21:51+00:00",
+  "count": 36,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 4,
+    "min_image_count": 3,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -476,6 +476,30 @@
       "discovered_at": "2026-11-19T06:04:28+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881138",
+      "title": "Fraunhofer IPMS and PVA TePla establish the “Center of Excellence for Advanced Metrology” in Dresden",
+      "image_count": 5,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T10:19:37+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/ram/ddr6-ram-shrinks-by-44-percent-while-delivering-4x-ddr5s-baseline-bandwidth-jedec-previews-12-8-gt-s-modules-with-up-to-1-terabyte-of-capacity-per-slot",
+      "title": "DDR6 RAM shrinks by 44% while delivering 4X DDR5's baseline bandwidth — JEDEC previews 12.8 GT/s modules with up to 1 terabyte of capacity per slot",
+      "image_count": 3,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T10:21:51+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
       "auto_publish": true
     }
   ]
