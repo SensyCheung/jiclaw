@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-18T23:39:13+00:00",
-  "count": 93,
+  "generated_at": "2026-11-19T06:16:04+00:00",
+  "count": 94,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -3711,6 +3711,46 @@
           "title_cn": "英伟达曾将阿里巴巴介绍给Alice Huang以绕过美国出口管制",
           "source": "https://www.theinformation.com/feed",
           "published_at": "2026-11-18T03:05:44.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "072060b272",
+      "dedup_key": "e7005d0fd3d2",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/articles/u-s-commerce-department-rushed-clear-nvidia-h200-exports-china",
+      "title": "U.S. Commerce Department Rushed to Clear Nvidia H200 Exports to China",
+      "title_cn": "美国商务部加急审批英伟达H200芯片对华出口",
+      "published_at": "2026-11-19T02:34:36.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-19T06:09:06",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "072060b272",
+          "url": "https://www.theinformation.com/articles/u-s-commerce-department-rushed-clear-nvidia-h200-exports-china",
+          "title": "U.S. Commerce Department Rushed to Clear Nvidia H200 Exports to China",
+          "title_cn": "美国商务部加急审批英伟达H200芯片对华出口",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-19T02:34:36.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
