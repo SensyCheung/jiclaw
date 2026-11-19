@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-19T10:21:51+00:00",
-  "count": 36,
+  "generated_at": "2026-11-19T16:30:49+00:00",
+  "count": 39,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 3,
+    "min_image_count": 4,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -500,6 +500,42 @@
       "discovered_at": "2026-11-19T10:21:51+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881214",
+      "title": "Multilayer printed circuit boards made from paper – EU project CircEl-Paper demonstrates practical viability",
+      "image_count": 6,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T16:24:31+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/machine-learning/article/55420223/tasking-agentic-ai-workflows-certifiable-multicore-software-development-for-safety-critical-automotive-applications-part-1",
+      "title": "Agentic AI Workflows: Certifiable Multicore Software Dev for Safety-Critical Auto Apps (Part 1)",
+      "image_count": 6,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T16:25:54+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/mannerisms/fable/fable-the-delusional-ceo-2026-11/",
+      "title": "Fable: The Delusional CEO",
+      "image_count": 12,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-19T16:30:49+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
       "auto_publish": true
     }
   ]
