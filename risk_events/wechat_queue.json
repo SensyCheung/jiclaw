@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-19T23:27:47+00:00",
-  "count": 42,
+  "generated_at": "2026-11-20T05:53:22+00:00",
+  "count": 43,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 4,
+    "min_image_count": 3,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -572,6 +572,18 @@
       "discovered_at": "2026-11-19T23:27:47+00:00",
       "profile_id": "vendor_tech_blog",
       "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/get-an-rtx-5070-for-just-usd839-99-a-rare-savings-in-the-gpu-wasteland-msi-geforce-rtx-5070-ventus-2x-oc-12-gb-is-currently-on-sale-at-newegg",
+      "title": "Get an RTX 5070 for just $839.99, a rare savings in the GPU wasteland",
+      "image_count": 8,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-20T05:53:22+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
       "auto_publish": true
     }
   ]
