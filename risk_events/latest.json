@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-20T00:20:03+00:00",
-  "count": 105,
+  "generated_at": "2026-11-20T15:31:27+00:00",
+  "count": 106,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -4205,6 +4205,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "85d7ee7544",
+      "dedup_key": "3f21490a532a",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/blogs/electro-ramblings/latest-news/most-read-intel-vs-amd-nvidia-rubin-hpc-dram-price-fixing-2026-11/",
+      "title": "Most Read – Intel vs AMD, Nvidia Rubin HPC, DRAM price-fixing",
+      "title_cn": "最受欢迎文章 – 英特尔对阵AMD、英伟达Rubin HPC、DRAM价格操纵案",
+      "published_at": "2026-11-20T13:47:48.000Z",
+      "llm": "gemini:gemini-3.5-flash-lite",
+      "ingested_at": "2026-11-20T14:59:37",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "三星, SK海力士, 美光科技(Micron)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [
+        "DRAM"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "85d7ee7544",
+          "url": "https://www.electronicsweekly.com/blogs/electro-ramblings/latest-news/most-read-intel-vs-amd-nvidia-rubin-hpc-dram-price-fixing-2026-11/",
+          "title": "Most Read – Intel vs AMD, Nvidia Rubin HPC, DRAM price-fixing",
+          "title_cn": "最受欢迎文章 – 英特尔对阵AMD、英伟达Rubin HPC、DRAM价格操纵案",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-20T13:47:48.000Z",
+          "llm": "gemini:gemini-3.5-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "fed57ee9ef",

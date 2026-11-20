@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-20T05:53:22+00:00",
-  "count": 43,
+  "generated_at": "2026-11-20T15:01:32+00:00",
+  "count": 46,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 3,
+    "min_image_count": 4,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -584,6 +584,42 @@
       "discovered_at": "2026-11-20T05:53:22+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/electro-ramblings/latest-news/most-read-intel-vs-amd-nvidia-rubin-hpc-dram-price-fixing-2026-11/",
+      "title": "Most Read – Intel vs AMD, Nvidia Rubin HPC, DRAM price-fixing",
+      "image_count": 3,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-20T14:59:26+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/where-did-the-margin-go-the-hidden-errors-in-pcb-assembly-2026-11/",
+      "title": "Where did the margin go? The hidden errors in PCB assembly",
+      "image_count": 12,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-20T14:59:39+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/products/tis-multiprotocol-comms-som-connects-factories-2026-11/",
+      "title": "TI’s multiprotocol comms SoM connects factories",
+      "image_count": 11,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-20T15:01:32+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
       "auto_publish": true
     }
   ]
