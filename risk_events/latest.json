@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-20T15:31:27+00:00",
+  "generated_at": "2026-11-20T22:20:00+00:00",
   "count": 106,
   "feed": {
     "max_age_days": 90,
@@ -2454,6 +2454,15 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-18T10:29:58.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "1c8e27d408",
+          "url": "https://seekingalpha.com/article/4970584-nvidia-washington-noise-record-numbers?source=feed",
+          "title": "Nvidia: Washington Noise, Record Numbers",
+          "title_cn": "英伟达：华盛顿的噪音与创纪录的数字",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-20T14:26:50.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -2461,7 +2470,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 12,
+      "source_count": 13,
       "primary_event_type": "export_control"
     },
     {

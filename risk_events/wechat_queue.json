@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-20T15:01:32+00:00",
-  "count": 46,
+  "generated_at": "2026-11-20T22:10:49+00:00",
+  "count": 49,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -620,6 +620,42 @@
       "discovered_at": "2026-11-20T15:01:32+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/digital-ics/fpga/article/55420633/electronic-design-5-low-power-fpga-development-boards-for-secure-and-embedded-prototyping",
+      "title": "5 of the Lowest-Power FPGA Dev Kits Available Today",
+      "image_count": 8,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-20T22:10:38+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/blogs/altembedded/blog/55420547/electronic-design-how-good-is-your-system-design",
+      "title": "How Good is Your System Design?",
+      "image_count": 4,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-20T22:10:44+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/eda/video/55420517/electronic-design-3d-interconnect-designer-solving-chiplet-and-hatched-ground-bottlenecks",
+      "title": "3D Interconnect Designer: Solving Chiplet and Hatched Ground Bottlenecks",
+      "image_count": 4,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-20T22:10:49+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]
