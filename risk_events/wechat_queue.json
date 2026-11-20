@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-19T16:30:49+00:00",
-  "count": 39,
+  "generated_at": "2026-11-19T23:27:47+00:00",
+  "count": 42,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -536,6 +536,42 @@
       "discovered_at": "2026-11-19T16:30:49+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/november-2026-top500-new-systems-analysis/",
+      "title": "November 2026 Top500 New Systems Are Few and Far Between",
+      "image_count": 17,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T23:25:15+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/digital-ics/fpga/article/55420416/electronic-design-electronica-2026-fpga-roundup-eight-demos-boards-and-technologies",
+      "title": "8 FPGA Standouts at electronica 2026",
+      "image_count": 13,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T23:26:30+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/markets/automotive/article/55420296/electronic-design-toyota-develops-new-hybrid-for-future-multi-pathway-vehicle-platforms",
+      "title": "Toyota Develops New Hybrid for Future Multi-Pathway Vehicle Platforms",
+      "image_count": 5,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-19T23:27:47+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]
