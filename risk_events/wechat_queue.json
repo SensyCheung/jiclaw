@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-20T22:10:49+00:00",
-  "count": 49,
+  "generated_at": "2026-11-21T03:46:29+00:00",
+  "count": 50,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 4,
+    "min_image_count": 3,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -656,6 +656,18 @@
       "discovered_at": "2026-11-20T22:10:49+00:00",
       "profile_id": "vendor_tech_blog",
       "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/jedec-previews-ddr6-memory-standard-2-35x-more-bandwidth-44-narrower-dimms/",
+      "title": "JEDEC Previews DDR6 Memory Standard: 2.35x More Bandwidth, 44% Narrower DIMMs",
+      "image_count": 3,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-21T03:46:29+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
       "auto_publish": true
     }
   ]
