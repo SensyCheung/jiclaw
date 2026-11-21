@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-21T12:20:03+00:00",
-  "count": 110,
+  "generated_at": "2026-11-21T20:07:28+00:00",
+  "count": 111,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -2583,6 +2583,15 @@
           "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
           "published_at": "2026-11-20T14:26:50.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "2d655a32cc",
+          "url": "https://www.theinformation.com/articles/can-jensen-return",
+          "title": "Can Jensen Really Return?",
+          "title_cn": "黄仁勋真的能回归吗？",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-21T16:13:38.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -2590,7 +2599,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 13,
+      "source_count": 14,
       "primary_event_type": "export_control"
     },
     {
@@ -3857,6 +3866,46 @@
       ],
       "source_count": 1,
       "primary_event_type": "other"
+    },
+    {
+      "post_id": "ca5b927c2a",
+      "dedup_key": "f0c4f3076d76",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/semiconductors/rapidus-reportedly-struggles-to-produce-working-sram-on-its-2nm-node-putting-2027-mass-production-at-risk-company-faces-significant-challenges-using-euv-to-develop-gaa-transistors",
+      "title": "Rapidus reportedly struggles to produce working SRAM on its 2nm node, putting 2027 mass production at risk",
+      "title_cn": "报道称 Rapidus 在 2nm 节点生产 SRAM 遇阻，2027 年量产目标面临风险",
+      "published_at": "2026-11-21T15:29:55.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-21T19:59:28",
+      "is_risk_event": true,
+      "event_type": "capacity_disruption",
+      "hazard_class": "operational",
+      "entity": "Rapidus",
+      "site": "IIM-1 晶圆厂",
+      "country_region": "日本",
+      "lat": null,
+      "lon": null,
+      "severity": 0.6,
+      "affected_products": [
+        "2nm"
+      ],
+      "occurred_at": "2026-07",
+      "sources": [
+        {
+          "post_id": "ca5b927c2a",
+          "url": "https://www.tomshardware.com/tech-industry/semiconductors/rapidus-reportedly-struggles-to-produce-working-sram-on-its-2nm-node-putting-2027-mass-production-at-risk-company-faces-significant-challenges-using-euv-to-develop-gaa-transistors",
+          "title": "Rapidus reportedly struggles to produce working SRAM on its 2nm node, putting 2027 mass production at risk",
+          "title_cn": "报道称 Rapidus 在 2nm 节点生产 SRAM 遇阻，2027 年量产目标面临风险",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-21T15:29:55.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "capacity_disruption"
+      ],
+      "source_count": 1,
+      "primary_event_type": "capacity_disruption"
     },
     {
       "post_id": "9eca65d24f",
