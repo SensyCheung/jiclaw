@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-21T03:55:58+00:00",
-  "count": 109,
+  "generated_at": "2026-11-21T12:20:03+00:00",
+  "count": 110,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -4295,6 +4295,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "17166def93",
+      "dedup_key": "7a2b7a192a2b",
+      "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+      "url": "https://seekingalpha.com/article/4970808-lumentum-after-a-54-percent-crash-im-upgrading-to-strong-buy?source=feed",
+      "title": "Lumentum: After A 54% Crash, I'm Upgrading To Strong Buy",
+      "title_cn": "Lumentum：在股价暴跌54%后，我将其评级上调至“强烈买入”",
+      "published_at": "2026-11-21T09:52:12.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-21T12:09:34",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "financial",
+      "entity": "Lumentum, Marvell",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "17166def93",
+          "url": "https://seekingalpha.com/article/4970808-lumentum-after-a-54-percent-crash-im-upgrading-to-strong-buy?source=feed",
+          "title": "Lumentum: After A 54% Crash, I'm Upgrading To Strong Buy",
+          "title_cn": "Lumentum：在股价暴跌54%后，我将其评级上调至“强烈买入”",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-21T09:52:12.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
     },
     {
       "post_id": "dd9ac9e304",
