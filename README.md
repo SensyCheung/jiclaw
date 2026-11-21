@@ -468,13 +468,14 @@ const alerts = events.filter(e => e.severity >= 0.6);
 Bloomberg 作者页反爬严格，官方 `rsshub.app` 不稳；订阅走自建实例
 `https://rsshub-demo.cautious-menu.workers.dev`，路由用 RSSHub 官方的
 `/bloomberg/authors/:id/:slug/:source?`，第三段固定 `rss`（直接取 Bloomberg 作者的
-`.rss`，比 lineup API 稳）。当前订阅 3 位长期写半导体的作者：
+`.rss`，比 lineup API 稳）。当前订阅 4 位作者，前三位长期写半导体，第四位补华盛顿政策线：
 
 | 作者 | 分工 | id / slug |
 |------|------|-----------|
 | Ian King | 美国半导体记者：Nvidia / Intel / 出口管制 / 芯片股 | `AB1M_8ht4mM/ian-king` |
 | Debby Wu | 亚洲科技：台积电、美光、存储与供应链 | `ATjxWD012Wk/debby-wu` |
 | Catherine Thorbecke | 亚洲科技专栏：TSMC / Rapidus / 芯片地缘 | `AWztaihZGwI/catherine-thorbecke` |
+| Maggie Eastland | 华盛顿 AI 政策 / 出口管制：BIS 规则、白宫 AI 行政令、芯片关税、对华芯片销售 | `AW4Bhiwn1Ms/maggie-eastland` |
 
 Mark Gurman（苹果公司动向）、Matt Levine（金融）、John Authers（宏观）等也有作者 feed，
 但内容与半导体无关，不订阅，避免污染首页。
