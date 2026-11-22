@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-22T00:10:19+00:00",
-  "count": 57,
+  "generated_at": "2026-11-22T07:47:09+00:00",
+  "count": 58,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -750,6 +750,18 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-22T00:10:19+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/sabrent-voltik-252w-8-port-usb-pd-3-0-charger-quick-look/",
+      "title": "Sabrent Voltik 252W 8-port USB PD 3.0 Charger Quick Look",
+      "image_count": 10,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T07:47:09+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
       "auto_publish": true
