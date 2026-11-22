@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-22T16:01:16+00:00",
-  "count": 61,
+  "generated_at": "2026-11-22T21:38:13+00:00",
+  "count": 64,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 3,
+    "min_image_count": 1,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -800,6 +800,42 @@
       "discovered_at": "2026-11-22T16:01:16+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/centec-zx530s-24s2cq-review/",
+      "title": "Centec ZX530S-24S2CQ Review The Cheap 10G and 100G Switch Option with a Centec Switch Chip",
+      "image_count": 24,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T21:37:49+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://semiwiki.com/ceo-interviews/376481-ceo-interview-with-manu-gulati-of-velaura-ai/",
+      "title": "CEO Interview with Manu Gulati of Velaura AI",
+      "image_count": 1,
+      "site": "semiwiki.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T21:38:08+00:00",
+      "profile_id": "semiwiki",
+      "template": "T2_text_analysis",
+      "auto_publish": true
+    },
+    {
+      "url": "https://semiwiki.com/ceo-interviews/376273-ceo-interview-with-tobias-pohl-of-celus/",
+      "title": "CEO Interview with Tobias Pohl of CELUS",
+      "image_count": 1,
+      "site": "semiwiki.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T21:38:13+00:00",
+      "profile_id": "semiwiki",
+      "template": "T2_text_analysis",
       "auto_publish": true
     }
   ]
