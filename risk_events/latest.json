@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-22T00:18:12+00:00",
-  "count": 111,
+  "generated_at": "2026-11-22T16:11:47+00:00",
+  "count": 112,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,46 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "c59e02b050",
+      "dedup_key": "b416524c7c82",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/policy/tsmc-reportedly-pauses-shipments-to-chinese-designers-after-u-s-export-rules-flag-decade-old-16nm-and-14nm-nodes-new-bis-controls-threaten-smartphone-tv-and-automotive-chips",
+      "title": "TSMC reportedly pauses shipments to Chinese designers after U.S. export rules flag decade-old 16nm and 14nm nodes",
+      "title_cn": "受美国出口管制新规影响，台积电据称暂停向中国芯片设计商发货，涉及16nm和14nm工艺节点",
+      "published_at": "2026-11-22T13:29:54.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-22T16:01:24",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "台积电(TSMC)",
+      "site": null,
+      "country_region": "中国台湾",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "成熟制程"
+      ],
+      "occurred_at": "2026-11-22",
+      "sources": [
+        {
+          "post_id": "c59e02b050",
+          "url": "https://www.tomshardware.com/tech-industry/policy/tsmc-reportedly-pauses-shipments-to-chinese-designers-after-u-s-export-rules-flag-decade-old-16nm-and-14nm-nodes-new-bis-controls-threaten-smartphone-tv-and-automotive-chips",
+          "title": "TSMC reportedly pauses shipments to Chinese designers after U.S. export rules flag decade-old 16nm and 14nm nodes",
+          "title_cn": "受美国出口管制新规影响，台积电据称暂停向中国芯片设计商发货，涉及16nm和14nm工艺节点",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-22T13:29:54.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
     {
       "post_id": "533158de8a",
       "dedup_key": "3c2267d210a0",

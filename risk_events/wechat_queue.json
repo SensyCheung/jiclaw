@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-22T07:47:09+00:00",
-  "count": 58,
+  "generated_at": "2026-11-22T16:01:16+00:00",
+  "count": 61,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -762,6 +762,42 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-22T07:47:09+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://semiwiki.com/ceo-interviews/376107-ceo-interview-with-dr-sameer-pawanekar-of-ramtera/",
+      "title": "CEO Interview with Dr. Sameer Pawanekar of Ramtera",
+      "image_count": 1,
+      "site": "semiwiki.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T15:58:43+00:00",
+      "profile_id": "semiwiki",
+      "template": "T2_text_analysis",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/video-games/kfc-offers-disc-shaped-fried-chicken-to-sad-disc-less-gta-vi-fans-kfc-spains-the-replacement-disc-campaign-delivers-where-rockstar-disappoints-after-selling-usd3-79-billion-of-gta-vi-without-a-physical-disc",
+      "title": "KFC offers disc-shaped fried chicken to sad disc-less GTA VI fans",
+      "image_count": 4,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T16:00:51+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/drones/ukraine-revives-its-grounded-fleet-of-500-us-made-puma-drones-with-homegrown-anti-jamming-tech-anti-jamming-upgrade-triples-range-to-31-miles",
+      "title": "Ukraine revives its grounded fleet of 500+ US-made Puma drones with homegrown anti-jamming tech",
+      "image_count": 3,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-22T16:01:16+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
       "auto_publish": true
