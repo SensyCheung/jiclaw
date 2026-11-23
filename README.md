@@ -632,6 +632,42 @@ gh workflow run rss_to_notion.yml --ref main -f probe_only=true -f notion_hotorn
 `apply` 幂等：已标 `noHome` 的页面会跳过。2026-11-09 首次执行更新 67 条、失败 0 条，
 库内 `noHome` 由 358 条增至 425 条（总 10000 条），复跑预演新增 0 条。
 
+## 标题硬过滤：促销 / 导购稿
+
+Tom's Hardware 的 feed 是「产业新闻 + 电商促销」混排，黑五 / 网一 / Prime Day 期间一天能推
+好几条纯导购稿，例如：
+
+> One of the best gaming headsets plummets to just $78 at Amazon in unmissable Black Friday deal
+
+这类稿没有产业信息，送模型只是白烧额度，还会污染首页与电报群。因此在**标题阶段用正则直接剔除**：
+不抓正文、不调模型、不入 Notion、不推送，日志打印「标题规则过滤（tomshardware）：N 条…」并逐条列出标题。
+
+判定在 `jiclaw_core.py` 的 `is_deal_title()`，先命中任一条正则即跳过：
+
+| 信号 | 例子 |
+|---|---|
+| 大促节日 | Black Friday / Cyber Monday / Prime Day / Prime Big Deal Days |
+| 导购句式 | `best|huge|epic|unmissable|early … deal` |
+| 零售渠道 | `deal … at|from|on Amazon / Best Buy / Newegg / Walmart` |
+| 折扣量化 | `30% off` / `Save $200` / `coupon` / `promo code` / `24% Discount` |
+| 降价句式 | `drops|falls|plummets|slashed|discounted … $199.99` |
+| 半价 / 触底价 | `for Half Price` / `for just $32.99` / `lowest-ever price of just $56` |
+| 双条件兜底 | 标题同时含 `$价格` 与促销词（deal/sale/off/save/discount/coupon/bundle/half…） |
+
+**不误杀**是这套规则的设计前提，所以刻意做了两处收窄：
+
+- 促销词表**不含裸 `price` / `prices`**——`GPU prices hit $2,000 on the black market`、
+  `DRAM prices rise 20% in Q4` 是正经产业新闻，只带价格没有促销词的一律放行；
+- 单独出现 `deal` 不算命中（`TSMC signs a deal with Apple` 保留），必须叠加促销 / 渠道语境。
+
+只对 `TITLE_BLOCK_SITES`（当前仅 `tomshardware`）生效，名单外 30+ 源完全不受影响。
+以后要把同类站（如 tweaktown、servethehome 的促销稿）一起过滤，把站名加进这个集合即可，
+不需要改判定逻辑。
+
+> 2026-11-23 用当时 feed 的 15 条真实标题回归：7 条促销稿（Corsair 触控屏降价、Switch 2 黑五套装、
+> Razer 半价、Keychron 触底价、YubiKey 30% off、罗技 24% Discount 等）全部命中跳过，
+> 8 条产业 / 评测 / 趣味稿（TSMC 停供、AI 设计 CPU、Lenovo 评测等）无一误杀。
+
 ## 标题级非半导体过滤
 
 etnews / kitguru / laoyaoba（爱集微）这三个源里混着大量游戏、家电、美妆、招聘、考试类内容。

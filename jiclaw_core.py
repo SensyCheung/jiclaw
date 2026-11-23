@@ -205,7 +205,19 @@ _DEAL_TITLE_PATTERNS = (
     re.compile(r"\bdeals?\b[^.|]{0,40}\b(?:at|from|on)\s+(?:amazon|best\s*buy|newegg|walmart|bh\s*photo|micro\s*center|target)\b", re.I),
     re.compile(r"\b\d{1,2}\s*%\s*off\b|\bsave\s+(?:up\s+to\s+)?\$\s?\d", re.I),
     re.compile(r"\b(?:coupon|promo\s*code|discount(?:ed|s)?|price\s*(?:cut|drop)s?|on\s+sale|clearance|blowout)\b", re.I),
-    re.compile(r"\b(?:drops?|falls?|plummets?|slashed?)\b[^.|]{0,30}\$\s?\d", re.I),
+    re.compile(r"\b(?:drops?|falls?|plummets?|slashed?|discounted)\b[^.|]{0,30}\$\s?\d", re.I),
+    re.compile(r"\bhalf[- ]price\b|\bfor\s+(?:just|only)\s+\$\s?\d", re.I),
+    re.compile(r"\b(?:lowest|cheapest)[- ]ever\s+price\b|\bprice\s+of\s+(?:just|only)\s+\$\s?\d", re.I),
+)
+
+# 兜底组合判定：标题里「有美元价格」且「有促销词」→ 促销稿。
+# 注意促销词表刻意不含裸 price/prices：产业稿里 "GPU prices hit $2,000 on the
+# black market"、"DRAM prices rise 20% in Q4" 是正经新闻，不能误杀。
+_PRICE_RE = re.compile(r"\$\s?\d")
+_PROMO_WORD_RE = re.compile(
+    r"\b(?:deals?|sales?|off|save|savings?|discount(?:ed|s)?|coupon|promo"
+    r"|bundles?|clearance|half[- ]price|lowest[- ]ever)\b",
+    re.I,
 )
 
 
@@ -213,7 +225,10 @@ def is_deal_title(title: str, site: str) -> bool:
     """标题是否为促销 / 导购稿；只对 TITLE_BLOCK_SITES 生效。"""
     if not title or site not in TITLE_BLOCK_SITES:
         return False
-    return any(p.search(title) for p in _DEAL_TITLE_PATTERNS)
+    if any(p.search(title) for p in _DEAL_TITLE_PATTERNS):
+        return True
+    # 双条件兜底：价格 + 促销词同时出现，才算导购（单有价格不算）
+    return bool(_PRICE_RE.search(title) and _PROMO_WORD_RE.search(title))
 
 
 def _parse_title_verdicts(text: str, total: int):
