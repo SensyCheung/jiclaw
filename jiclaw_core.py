@@ -207,7 +207,7 @@ _DEAL_TITLE_PATTERNS = (
     re.compile(r"\b(?:coupon|promo\s*code|discount(?:ed|s)?|price\s*(?:cut|drop)s?|on\s+sale|clearance|blowout)\b", re.I),
     re.compile(r"\b(?:drops?|falls?|plummets?|slashed?|discounted)\b[^.|]{0,30}\$\s?\d", re.I),
     re.compile(r"\bhalf[- ]price\b|\bfor\s+(?:just|only)\s+\$\s?\d", re.I),
-    re.compile(r"\b(?:lowest|cheapest)[- ]ever\s+price\b|\bprice\s+of\s+(?:just|only)\s+\$\s?\d", re.I),
+    re.compile(r"\b(?:lowest|cheapest)[- ]?(?:price\s+)?ever\b|\bprice\s+of\s+(?:just|only)\s+\$\s?\d", re.I),
 )
 
 # 兜底组合判定：标题里「有美元价格」且「有促销词」→ 促销稿。
