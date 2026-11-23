@@ -480,6 +480,18 @@ Bloomberg 作者页反爬严格，官方 `rsshub.app` 不稳；订阅走自建�
 Mark Gurman（苹果公司动向）、Matt Levine（金融）、John Authers（宏观）等也有作者 feed，
 但内容与半导体无关，不订阅，避免污染首页。
 
+**金融时报半导体栏目（官方直连，不走 RSSHub）**：`https://www.ft.com/semiconductors?format=rss`
+——25 条，`?format=rss` 是 FT 官方接口，响应快（<1s）、无反爬。FT 的作者页也可用
+`https://www.ft.com/{slug}?format=rss`（已验证 Richard Waters / Robin Wigglesworth / Kana Inagaki），
+但 Kana Inagaki 近期偏汽车，故只订栏目源。
+
+**为什么 NYT / CNBC / WSJ 没有作者源**：自建 RSSHub 的这几个命名空间都没有作者路由——
+NYT 只有 `/:lang?`（中英文版）、WSJ 只有 `/:lang/:category?`、CNBC 只有 `/rss/:id?`（官方频道 ID），
+实测 `/nytimes/author/xxx`、`/wsj/author/xxx`、`/cnbc/author/xxx` 均返回 404/503。
+官方作者页 `nytimes.com/by/{slug}?format=rss` 又被 DataDome 403。
+Google News 的 `news.google.com/rss/search?q={作者}+site:{域名}` 能按作者抓到最新条目，
+但链接是跳转页、正文常抓不到（WSJ/NYT 付费墙），只能拿到标题级信息，故未默认订阅。
+
 **两个必须知道的特性**：
 
 1. **慢源**：RSSHub 会串行抓取 20 篇文章全文，实测每个 feed 约 **60–65 秒**才返回。
