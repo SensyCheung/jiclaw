@@ -651,7 +651,7 @@ Tom's Hardware 的 feed 是「产业新闻 + 电商促销」混排，黑五 / �
 | 零售渠道 | `deal … at|from|on Amazon / Best Buy / Newegg / Walmart` |
 | 折扣量化 | `30% off` / `Save $200` / `coupon` / `promo code` / `24% Discount` |
 | 降价句式 | `drops|falls|plummets|slashed|discounted … $199.99` |
-| 半价 / 触底价 | `for Half Price` / `for just $32.99` / `lowest-ever price of just $56` |
+| 半价 / 触底价 | `for Half Price` / `for just $32.99` / `lowest-ever price of just $56` / `its lowest price ever at $249.99` |
 | 双条件兜底 | 标题同时含 `$价格` 与促销词（deal/sale/off/save/discount/coupon/bundle/half…） |
 
 **不误杀**是这套规则的设计前提，所以刻意做了两处收窄：
