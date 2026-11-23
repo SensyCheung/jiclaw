@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-23T02:17:17+00:00",
-  "count": 65,
+  "generated_at": "2026-11-23T11:52:11+00:00",
+  "count": 68,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -846,6 +846,42 @@
       "always_publish": true,
       "status": "pending",
       "discovered_at": "2026-11-23T02:17:17+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881329",
+      "title": "Spintronics: Researchers describe a new type of atomic oscillation",
+      "image_count": 4,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-23T11:51:48+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881312",
+      "title": "“Self-reflective” robot recognizes its limitations",
+      "image_count": 2,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-23T11:51:53+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/uk-space-agency-opens-2026-space-sector-skills-survey-2026-11/",
+      "title": "UK Space Agency opens 2026 Space Sector Skills Survey",
+      "image_count": 1,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-23T11:52:11+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
       "auto_publish": true

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-23T02:25:47+00:00",
-  "count": 115,
+  "generated_at": "2026-11-23T12:01:27+00:00",
+  "count": 117,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,85 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "69a20affc2",
+      "dedup_key": "33c47235359b",
+      "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+      "url": "http://www.businesswire.com/news/home/20261123086552/en/Qnity-to-Acquire-Meridian%E2%80%99s-Electronics-Business-Expands-Advanced-Packaging-and-Thermal-Management-Capabilities/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+      "title": "Qnity to Acquire Meridian’s Electronics Business, Expands Advanced Packaging and Thermal Management Capabilities",
+      "title_cn": "Qnity将收购Meridian电子业务，拓展先进封装与热管理能力",
+      "published_at": "2026-11-23T11:30:00.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-23T11:52:44",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "operational",
+      "entity": "Qnity Electronics",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": "2026-11-23",
+      "sources": [
+        {
+          "post_id": "69a20affc2",
+          "url": "http://www.businesswire.com/news/home/20261123086552/en/Qnity-to-Acquire-Meridian%E2%80%99s-Electronics-Business-Expands-Advanced-Packaging-and-Thermal-Management-Capabilities/?feedref=JjAwJuNHiystnCoBq_hl-bV7DTIYheT0D-1vT4_bKFzt_EW40VMdK6eG-WLfRGUE1fJraLPL1g6AeUGJlCTYs7Oafol48Kkc8KJgZoTHgMu0w8LYSbRdYOj2VdwnuKwa",
+          "title": "Qnity to Acquire Meridian’s Electronics Business, Expands Advanced Packaging and Thermal Management Capabilities",
+          "title_cn": "Qnity将收购Meridian电子业务，拓展先进封装与热管理能力",
+          "source": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXEMGSQ5SVFJdFUNdFkNaV1dDFUkQUhFUVl9dF0M=",
+          "published_at": "2026-11-23T11:30:00.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
+    {
+      "post_id": "ca4a13c3cb",
+      "dedup_key": "86476d99e943",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/fears-and-rumours-swirl-around-nvidia-2026-11/",
+      "title": "Fears and rumours swirl around Nvidia",
+      "title_cn": "英伟达遭遇种种担忧与传闻",
+      "published_at": "2026-11-23T06:16:31.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-23T11:52:19",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(Nvidia)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [
+        "AI chip",
+        "GPU"
+      ],
+      "occurred_at": "2026-11-23",
+      "sources": [
+        {
+          "post_id": "ca4a13c3cb",
+          "url": "https://www.electronicsweekly.com/news/business/fears-and-rumours-swirl-around-nvidia-2026-11/",
+          "title": "Fears and rumours swirl around Nvidia",
+          "title_cn": "英伟达遭遇种种担忧与传闻",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-23T06:16:31.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
     {
       "post_id": "d5fdf6edda",
       "dedup_key": "c6da2e5a2575",
