@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-22T21:48:52+00:00",
-  "count": 113,
+  "generated_at": "2026-11-23T02:25:47+00:00",
+  "count": 115,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,47 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "d5fdf6edda",
+      "dedup_key": "c6da2e5a2575",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1144865",
+      "title": "【头条】突发!三安光电总经理辞职；迈特芯MEGA188芯片成功点亮；英伟达,遭刑事调查！",
+      "title_cn": "突发！三安光电总经理辞职；迈特芯MEGA188芯片成功点亮；英伟达遭刑事调查！",
+      "published_at": "2026-11-22T23:24:46.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-23T02:25:25",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": "加利福尼亚州",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "GPU",
+        "AI chip"
+      ],
+      "occurred_at": "2026-11-22",
+      "sources": [
+        {
+          "post_id": "d5fdf6edda",
+          "url": "https://laoyaoba.com/n/1144865",
+          "title": "【头条】突发!三安光电总经理辞职；迈特芯MEGA188芯片成功点亮；英伟达,遭刑事调查！",
+          "title_cn": "突发！三安光电总经理辞职；迈特芯MEGA188芯片成功点亮；英伟达遭刑事调查！",
+          "source": "aijiwei",
+          "published_at": "2026-11-22T23:24:46.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
     {
       "post_id": "c59e02b050",
       "dedup_key": "b416524c7c82",
@@ -49,6 +90,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "f7011d0a23",
+      "dedup_key": "dc08eb2bcf58",
+      "source": "aijiwei",
+      "url": "https://laoyaoba.com/n/1144815",
+      "title": "【立案】“蹭”上英伟达GPU！300872被立案！",
+      "title_cn": "【立案】“蹭”上英伟达GPU！300872被立案！",
+      "published_at": "2026-11-22T23:24:46.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-23T02:25:39",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "天阳科技",
+      "site": null,
+      "country_region": "中国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": "2026-11-20",
+      "sources": [
+        {
+          "post_id": "f7011d0a23",
+          "url": "https://laoyaoba.com/n/1144815",
+          "title": "【立案】“蹭”上英伟达GPU！300872被立案！",
+          "title_cn": "【立案】“蹭”上英伟达GPU！300872被立案！",
+          "source": "aijiwei",
+          "published_at": "2026-11-22T23:24:46.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
     },
     {
       "post_id": "533158de8a",

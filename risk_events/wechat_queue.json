@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-22T21:38:13+00:00",
-  "count": 64,
+  "generated_at": "2026-11-23T02:17:17+00:00",
+  "count": 65,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 1,
+    "min_image_count": 4,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -836,6 +836,18 @@
       "discovered_at": "2026-11-22T21:38:13+00:00",
       "profile_id": "semiwiki",
       "template": "T2_text_analysis",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/mannerisms/ed-the-serial-ceo/eds-vulture-fund-for-distressed-datacentres-2026-11/",
+      "title": "Ed’s Vulture Fund For Distressed Datacentres",
+      "image_count": 11,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-23T02:17:17+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
       "auto_publish": true
     }
   ]
