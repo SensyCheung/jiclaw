@@ -142,6 +142,7 @@ TITLE_PRESCREEN_SITES = frozenset({
     "laoyaoba",  # 爱集微
     "爱集微",
     "aijiwei",
+    "hnrss",     # Hacker News：即使按关键词搜，也混大量泛科技/软件条目
 })
 
 _TITLE_PRESCREEN_PROMPT = """判断下面每个新闻标题是否与半导体/芯片产业直接相关。
@@ -1817,6 +1818,9 @@ def get_website_name(feed_url: str) -> str:
         # 主站 semianalysis.com 的 feed 停在 2025-09，真正在更新的是 newsletter 子域
         "newsletter.semianalysis.com": "SemiAnalysis",
         "semianalysis.com": "SemiAnalysis",
+        # Hacker News 关键词热度 feed（hnrss.org）：feed title 里带关键词，
+        # 统一归到 "Hacker News"，避免按查询词拆成多个不同的站名。
+        "hnrss.org": "Hacker News",
     }
 
     # 自定义 RSSHub：域名本身没有辨识度，按路由前缀还原真实媒体名

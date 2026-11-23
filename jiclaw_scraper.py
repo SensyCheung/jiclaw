@@ -2404,6 +2404,72 @@ def scrape_arm(url: str, limit: int = 10) -> list[dict]:
     return results[:limit]
 
 
+def scrape_architectlabs(url: str, limit: int = 10) -> list[dict]:
+    """爬取 Architect Labs 官方博客（architectlabs.com/blog）的文章列表。
+
+    该站无 RSS（/feed.xml、/rss.xml、/index.xml 全部 404），是 Next.js 静态站，
+    但列表页 HTML 里直接渲染了全部文章条目，无需 Playwright：
+    - 条目：a.group.block
+    - 标题：h3
+    - 链接：a 的 href（相对路径 /blog/xxx）
+    - 日期：<time> 标签（格式 "November 18, 2026"）
+
+    这是 AI 端到端设计 CPU 的一手信源（Frostbite / Redwood 都首发在这里），
+    更新很慢，主要价值是抢首发而非走量。
+
+    Args:
+        url: 博客列表页 URL
+        limit: 获取文章数量上限
+    """
+    from bs4 import BeautifulSoup
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+    }
+    results = []
+
+    try:
+        response = requests.get(url, headers=headers, timeout=25)
+        if response.status_code != 200:
+            print(f"  请求失败，状态码：{response.status_code}")
+            return []
+        soup = BeautifulSoup(response.text, "html.parser")
+    except Exception as e:
+        print(f"  请求/解析失败：{type(e).__name__}: {str(e)[:100]}")
+        return []
+
+    cards = soup.select("a.group.block[href^='/blog/']")
+    print(f"  找到 {len(cards)} 个条目")
+
+    base = "https://architectlabs.com"
+    for card in cards[:limit]:
+        title_tag = card.find("h3")
+        title = title_tag.get_text(" ", strip=True) if title_tag else ""
+        href = card.get("href", "")
+        if not title or not href:
+            continue
+
+        link = href if href.startswith("http") else base + href
+        time_tag = card.find("time")
+        date_text = time_tag.get_text(" ", strip=True) if time_tag else ""
+
+        results.append({
+            "title": title,
+            "link": link,
+            "summary": title,
+            "published": date_text,
+            "published_date": normalize_date(date_text, "%B %d, %Y"),
+        })
+
+    results.sort(key=lambda i: i.get("published_date") or "", reverse=True)
+    print(f"  解析出 {len(results)} 条文章")
+    return results[:limit]
+
+
 # 爬虫函数映射表
 SCRAPER_FUNCTIONS = {
     "semi-insights": scrape_semi_insights,
@@ -2425,6 +2491,7 @@ SCRAPER_FUNCTIONS = {
     "qualcomm": scrape_qualcomm,
     "usbdev": scrape_usbdev,
     "arm": scrape_arm,
+    "architectlabs": scrape_architectlabs,
 }
 
 

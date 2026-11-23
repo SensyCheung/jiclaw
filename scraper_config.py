@@ -177,4 +177,12 @@ SCRAPER_CONFIG = {
         "sitemap": "https://www.qualcomm.com/sitemap.xml",
         "date_format": "%B %d, %Y",  # 日期格式：November 04, 2026
     },
+    "architectlabs": {
+        "name": "Architect Labs Blog",
+        "url": "https://architectlabs.com/blog",
+        # Next.js 静态站，无 RSS（/feed.xml /rss.xml /index.xml 全 404），
+        # 但列表页 HTML 直接渲染：a.group.block 内 h3=标题、time=日期。
+        # 博客更新极慢（2026 全年仅 4 篇），抓取成本几乎为零。
+        "date_format": "%B %d, %Y",  # 日期格式：November 18, 2026
+    },
 }
