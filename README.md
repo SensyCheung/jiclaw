@@ -502,6 +502,35 @@ Google News 的 `news.google.com/rss/search?q={作者}+site:{域名}` 能按作�
    `get_website_name()` 也按 `/bloomberg` 前缀把 Notion 的 Website 还原成 `Bloomberg`，
    否则会显示成 `rsshub-demo`。
 
+## Hacker News 半导体热门文章
+
+用 hnrss.org 的关键词+热度 feed，按 `points` 门槛筛出真正上了热度的帖子：
+
+```
+https://hnrss.org/newest?q=chip&points=50
+https://hnrss.org/newest?q=nvidia&points=50
+https://hnrss.org/newest?q=semiconductor&points=50
+```
+
+- `points=50` 是热度门槛，过滤掉无人问津的投稿；三个关键词覆盖芯片/英伟达/半导体产业。
+- 条目 `link` 指向**原文外链**（TechCrunch、CNBC、FT、arxiv 等），正文走通用抓取；
+  `comments` 字段是 HN 讨论页，不入正文。
+- HN 再怎么按关键词搜也混大量泛科技/软件内容（"GPU 框架""AI 编程"），所以 `hnrss`
+  已加进 `TITLE_PRESCREEN_SITES`，在标题阶段用模型批量剔除不相关文章。
+- **瞬时 502**：hnrss.org 对短时间连续请求会返回 502（返回 HTML 错误页，feedparser
+  解析成 0 条却不报 bozo）。`_parse_feed()` 对 `hnrss.org` 的空结果做一次 5 秒后重试。
+  生产路径每个源之间要过 LLM 分析，间隔远超 5 秒，正常不会触发。
+
+官方 `news.ycombinator.com/rss` 返回 419、自建 RSSHub 的 `/hackernews/rss` 返回 503，
+故不用这两条。
+
+## Architect Labs 官方博客（scraper）
+
+Frostbite / Redwood 这类"AI 端到端设计芯片"的一手发布源。该站无 RSS
+（`/feed.xml`、`/rss.xml`、`/blog/index.xml` 全 404），Next.js 静态页但列表 HTML
+直接渲染，用 `scraper:architectlabs` 抓 `a.group.block` 下的 `h3` 标题与 `time` 日期。
+博客更新极慢（2026 全年 4 篇），主要价值是抢首发。
+
 > RSSHub 的 feed 标题取自首篇文章的第一作者，合著稿件可能显示成别人
 > （Debby Wu 的 feed 曾显示 `Bloomberg - Molly Schuetz`）；条目本身正确，不影响入库。
 >

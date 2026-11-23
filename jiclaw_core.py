@@ -180,6 +180,42 @@ def _site_key(source: str) -> str:
     return str(cfg.get("name") or source).lower()
 
 
+# ---------------------------------------------------------------------------
+# 标题硬过滤：促销 / 导购稿（纯正则，不走模型、不抓正文）
+# ---------------------------------------------------------------------------
+# Tom's Hardware 的 feed 是「产业新闻 + 电商促销」混排，黑五 / 网一 / Prime Day
+# 期间一天能推好几条纯导购稿，例如：
+#   "One of the best gaming headsets plummets to just $78 at Amazon
+#    in unmissable Black Friday deal"
+# 这类稿没有产业信息，送进模型只是白烧额度，还会污染首页与电报群。
+# 因此在标题阶段用正则直接剔除：不抓正文、不调模型、不入 Notion、不推送。
+# 只对 TITLE_BLOCK_SITES 里的站生效，名单外的源行为完全不变。
+TITLE_BLOCK_SITES = frozenset({"tomshardware"})
+
+# 促销信号。每条都要求「折扣 / 大促 / 零售导购」语义，避免误杀真产业新闻
+# （"TSMC signs a deal with …"、"DRAM prices fall in Q4" 都不该命中）：
+#   1) 大促节日名：Black Friday / Cyber Monday / Prime Day / Prime Big Deal Days
+#   2) 导购句式：「best/huge/unmissable … deal」
+#   3) 零售渠道组合：「deal … at|from|on Amazon/Best Buy/Newegg/…」
+#   4) 折扣量化：N% off / save $X / coupon / promo code / price cut
+#   5) 降价句式：drops|falls|plummets|slashed … $X（必须带美元单价）
+_DEAL_TITLE_PATTERNS = (
+    re.compile(r"\b(?:black\s*friday|cyber\s*monday|prime\s*day|prime\s*big\s*deal\s*days?)\b", re.I),
+    re.compile(r"\b(?:best|huge|epic|unmissable|early|last-?chance|doorbuster)\b[^.|]{0,60}\bdeals?\b", re.I),
+    re.compile(r"\bdeals?\b[^.|]{0,40}\b(?:at|from|on)\s+(?:amazon|best\s*buy|newegg|walmart|bh\s*photo|micro\s*center|target)\b", re.I),
+    re.compile(r"\b\d{1,2}\s*%\s*off\b|\bsave\s+(?:up\s+to\s+)?\$\s?\d", re.I),
+    re.compile(r"\b(?:coupon|promo\s*code|discount(?:ed|s)?|price\s*(?:cut|drop)s?|on\s+sale|clearance|blowout)\b", re.I),
+    re.compile(r"\b(?:drops?|falls?|plummets?|slashed?)\b[^.|]{0,30}\$\s?\d", re.I),
+)
+
+
+def is_deal_title(title: str, site: str) -> bool:
+    """标题是否为促销 / 导购稿；只对 TITLE_BLOCK_SITES 生效。"""
+    if not title or site not in TITLE_BLOCK_SITES:
+        return False
+    return any(p.search(title) for p in _DEAL_TITLE_PATTERNS)
+
+
 def _parse_title_verdicts(text: str, total: int):
     """解析模型的标题判定结果，返回「判为不相关」的 0-based 序号集合。
 
@@ -281,11 +317,22 @@ FEED_FETCH_TIMEOUT = 180
 
 
 def _parse_feed(feed_url: str):
-    """带超时地抓取并解析 RSS；超时异常由 jiclaw.py 的 per-source try/except 兜底。"""
+    """带超时地抓取并解析 RSS；超时异常由 jiclaw.py 的 per-source try/except 兜底。
+
+    部分源（如 hnrss.org）对短时间内的并发/连续请求返回瞬时 502，且 feedparser
+    在 502 时仍返回结构正常的空 feed（bozo 置位），看不出失败。这里对这类源
+    做一次延迟重试，避免整条源被静默跳过。
+    """
     previous = socket.getdefaulttimeout()
     socket.setdefaulttimeout(FEED_FETCH_TIMEOUT)
     try:
-        return feedparser.parse(feed_url)
+        parsed = feedparser.parse(feed_url)
+        # hnrss.org 的 502 会返回 HTML 错误页，feedparser 解析出 0 条；
+        # 只对这类瞬时故障源重试一次，不影响正常空 feed 的判断。
+        if "hnrss.org" in feed_url and not parsed.entries:
+            time.sleep(5)
+            parsed = feedparser.parse(feed_url)
+        return parsed
     finally:
         socket.setdefaulttimeout(previous)
 
@@ -2298,11 +2345,24 @@ def _process_items(
 
     _ai_fail_streak = 0  # 连续调用模型失败计数（用于限流时提前收手）
     _skipped_non_semi = 0  # 标题判定为非半导体而跳过的条数
+    _skipped_deal = 0  # 标题命中促销/导购规则而跳过的条数
+
+    # 标题硬过滤（纯正则，零成本）：促销 / 导购稿直接剔除，不抓正文、不调模型。
+    # 放在模型预判之前，能省下的就不必送模型判断。
+    _site = _site_key(source)
+    _blocked_idx = {
+        i for i, it in enumerate(items)
+        if is_deal_title((it.get("title") or "").strip(), _site)
+    }
+    if _blocked_idx:
+        print(f"\n标题规则过滤（{_site}）：{len(_blocked_idx)} 条促销/导购稿直接跳过（不抓正文、不解析）")
+        for i in sorted(_blocked_idx):
+            print(f"  - {items[i].get('title', '')[:80]}")
 
     # 标题级预筛（仅 etnews / kitguru / 爱集微）：
     # 整批标题一次交给模型判断（不是每篇一次），被判非半导体的不抓正文、不调正文模型、
     # 不入 Notion、不推送。模型不可用时整批放行，交给正文分类兜底。
-    _skip_idx = _prescreen_titles(items, source, zhipu_model=model)
+    _skip_idx = _blocked_idx | _prescreen_titles(items, source, zhipu_model=model)
 
     for i, item in enumerate(items):
         title = item["title"]
@@ -2316,8 +2376,12 @@ def _process_items(
         print(f"链接：{link}")
 
         if i in _skip_idx:
-            print("标题判定为非半导体内容，跳过收录。")
-            _skipped_non_semi += 1
+            if i in _blocked_idx:
+                print("标题命中促销/导购规则，跳过收录（不解析）。")
+                _skipped_deal += 1
+            else:
+                print("标题判定为非半导体内容，跳过收录。")
+                _skipped_non_semi += 1
             continue
 
         post_id = hashlib.sha1(link.encode("utf-8")).hexdigest()[:10]
@@ -2468,6 +2532,8 @@ def _process_items(
                 is_chinese_original=is_chinese_original_text(title, content, summary),
             )
 
+    if _skipped_deal:
+        print(f"\n本轮按标题规则跳过 {_skipped_deal} 篇促销/导购稿（{', '.join(sorted(TITLE_BLOCK_SITES))}）")
     if _skipped_non_semi:
         print(f"\n本轮按标题跳过 {_skipped_non_semi} 篇非半导体内容"
               f"（etnews / kitguru / laoyaoba）")
