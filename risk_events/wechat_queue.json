@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-23T11:52:11+00:00",
-  "count": 64,
+  "generated_at": "2026-11-23T23:31:24+00:00",
+  "count": 67,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -836,6 +836,42 @@
       "discovered_at": "2026-11-23T11:52:11+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/jensen-is-back-at-nvidia/",
+      "title": "Jensen is BACK at NVIDIA",
+      "image_count": 4,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-23T23:26:19+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/blogs/powerbites/article/55420976/electronic-design-this-week-in-powerbites-sodium-ion-batteries-evolve-v2g-chargers-on-the-horizon-e-aircraft-on-the-rise",
+      "title": "This Week in PowerBites: Sodium-Ion Batteries Evolve, e-Aircraft on the Rise, V2G Chargers",
+      "image_count": 29,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-23T23:26:34+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/power/article/55421003/analog-devices-achieving-soft-start-battery-paralleling-with-bidirectional-capability-in-humanoid-robots",
+      "title": "Achieve Safe Battery Paralleling with Bidirectional Power for Robotics",
+      "image_count": 12,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-23T23:31:24+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]
