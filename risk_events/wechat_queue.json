@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-24T08:37:23+00:00",
-  "count": 70,
+  "generated_at": "2026-11-24T19:58:05+00:00",
+  "count": 73,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -908,6 +908,42 @@
       "discovered_at": "2026-11-24T08:37:23+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/asus-turbo-radeon-pro-ai-r9700-review/",
+      "title": "ASUS Turbo Radeon AI PRO R9700 Review",
+      "image_count": 9,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-24T19:57:33+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881437",
+      "title": "New Quantum Circuit Design Reduces Resources Required for Quantum Chemistry Algorithms",
+      "image_count": 4,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-24T19:57:54+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/resources/electronic-design-weekly/article/55411483/electronic-design-electronic-design-weekly-nov-23-2026-fpgas",
+      "title": "Electronic Design Weekly: Nov. 23, 2026 - FPGAs",
+      "image_count": 27,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-24T19:58:05+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-24T09:18:07+00:00",
-  "count": 118,
+  "generated_at": "2026-11-24T21:04:22+00:00",
+  "count": 119,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,44 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "85a3ba533e",
+      "dedup_key": "0510d2a0d5df",
+      "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+      "url": "https://seekingalpha.com/article/4971414-nvidia-for-the-first-time-i-dont-know-what-to-do-rating-downgrade?source=feed",
+      "title": "Nvidia: For The First Time, I Don't Know What To Do (Rating Downgrade)",
+      "title_cn": "英伟达：我第一次不知道该怎么办（评级下调）",
+      "published_at": "2026-11-24T13:00:36.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-24T20:06:01",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(Nvidia)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-24",
+      "sources": [
+        {
+          "post_id": "85a3ba533e",
+          "url": "https://seekingalpha.com/article/4971414-nvidia-for-the-first-time-i-dont-know-what-to-do-rating-downgrade?source=feed",
+          "title": "Nvidia: For The First Time, I Don't Know What To Do (Rating Downgrade)",
+          "title_cn": "英伟达：我第一次不知道该怎么办（评级下调）",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-24T13:00:36.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
     {
       "post_id": "69a20affc2",
       "dedup_key": "33c47235359b",
@@ -640,8 +678,10 @@
       "country_region": "美国",
       "lat": null,
       "lon": null,
-      "severity": 0.0,
-      "affected_products": [],
+      "severity": 0.1,
+      "affected_products": [
+        "EDA"
+      ],
       "occurred_at": "2026-11-18",
       "sources": [
         {
@@ -652,12 +692,21 @@
           "source": "https://www.electronicsweekly.com/feed/",
           "published_at": "2026-11-18T06:12:19.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "c7c2484c39",
+          "url": "https://semiwiki.com/eda/376542-why-siemens-breker-deal-matters-for-the-next-generation-of-ai-chips/",
+          "title": "Why Siemens’ Breker Deal Matters for the Next Generation of AI Chips",
+          "title_cn": "为什么西门子收购 Breker 对下一代 AI 芯片至关重要",
+          "source": "https://semiwiki.com/feed/",
+          "published_at": "2026-11-24T16:00:25.000Z",
+          "llm": "gemini:gemini-3.5-flash"
         }
       ],
       "event_types": [
         "mna"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "mna"
     },
     {
