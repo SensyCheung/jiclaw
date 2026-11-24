@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-23T12:01:27+00:00",
-  "count": 117,
+  "generated_at": "2026-11-24T09:18:07+00:00",
+  "count": 118,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -47,6 +47,44 @@
       ],
       "source_count": 1,
       "primary_event_type": "mna"
+    },
+    {
+      "post_id": "0fc6a92434",
+      "dedup_key": "d7158dc43d36",
+      "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/AW4Bhiwn1Ms/maggie-eastland/rss",
+      "url": "https://www.bloomberg.com/news/articles/2026-11-23/us-to-blacklist-megaspeed-the-firm-at-center-of-nvidia-scandal",
+      "title": "US Blacklists Megaspeed After Nvidia Spy Scandal",
+      "title_cn": "美国在英伟达间谍丑闻后将 Megaspeed 列入黑名单",
+      "published_at": "2026-11-23T20:43:55.000Z",
+      "llm": "zhipu:GLM-4.7-Flash",
+      "ingested_at": "2026-11-24T08:57:53",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "Megaspeed",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [],
+      "occurred_at": "2026-11-23",
+      "sources": [
+        {
+          "post_id": "0fc6a92434",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-23/us-to-blacklist-megaspeed-the-firm-at-center-of-nvidia-scandal",
+          "title": "US Blacklists Megaspeed After Nvidia Spy Scandal",
+          "title_cn": "美国在英伟达间谍丑闻后将 Megaspeed 列入黑名单",
+          "source": "https://rsshub-demo.cautious-menu.workers.dev/bloomberg/authors/AW4Bhiwn1Ms/maggie-eastland/rss",
+          "published_at": "2026-11-23T20:43:55.000Z",
+          "llm": "zhipu:GLM-4.7-Flash"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
     },
     {
       "post_id": "ca4a13c3cb",
