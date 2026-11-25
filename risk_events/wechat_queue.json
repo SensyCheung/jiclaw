@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-25T13:56:32+00:00",
-  "count": 79,
+  "generated_at": "2026-11-25T23:01:00+00:00",
+  "count": 82,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -1016,6 +1016,42 @@
       "discovered_at": "2026-11-25T13:56:32+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/supermicro-sys-e103-14p-h-fanless-panther-lake-review/",
+      "title": "Supermicro SYS-E103-14P-H Review: A Fanless Panther Lake Edge Appliance",
+      "image_count": 22,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-25T22:58:19+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/article/55421667/lattice-semiconductor-fpgas-as-everywhere-companion-chips-for-edge-ai",
+      "title": "FPGAs: Co-Processors of the Future for Edge AI?",
+      "image_count": 5,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-25T23:00:45+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicdesign.com/technologies/embedded/machine-learning/article/55421645/vsora-11-myths-about-ai-architectures",
+      "title": "11 Myths About AI Architectures",
+      "image_count": 4,
+      "site": "electronicdesign.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-25T23:01:00+00:00",
+      "profile_id": "vendor_tech_blog",
+      "template": "T1_image_walkthrough",
       "auto_publish": true
     }
   ]
