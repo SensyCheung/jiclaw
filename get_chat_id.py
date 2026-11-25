@@ -120,6 +120,62 @@ def cmd_check(token: str, chat_id: str) -> int:
     return 0
 
 
+def cmd_link(token: str) -> int:
+    """只读查询主群/others 群的公开加入链接，不发消息、不打印 chat_id 数字。
+
+    优先用 username 拼 https://t.me/<username>（干净的公开链接）；
+    没有 username 就用 invite_link；两者都没有时请 Bot（需管理员）生成永久邀请链接。
+    """
+    names = ["TELEGRAM_CHAT_ID", "TELEGRAM_CHAT_ID_OTHER"]
+    any_ok = False
+    for name in names:
+        raw = (os.environ.get(name) or "").strip()
+        if not raw:
+            print(f"\n=== {name} === (未配置)")
+            continue
+        print(f"\n=== {name} ===")
+        # secret 里可能仍是 10 位裸数字（历史遗留），补全 -100 再试
+        digits = raw.lstrip("-")
+        candidates: list[str] = []
+        for c in (raw, "-100" + digits):
+            if c and c not in candidates:
+                candidates.append(c)
+        chat = None
+        for c in candidates:
+            try:
+                chat = _call(token, "getChat", chat_id=c)
+                break
+            except RuntimeError as e:
+                print(f"  [FAIL] {str(e)[:110]}")
+        if not chat:
+            continue
+
+        title = chat.get("title") or chat.get("username") or chat.get("first_name") or "-"
+        username = chat.get("username")
+        invite = chat.get("invite_link")
+        print(f"  title: {title}")
+        print(f"  type: {chat.get('type', '-')}")
+        print(f"  username: {username or '(无)'}")
+
+        if not username and not invite:
+            # Bot 是管理员时可生成永久邀请链接；这是唯一需要写权限的一步，
+            # 且不改群内容、返回稳定的主链接，可安全重复调用。
+            try:
+                invite = _call(token, "exportChatInviteLink", chat_id=c)
+            except RuntimeError as e:
+                print(f"  [WARN] exportChatInviteLink 失败：{str(e)[:110]}")
+        print(f"  invite_link: {invite or '(无)'}")
+
+        if username:
+            print(f"  👉 公开链接：https://t.me/{username}")
+        elif invite:
+            print(f"  👉 邀请链接：{invite}")
+        else:
+            print("  ⚠️ 拿不到公开链接：请把 Bot 设为该频道管理员后重试。")
+        any_ok = True
+    return 0 if any_ok else 1
+
+
 def cmd_probe_config(token: str) -> int:
     """拿现有的 TELEGRAM_CHAT_ID_OTHER 去试探，找出正确写法（不打印原始 ID）。"""
     raw = (os.environ.get("TELEGRAM_CHAT_ID_OTHER") or "").strip()
@@ -183,10 +239,22 @@ def main() -> int:
     parser.add_argument("--check", metavar="CHAT_ID", help="验证指定 chat_id 并发送测试消息")
     parser.add_argument("--config", action="store_true", help="以掩码形式显示当前配置的 chat id")
     parser.add_argument("--probe-config", action="store_true", help="试探 CURRENT TELEGRAM_CHAT_ID_OTHER 的正确前缀")
+    parser.add_argument("--link", action="store_true", help="只读查询主群/others 群的公开加入链接（不发消息、不打印 chat_id）")
     args = parser.parse_args()
 
     if args.config:
         return cmd_config()
+
+    if args.link:
+        token = (args.token or os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
+        if not token:
+            print("❌ 未提供 Bot Token。")
+            return 2
+        try:
+            return cmd_link(token)
+        except RuntimeError as e:
+            print(f"❌ 请求失败：{e}")
+            return 1
 
     token = (args.token or os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
     if not token:

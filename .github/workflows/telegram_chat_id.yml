@@ -14,6 +14,11 @@ on:
         required: false
         type: string
         default: ''
+      probe_link:
+        description: '勾选后只读查询主群/others 群的公开加入链接（不发消息、不打印 chat_id），用于网站放群入口'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   query:
@@ -28,20 +33,30 @@ jobs:
       - name: Install deps
         run: pip install requests
 
+      - name: 查询公开群链接（只读）
+        if: inputs.probe_link
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID_OTHER: ${{ secrets.TELEGRAM_CHAT_ID_OTHER }}
+        run: python get_chat_id.py --link
+
       - name: 当前配置格式
+        if: ${{ !inputs.probe_link }}
         env:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_CHAT_ID_OTHER: ${{ secrets.TELEGRAM_CHAT_ID_OTHER }}
         run: python get_chat_id.py --config
 
       - name: 试探现有 TELEGRAM_CHAT_ID_OTHER
+        if: ${{ !inputs.probe_link }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID_OTHER: ${{ secrets.TELEGRAM_CHAT_ID_OTHER }}
         run: python get_chat_id.py --probe-config
 
       - name: 查询会话
-        if: always()
+        if: ${{ always() && !inputs.probe_link }}
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         run: |
