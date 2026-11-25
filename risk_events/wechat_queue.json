@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-25T03:29:25+00:00",
-  "count": 76,
+  "generated_at": "2026-11-25T13:56:32+00:00",
+  "count": 79,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -978,6 +978,42 @@
       "always_publish": true,
       "status": "pending",
       "discovered_at": "2026-11-25T03:29:25+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881467",
+      "title": "Compact ultrasonic sensor lets robots “hear” their surroundings",
+      "image_count": 6,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-25T13:56:05+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/uk-space-agency-backs-seven-commercial-climate-services-projects-2026-11/",
+      "title": "UK Space Agency backs seven Commercial Climate Services projects",
+      "image_count": 9,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-25T13:56:24+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/electro-ramblings/site-update/chiips-41-chiips-with-jake-collins-of-boston-micro-fabrication-2026-11/",
+      "title": "CHIIPS #41 – CHIIPs with Jake Collins of Boston Micro Fabrication",
+      "image_count": 9,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-25T13:56:32+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
       "auto_publish": true

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-25T03:43:04+00:00",
-  "count": 121,
+  "generated_at": "2026-11-25T14:18:43+00:00",
+  "count": 124,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -2957,13 +2957,63 @@
           "source": "https://www.theinformation.com/feed",
           "published_at": "2026-11-12T02:52:14.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "75faac97ea",
+          "url": "https://www.theinformation.com/articles/chinese-ai-firms-confront-dire-future-u-s-tightens-access-chips-tokens",
+          "title": "Chinese AI Firms Confront Dire Future as U.S. Tightens Access to Chips and Tokens",
+          "title_cn": "随着美国收紧芯片与 Token 访问权限，中国 AI 企业面临严峻未来",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-25T14:00:47.000Z",
+          "llm": "gemini:gemini-3.5-flash"
         }
       ],
       "event_types": [
         "export_control"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "7da9a978bd",
+      "dedup_key": "f08d4d57c133",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/dutch-may-resist-us-match-act-2026-11/",
+      "title": "Dutch may resist US MATCH Act",
+      "title_cn": "荷兰可能抵制美国《MATCH法案》",
+      "published_at": "2026-11-25T06:10:35.000Z",
+      "llm": "gemini:gemini-3.1-flash-lite",
+      "ingested_at": "2026-11-25T13:57:03",
+      "is_risk_event": true,
+      "event_type": "geopolitical",
+      "hazard_class": "regulatory",
+      "entity": "阿斯麦(ASML)",
+      "site": null,
+      "country_region": "荷兰",
+      "lat": null,
+      "lon": null,
+      "severity": 0.7,
+      "affected_products": [
+        "EUV",
+        "DUV"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "7da9a978bd",
+          "url": "https://www.electronicsweekly.com/news/business/dutch-may-resist-us-match-act-2026-11/",
+          "title": "Dutch may resist US MATCH Act",
+          "title_cn": "荷兰可能抵制美国《MATCH法案》",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-25T06:10:35.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
+        }
+      ],
+      "event_types": [
+        "geopolitical"
+      ],
+      "source_count": 1,
+      "primary_event_type": "geopolitical"
     },
     {
       "post_id": "584558bd47",
@@ -3382,6 +3432,47 @@
       "primary_event_type": "supply_shortage"
     },
     {
+      "post_id": "1848fef936",
+      "dedup_key": "d2c45c334a59",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/us-blacklists-megaspeed-but-leaves-potential-loophole-for-lower-performance-chips-company-at-center-of-jensen-huang-affair-scandal-added-to-entity-list",
+      "title": "US blacklists Megaspeed, but leaves potential loophole for lower-performance chips",
+      "title_cn": "美国将Megaspeed列入实体清单，但可能为低性能芯片留有漏洞",
+      "published_at": "2026-11-25T12:29:58.000Z",
+      "llm": "gemini:gemini-3.5-flash",
+      "ingested_at": "2026-11-25T14:01:38",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "Megaspeed",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "AI芯片",
+        "GPU"
+      ],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "1848fef936",
+          "url": "https://www.tomshardware.com/tech-industry/us-blacklists-megaspeed-but-leaves-potential-loophole-for-lower-performance-chips-company-at-center-of-jensen-huang-affair-scandal-added-to-entity-list",
+          "title": "US blacklists Megaspeed, but leaves potential loophole for lower-performance chips",
+          "title_cn": "美国将Megaspeed列入实体清单，但可能为低性能芯片留有漏洞",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-25T12:29:58.000Z",
+          "llm": "gemini:gemini-3.5-flash"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
       "post_id": "c2f537a55d",
       "source": "aijiwei",
       "url": "https://laoyaoba.com/n/1136325",
@@ -3703,6 +3794,44 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-19T13:59:57.000Z",
           "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
+    {
+      "post_id": "db953fd913",
+      "dedup_key": "0c1fda908e6e",
+      "source": "https://www.tomshardware.com/feeds.xml",
+      "url": "https://www.tomshardware.com/tech-industry/huawei-convicted-of-money-laundering-conspiracy-to-steal-trade-secrets-and-fraud-by-us-jury-fbi-says-chinese-tech-giant-built-its-success-on-deception-and-theft",
+      "title": "Huawei convicted of money laundering, conspiracy to steal trade secrets, and fraud by US jury",
+      "title_cn": "美国陪审团裁定华为洗钱、共谋窃取商业机密及欺诈罪名成立",
+      "published_at": "2026-11-25T12:43:48.000Z",
+      "llm": "gemini:gemini-3.5-flash",
+      "ingested_at": "2026-11-25T14:01:27",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "华为(Huawei)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [],
+      "occurred_at": "2026-11",
+      "sources": [
+        {
+          "post_id": "db953fd913",
+          "url": "https://www.tomshardware.com/tech-industry/huawei-convicted-of-money-laundering-conspiracy-to-steal-trade-secrets-and-fraud-by-us-jury-fbi-says-chinese-tech-giant-built-its-success-on-deception-and-theft",
+          "title": "Huawei convicted of money laundering, conspiracy to steal trade secrets, and fraud by US jury",
+          "title_cn": "美国陪审团裁定华为洗钱、共谋窃取商业机密及欺诈罪名成立",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-25T12:43:48.000Z",
+          "llm": "gemini:gemini-3.5-flash"
         }
       ],
       "event_types": [
