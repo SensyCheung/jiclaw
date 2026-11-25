@@ -524,6 +524,14 @@ https://hnrss.org/newest?q=semiconductor&points=50
 官方 `news.ycombinator.com/rss` 返回 419、自建 RSSHub 的 `/hackernews/rss` 返回 503，
 故不用这两条。
 
+## Ken Shirriff's Blog（righto.com）
+
+`https://www.righto.com/feeds/posts/default?alt=rss`——Ken Shirriff 的芯片逆向工程博客，
+Blogger 官方 RSS，25 条、响应 <1s。内容纯度极高的半导体源：拆解 Intel 8087、 vintage DTL
+芯片、开关电容滤波器等，用显微镜和 X 光逐层分析die。用 `?alt=rss` 而非 Atom 版（`?alt=rss`
+返回 RSS 2.0，feedparser 解析更稳）；条目 link 是 `http://` 但正文页能正常抓取。
+`get_website_name()` 把 `righto.com` 映射成 "Ken Shirriff's Blog"。
+
 ## Architect Labs 官方博客（scraper）
 
 Frostbite / Redwood 这类"AI 端到端设计芯片"的一手发布源。该站无 RSS

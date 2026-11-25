@@ -1883,6 +1883,8 @@ def get_website_name(feed_url: str) -> str:
         # Hacker News 关键词热度 feed（hnrss.org）：feed title 里带关键词，
         # 统一归到 "Hacker News"，避免按查询词拆成多个不同的站名。
         "hnrss.org": "Hacker News",
+        # Ken Shirriff 的芯片逆向工程博客：Blogger 平台，域名本身没辨识度
+        "righto.com": "Ken Shirriff's Blog",
     }
 
     # 自定义 RSSHub：域名本身没有辨识度，按路由前缀还原真实媒体名
