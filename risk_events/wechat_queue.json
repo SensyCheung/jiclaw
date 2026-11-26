@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-25T23:01:00+00:00",
-  "count": 82,
+  "generated_at": "2026-11-26T04:47:27+00:00",
+  "count": 85,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -1052,6 +1052,42 @@
       "discovered_at": "2026-11-25T23:01:00+00:00",
       "profile_id": "vendor_tech_blog",
       "template": "T1_image_walkthrough",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881526",
+      "title": "Swarm intelligence for surfaces: Miniature robots bring artificial skin to life",
+      "image_count": 6,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-26T04:46:59+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/blogs/mannerisms/tv/social-media-increasingly-supplying-news-2026-11/",
+      "title": "Social Media Increasingly Supplying News",
+      "image_count": 10,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-26T04:47:21+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/certification-and-test/general-certification-and-test/let-newsletter-content-come-straight-2026-11/",
+      "title": "Let the Electronics Weekly newsletter content come straight to you!",
+      "image_count": 8,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-26T04:47:27+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
       "auto_publish": true
     }
   ]
