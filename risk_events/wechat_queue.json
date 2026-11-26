@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-26T14:56:47+00:00",
-  "count": 89,
+  "generated_at": "2026-11-26T23:32:54+00:00",
+  "count": 90,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 4,
+    "min_image_count": 3,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -1136,6 +1136,18 @@
       "discovered_at": "2026-11-26T14:56:47+00:00",
       "profile_id": "imec",
       "template": "T3_press_release",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/tech-industry/photonics/inside-the-indium-phosphide-squeeze-and-the-optical-boom-inp-remains-tightly-constrained-as-the-demand-from-ai-puts-the-entire-supply-chain-under-pressure",
+      "title": "Exploring the Indium phosphide supply chain — the material constraint tightening the optical interconnect bottleneck",
+      "image_count": 3,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-26T23:32:54+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
       "auto_publish": true
     }
   ]
