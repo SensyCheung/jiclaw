@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-26T05:04:25+00:00",
-  "count": 129,
+  "generated_at": "2026-11-26T14:57:18+00:00",
+  "count": 132,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,46 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "b63ff3c4fd",
+      "dedup_key": "b8d813acaab0",
+      "source": "https://www.ft.com/semiconductors?format=rss",
+      "url": "https://www.ft.com/content/7838a715-07d4-4605-aa60-21f5af2b2370?syn-25a6b1a6=1",
+      "title": "Nvidia halts chip shipments to south-east Asia",
+      "title_cn": "英伟达暂停向东南亚运送芯片",
+      "published_at": "2026-11-26T05:00:16.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-26T14:53:10",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "NVIDIA",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": "2026-11-26",
+      "sources": [
+        {
+          "post_id": "b63ff3c4fd",
+          "url": "https://www.ft.com/content/7838a715-07d4-4605-aa60-21f5af2b2370?syn-25a6b1a6=1",
+          "title": "Nvidia halts chip shipments to south-east Asia",
+          "title_cn": "英伟达暂停向东南亚运送芯片",
+          "source": "https://www.ft.com/semiconductors?format=rss",
+          "published_at": "2026-11-26T05:00:16.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
     {
       "post_id": "2a179ed5f7",
       "dedup_key": "5060dcc02f6d",
@@ -89,6 +129,44 @@
       "primary_event_type": "earnings"
     },
     {
+      "post_id": "fd32197974",
+      "dedup_key": "709ea198218c",
+      "source": "https://hnrss.org/newest?q=nvidia&points=50",
+      "url": "https://www.upi.com/Top_News/US/2026/11/24/NVIDIA-partner-Megaspeed/1701795520063/",
+      "title": "Ex-Nvidia partner Megaspeed hit with U.S. Commerce Department export ban",
+      "title_cn": "前NVIDIA合作伙伴Megaspeed遭到美国商务部出口禁令打击",
+      "published_at": "2026-11-24T16:08:28.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-26T14:53:40",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "Megaspeed",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.8,
+      "affected_products": [],
+      "occurred_at": "2026-11-24",
+      "sources": [
+        {
+          "post_id": "fd32197974",
+          "url": "https://www.upi.com/Top_News/US/2026/11/24/NVIDIA-partner-Megaspeed/1701795520063/",
+          "title": "Ex-Nvidia partner Megaspeed hit with U.S. Commerce Department export ban",
+          "title_cn": "前NVIDIA合作伙伴Megaspeed遭到美国商务部出口禁令打击",
+          "source": "https://hnrss.org/newest?q=nvidia&points=50",
+          "published_at": "2026-11-24T16:08:28.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
       "post_id": "85a3ba533e",
       "dedup_key": "0510d2a0d5df",
       "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
@@ -124,6 +202,56 @@
         "litigation"
       ],
       "source_count": 1,
+      "primary_event_type": "litigation"
+    },
+    {
+      "post_id": "ca4a13c3cb",
+      "dedup_key": "86476d99e943",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/fears-and-rumours-swirl-around-nvidia-2026-11/",
+      "title": "Fears and rumours swirl around Nvidia",
+      "title_cn": "英伟达遭遇种种担忧与传闻",
+      "published_at": "2026-11-23T06:16:31.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-23T11:52:19",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(Nvidia)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "AI chip",
+        "GPU"
+      ],
+      "occurred_at": "2026-11-23",
+      "sources": [
+        {
+          "post_id": "ca4a13c3cb",
+          "url": "https://www.electronicsweekly.com/news/business/fears-and-rumours-swirl-around-nvidia-2026-11/",
+          "title": "Fears and rumours swirl around Nvidia",
+          "title_cn": "英伟达遭遇种种担忧与传闻",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-23T06:16:31.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        },
+        {
+          "post_id": "e3a79f42fb",
+          "url": "https://www.cnbc.com/2026/11/23/nvidia-jensen-huang-ceo.html",
+          "title": "Nvidia Reinstates Jensen Huang as CEO",
+          "title_cn": "英伟达恢复黄仁勋首席执行官职务",
+          "source": "https://hnrss.org/newest?q=nvidia&points=50",
+          "published_at": "2026-11-23T14:00:18.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 2,
       "primary_event_type": "litigation"
     },
     {
@@ -201,47 +329,6 @@
       ],
       "source_count": 1,
       "primary_event_type": "export_control"
-    },
-    {
-      "post_id": "ca4a13c3cb",
-      "dedup_key": "86476d99e943",
-      "source": "https://www.electronicsweekly.com/feed/",
-      "url": "https://www.electronicsweekly.com/news/business/fears-and-rumours-swirl-around-nvidia-2026-11/",
-      "title": "Fears and rumours swirl around Nvidia",
-      "title_cn": "英伟达遭遇种种担忧与传闻",
-      "published_at": "2026-11-23T06:16:31.000Z",
-      "llm": "gemini:gemini-flash-lite-latest",
-      "ingested_at": "2026-11-23T11:52:19",
-      "is_risk_event": true,
-      "event_type": "litigation",
-      "hazard_class": "regulatory",
-      "entity": "英伟达(Nvidia)",
-      "site": null,
-      "country_region": "美国",
-      "lat": null,
-      "lon": null,
-      "severity": 0.4,
-      "affected_products": [
-        "AI chip",
-        "GPU"
-      ],
-      "occurred_at": "2026-11-23",
-      "sources": [
-        {
-          "post_id": "ca4a13c3cb",
-          "url": "https://www.electronicsweekly.com/news/business/fears-and-rumours-swirl-around-nvidia-2026-11/",
-          "title": "Fears and rumours swirl around Nvidia",
-          "title_cn": "英伟达遭遇种种担忧与传闻",
-          "source": "https://www.electronicsweekly.com/feed/",
-          "published_at": "2026-11-23T06:16:31.000Z",
-          "llm": "gemini:gemini-flash-lite-latest"
-        }
-      ],
-      "event_types": [
-        "litigation"
-      ],
-      "source_count": 1,
-      "primary_event_type": "litigation"
     },
     {
       "post_id": "637806fb31",
@@ -1047,7 +1134,7 @@
       "country_region": "美国",
       "lat": null,
       "lon": null,
-      "severity": 0.7,
+      "severity": 0.8,
       "affected_products": [
         "AI chip"
       ],
@@ -1061,12 +1148,21 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-16T21:50:00.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "4c059ae1ca",
+          "url": "https://www.cnbc.com/2026/11/17/nvidia-nvda-earnings-report-q3-2027.html",
+          "title": "Nvidia Chair Harvey Jones says board doesn't intend to reinstate Huang as CEO",
+          "title_cn": "英伟达董事长哈维·琼斯表示董事会无意恢复黄仁勋的CEO职务",
+          "source": "https://hnrss.org/newest?q=nvidia&points=50",
+          "published_at": "2026-11-17T22:08:33.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
         }
       ],
       "event_types": [
         "export_control"
       ],
-      "source_count": 1,
+      "source_count": 2,
       "primary_event_type": "export_control"
     },
     {
@@ -5218,6 +5314,46 @@
           "source": "https://www.electronicsweekly.com/feed/",
           "published_at": "2026-11-20T13:47:48.000Z",
           "llm": "gemini:gemini-3.5-flash-lite"
+        }
+      ],
+      "event_types": [
+        "litigation"
+      ],
+      "source_count": 1,
+      "primary_event_type": "litigation"
+    },
+    {
+      "post_id": "f87d79b7ac",
+      "dedup_key": "c5a636d8939d",
+      "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+      "url": "https://seekingalpha.com/article/4972036-nvidia-upgrade-to-hold-too-early-to-buy?source=feed",
+      "title": "Nvidia: Upgrade To Hold, Too Early To Buy",
+      "title_cn": "英伟达：上调至持有评级，但买入尚早",
+      "published_at": "2026-11-26T11:59:57.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-26T14:47:02",
+      "is_risk_event": true,
+      "event_type": "litigation",
+      "hazard_class": "regulatory",
+      "entity": "英伟达(NVIDIA)",
+      "site": null,
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.4,
+      "affected_products": [
+        "GPU"
+      ],
+      "occurred_at": null,
+      "sources": [
+        {
+          "post_id": "f87d79b7ac",
+          "url": "https://seekingalpha.com/article/4972036-nvidia-upgrade-to-hold-too-early-to-buy?source=feed",
+          "title": "Nvidia: Upgrade To Hold, Too Early To Buy",
+          "title_cn": "英伟达：上调至持有评级，但买入尚早",
+          "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
+          "published_at": "2026-11-26T11:59:57.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
         }
       ],
       "event_types": [
