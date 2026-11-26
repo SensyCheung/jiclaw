@@ -147,6 +147,9 @@ SCRAPER_CONFIG = {
         "date_format": "iso",  # 日期格式：2026-10-30 13:00:00
     },
     "usbdev": {
+        # 已停用：2026-11-26 从 workflow 的 feed 列表移除。
+        # 原因：该源只有逐日软件更新日志表格（无正文、无分析价值），不抓取。
+        # 配置保留仅为备查；要恢复需在 rss_to_notion.yml 加回 scraper:usbdev。
         "name": "USBDev.ru 更新日志",
         "url": "https://www.usbdev.ru/news/",
         # 该站没有文章流：WordPress 文章停更在 2020，/feed/ 只有一个 2020 年的 item，
