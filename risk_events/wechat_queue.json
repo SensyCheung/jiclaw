@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-26T23:32:54+00:00",
-  "count": 90,
+  "generated_at": "2026-11-27T06:56:32+00:00",
+  "count": 93,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 3,
+    "min_image_count": 4,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -1148,6 +1148,42 @@
       "discovered_at": "2026-11-26T23:32:54+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/musk-to-give-twospacex-shares-to-every-american-child-2026-11/",
+      "title": "Musk to give two SpaceX shares to every American child",
+      "image_count": 10,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-27T06:56:16+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/uk-quantum-conpanies-have-raised-621m-this-year-2026-11/",
+      "title": "UK quantum companies have raised $621m this year",
+      "image_count": 12,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-27T06:56:24+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/business/smart-phone-market-to-fall-14-this-year-6-next-year-2026-11/",
+      "title": "Smart phone units won’t regain last year’s level till 2030",
+      "image_count": 12,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-27T06:56:32+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
       "auto_publish": true
     }
   ]
