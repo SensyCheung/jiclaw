@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-26T23:41:16+00:00",
-  "count": 137,
+  "generated_at": "2026-11-27T17:26:49+00:00",
+  "count": 139,
   "feed": {
     "max_age_days": 90,
     "max_events": 500,
@@ -10,6 +10,84 @@
   },
   "dedup_note": "同簇事件已合并，全部原始来源见 sources；source_count 为报道源数",
   "events": [
+    {
+      "post_id": "b0e598fbb6",
+      "dedup_key": "031f9a6bcfac",
+      "source": "https://www.theinformation.com/feed",
+      "url": "https://www.theinformation.com/briefings/singapore-talks-u-s-keep-ai-chip-access",
+      "title": "Singapore in Talks With U.S. to Keep AI Chip Access",
+      "title_cn": "新加坡正与美国就保留人工智能芯片获取权限进行会谈",
+      "published_at": "2026-11-27T10:23:08.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-27T17:18:18",
+      "is_risk_event": true,
+      "event_type": "export_control",
+      "hazard_class": "regulatory",
+      "entity": "新加坡政府",
+      "site": "新加坡",
+      "country_region": "新加坡",
+      "lat": null,
+      "lon": null,
+      "severity": 0.5,
+      "affected_products": [
+        "AI chip"
+      ],
+      "occurred_at": "2026-11-27",
+      "sources": [
+        {
+          "post_id": "b0e598fbb6",
+          "url": "https://www.theinformation.com/briefings/singapore-talks-u-s-keep-ai-chip-access",
+          "title": "Singapore in Talks With U.S. to Keep AI Chip Access",
+          "title_cn": "新加坡正与美国就保留人工智能芯片获取权限进行会谈",
+          "source": "https://www.theinformation.com/feed",
+          "published_at": "2026-11-27T10:23:08.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "export_control"
+      ],
+      "source_count": 1,
+      "primary_event_type": "export_control"
+    },
+    {
+      "post_id": "468ebf46c1",
+      "dedup_key": "51b0b980a264",
+      "source": "https://www.electronicsweekly.com/feed/",
+      "url": "https://www.electronicsweekly.com/news/business/leolabs-buys-fisheye-to-deliver-missile-tracking-radars-2026-11/",
+      "title": "LeoLabs buys FishEye to deliver missile tracking radars",
+      "title_cn": "LeoLabs收购FishEye以提供导弹追踪雷达",
+      "published_at": "2026-11-27T10:54:42.000Z",
+      "llm": "gemini:gemini-flash-lite-latest",
+      "ingested_at": "2026-11-27T17:17:02",
+      "is_risk_event": true,
+      "event_type": "mna",
+      "hazard_class": "financial",
+      "entity": "LeoLabs, FishEye Software",
+      "site": "门洛帕克, 梅纳德",
+      "country_region": "美国",
+      "lat": null,
+      "lon": null,
+      "severity": 0.3,
+      "affected_products": [],
+      "occurred_at": "2026-11-27",
+      "sources": [
+        {
+          "post_id": "468ebf46c1",
+          "url": "https://www.electronicsweekly.com/news/business/leolabs-buys-fisheye-to-deliver-missile-tracking-radars-2026-11/",
+          "title": "LeoLabs buys FishEye to deliver missile tracking radars",
+          "title_cn": "LeoLabs收购FishEye以提供导弹追踪雷达",
+          "source": "https://www.electronicsweekly.com/feed/",
+          "published_at": "2026-11-27T10:54:42.000Z",
+          "llm": "gemini:gemini-flash-lite-latest"
+        }
+      ],
+      "event_types": [
+        "mna"
+      ],
+      "source_count": 1,
+      "primary_event_type": "mna"
+    },
     {
       "post_id": "b63ff3c4fd",
       "dedup_key": "b8d813acaab0",

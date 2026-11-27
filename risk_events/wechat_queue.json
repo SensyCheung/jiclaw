@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-27T06:56:32+00:00",
-  "count": 93,
+  "generated_at": "2026-11-27T17:16:46+00:00",
+  "count": 96,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 4,
@@ -1182,6 +1182,42 @@
       "always_publish": true,
       "status": "pending",
       "discovered_at": "2026-11-27T06:56:32+00:00",
+      "profile_id": "trade_news_uk",
+      "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881667",
+      "title": "Constructor University's Niclas Führling wins Best Student Paper Award at IEEE ISAC conference",
+      "image_count": 4,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-27T17:15:59+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "http://idw-online.de/en/news881653",
+      "title": "Prof. Wenke Weinreich elected to the Executive Board of Silicon Saxony",
+      "image_count": 5,
+      "site": "idw-online.de",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-27T17:16:20+00:00",
+      "profile_id": "research_university",
+      "template": "T9_research_note",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.electronicsweekly.com/news/products/test-measurement-products/siglent-sdm4075a-precision-digital-multimeter-samples-2-msa-s-2026-11/",
+      "title": "Siglent SDM4075A precision digital multimeter samples 2 MSa/s",
+      "image_count": 10,
+      "site": "electronicsweekly.com",
+      "always_publish": true,
+      "status": "pending",
+      "discovered_at": "2026-11-27T17:16:46+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
       "auto_publish": true
