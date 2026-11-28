@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-27T17:26:49+00:00",
+  "generated_at": "2026-11-28T18:07:33+00:00",
   "count": 139,
   "feed": {
     "max_age_days": 90,
@@ -3434,6 +3434,15 @@
           "source": "https://www.tomshardware.com/feeds.xml",
           "published_at": "2026-11-26T15:59:57.000Z",
           "llm": "gemini:gemini-flash-lite-latest"
+        },
+        {
+          "post_id": "004b3dd902",
+          "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/banned-nvidia-blackwell-ai-racks-surface-in-china-data-center-tied-to-usd14m-loan-and-alleged-spy-alice-huang",
+          "title": "Banned Nvidia Blackwell AI racks surface in China — data center tied to $14M loan and alleged spy Alice Huang",
+          "title_cn": "被禁的英伟达Blackwell AI机架在中国现身——数据中心与1400万美元贷款及涉嫌间谍Alice Huang有关",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-28T15:22:27.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
@@ -3441,7 +3450,7 @@
         "litigation",
         "other"
       ],
-      "source_count": 15,
+      "source_count": 16,
       "primary_event_type": "export_control"
     },
     {
@@ -3914,7 +3923,7 @@
       "llm": "gemini:gemini-3.1-flash-lite",
       "ingested_at": "2026-11-18T00:01:03",
       "is_risk_event": true,
-      "event_type": "litigation",
+      "event_type": "export_control",
       "hazard_class": "regulatory",
       "entity": "Nvidia, Megaspeed",
       "site": null,
@@ -3942,13 +3951,23 @@
           "source": "https://seekingalpha.com/listing/most-popular-articles.xml",
           "published_at": "2026-11-22T14:54:54.000Z",
           "llm": "gemini:gemini-3.1-flash-lite"
+        },
+        {
+          "post_id": "90f67bd3d6",
+          "url": "https://www.tomshardware.com/pc-components/dram/memory-shortage-could-ease-years-earlier-than-ram-makers-claim-trendforce-says-ram-pricing-will-stabilize-in-2027-and-drop-in-2028",
+          "title": "Memory shortage could ease years earlier than RAM makers claim — TrendForce says RAM pricing will stabilize in 2027 and drop in 2028",
+          "title_cn": "内存短缺缓解时间可能早于厂商预期——TrendForce 称内存价格将于 2027 年趋稳，2028 年下降",
+          "source": "https://www.tomshardware.com/feeds.xml",
+          "published_at": "2026-11-28T17:20:50.000Z",
+          "llm": "gemini:gemini-3.1-flash-lite"
         }
       ],
       "event_types": [
+        "export_control",
         "litigation"
       ],
-      "source_count": 2,
-      "primary_event_type": "litigation"
+      "primary_event_type": "export_control",
+      "source_count": 3
     },
     {
       "post_id": "336ee16b57",

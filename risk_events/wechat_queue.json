@@ -1,8 +1,8 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-28T01:09:19+00:00",
-  "count": 97,
+  "generated_at": "2026-11-28T17:59:27+00:00",
+  "count": 99,
   "config_snapshot": {
     "publish_enabled": true,
     "min_image_count": 3,
@@ -1230,6 +1230,30 @@
       "always_publish": false,
       "status": "pending",
       "discovered_at": "2026-11-28T01:09:19+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/peripherals/wearable-tech/usd120-wearable-led-pin-acts-as-a-watermark-for-humans-to-fight-deepfakes-esp32-s3-powered-protector-flashes-secret-time-synced-light-codes-every-second",
+      "title": "$120 wearable LED pin acts as a 'watermark for humans' to fight deepfakes",
+      "image_count": 9,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-28T17:59:09+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.tomshardware.com/pc-components/ssds/samsungs-speedy-9100-pro-gen-5-2tb-ssd-is-half-price-get-super-fast-ssd-storage-back-to-lowest-price-this-year",
+      "title": "Score a huge 49% saving on a 2TB Samsung 9100 Pro SSD while you can",
+      "image_count": 7,
+      "site": "tomshardware.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-28T17:59:27+00:00",
       "profile_id": "consumer_review",
       "template": "T7_review_spec",
       "auto_publish": true
