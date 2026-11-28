@@ -1,11 +1,11 @@
 {
   "_note": "status 由 WorkBuddy 本地 processed.json 判重，仓库内不回写状态",
   "schema_version": 2,
-  "generated_at": "2026-11-27T17:16:46+00:00",
-  "count": 96,
+  "generated_at": "2026-11-28T01:09:19+00:00",
+  "count": 97,
   "config_snapshot": {
     "publish_enabled": true,
-    "min_image_count": 4,
+    "min_image_count": 3,
     "sites": [
       "semiwiki.com",
       "imec-int.com",
@@ -1220,6 +1220,18 @@
       "discovered_at": "2026-11-27T17:16:46+00:00",
       "profile_id": "trade_news_uk",
       "template": "T4_news_brief",
+      "auto_publish": true
+    },
+    {
+      "url": "https://www.servethehome.com/jetkvm-mini-w-review-a-simple-and-small-wireless-external-kvm-device/",
+      "title": "JetKVM Mini W Review A Simple and Small Wireless External KVM Device",
+      "image_count": 14,
+      "site": "servethehome.com",
+      "always_publish": false,
+      "status": "pending",
+      "discovered_at": "2026-11-28T01:09:19+00:00",
+      "profile_id": "consumer_review",
+      "template": "T7_review_spec",
       "auto_publish": true
     }
   ]
